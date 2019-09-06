@@ -6,9 +6,18 @@ from selenium.webdriver.common.by import By
 from businessView.createView import CreateView
 from businessView.loginView import LoginView
 from common.common_fun import Common
+from common.tool import get_project_path
 
 
 class GeneralView(Common):
+
+    def pop_menu_click(self, option):  # 点击pop
+        logging.info('==========pop_menu_click==========')
+        self.getScreenShot4Compare('source')
+        src_path = get_project_path() + '\\screenshots\\source.png'  # （当前页面）
+        obj_path = get_project_path() + '\\clickPicture\\%s.png' % option  # （需要点击的地方）
+        x,y = self.find_image_cv(obj_path, src_path)
+        self.tap(x,y)
 
     def change_row_column(self):  # 切换行列
         logging.info('==========change_row_column==========')

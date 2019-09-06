@@ -19,6 +19,7 @@ from common.myunit import StartEnd
 share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
 wps = ['wp', 'ss', 'pg']
+# wps = ['ss']
 ps = ['ss', 'pg']
 wp = ['wp', 'pg']
 ws = ['wp', 'ss']
@@ -34,6 +35,20 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
 
 @ddt
 class TestFunc(StartEnd):
+
+    def test_pop_menu(self):
+        logging.info('==========test_pop_menu==========')
+        cv = CreateView(self.driver)
+        type = 'wp'
+        cv.create_file(type)
+        gv = GeneralView(self.driver)
+
+        gv.group_button_click('插入')
+        gv.insert_shape(type, 1)
+        gv.tap(700, 700)
+        time.sleep(1)
+        gv.pop_menu_click('cut')
+        time.sleep(3)
 
     @unittest.skip('skip test_insert_chart1')
     @data(*ps)
@@ -410,6 +425,11 @@ class TestFunc(StartEnd):
             gv.tap(250, 250)
             time.sleep(1)
             gv.tap(550, 680)
+        else:
+            time.sleep(1)
+            gv.tap(250, 250)
+            time.sleep(1)
+            gv.tap(700, 767)
 
         gv.shape_option(type, 5, width=5, height=5)
         gv.shape_option(type, 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
@@ -632,8 +652,8 @@ class TestFunc(StartEnd):
         # ss.insert_chart()
         gv.group_button_click('插入')
         gv.insert_shape(type)
-        for i in range(42):
-            gv.shape_insert(type, 6, i)
+        for i in range(10):
+            gv.shape_insert(type, 6, random.randint(1, 42))
         time.sleep(3)
 
     @unittest.skip('skip test_table_style')

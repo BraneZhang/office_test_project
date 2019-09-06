@@ -1,5 +1,6 @@
 import math
 import operator
+import cv2 as cv
 from argparse import Action
 from functools import reduce
 
@@ -27,6 +28,27 @@ y1 = 295
 
 
 class Common(BaseView):
+
+    def find_image_cv(self, obj_path, src_path):
+        source = cv.imread(src_path)
+        template = cv.imread(obj_path)
+        print('size')
+        print(source.shape)
+        result = cv.matchTemplate(source, template, cv.TM_CCOEFF_NORMED)
+        print(result)
+        pos_start = cv.minMaxLoc(result)[3]
+        test = cv.minMaxLoc(result)
+        print(test)
+        print(pos_start)
+        x = int(pos_start[0]) + int(template.shape[1] / 2)
+        y = int(pos_start[1]) + int(template.shape[0] / 2)
+        similarity = cv.minMaxLoc(result)[1]
+        # if similarity < 0.85:
+        #     return (-1, -1)
+        # else:
+        print("pass")
+        print(str(x) + ',' + str(y))
+        return x, y
 
     def swipe_search2(self, target, range):
         if not self.get_element_result(target):
