@@ -13,11 +13,18 @@ class GeneralView(Common):
 
     def pop_menu_click(self, option):  # 点击pop
         logging.info('==========pop_menu_click==========')
+        time.sleep(1)
+        x, y = self.find_pic_position(option)
+        self.tap(x, y)
+
+    def find_pic_position(self, option):  # 查找图片的中心坐标
+        logging.info('==========find_pic_position==========')
         self.getScreenShot4Compare('source')
         src_path = get_project_path() + '\\screenshots\\source.png'  # （当前页面）
         obj_path = get_project_path() + '\\clickPicture\\%s.png' % option  # （需要点击的地方）
-        x,y = self.find_image_cv(obj_path, src_path)
-        self.tap(x,y)
+        x, y = self.find_image_cv(obj_path, src_path)
+        return x, y
+        # self.tap(x,y)
 
     def change_row_column(self):  # 切换行列
         logging.info('==========change_row_column==========')

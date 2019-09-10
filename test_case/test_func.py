@@ -20,7 +20,7 @@ share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
 wps = ['wp', 'ss', 'pg']
 # wps = ['ss']
-ps = ['ss', 'pg']
+ps = ['ss,' 'pg']
 wp = ['wp', 'pg']
 ws = ['wp', 'ss']
 search_dict = {'wp': 'docx', 'ss': 'xlsx', 'pg': 'pptx'}
@@ -36,18 +36,235 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
 @ddt
 class TestFunc(StartEnd):
 
-    def test_pop_menu(self):
-        logging.info('==========test_pop_menu==========')
+    @unittest.skip('skip test_pop_menu_shape1')
+    def test_pop_menu_shape1(self):
+        logging.info('==========test_pop_menu_shape1==========')
+        cv = CreateView(self.driver)
+        type = 'ss'
+        cv.create_file(type)
+        gv = GeneralView(self.driver)
+        gv.group_button_click('插入')
+        gv.insert_shape(type, 5)
+        time.sleep(1)
+        gv.tap(680, 820, 3)
+        gv.tap(680, 820, 4)
+        gv.tap(200, 200)
+        time.sleep(1)
+        gv.tap(680, 820)
+        time.sleep(1)
+        gv.drag_coordinate(700, 700, 500, 900)
+
+        x, y = gv.find_pic_position('drag_hor')
+        gv.drag_coordinate(x, y, x + 100, y)
+
+        x, y = gv.find_pic_position('drag_ver')
+        gv.drag_coordinate(x, y, x, y + 100)
+
+        x, y = gv.find_pic_position('drag_all')
+        gv.drag_coordinate(x, y, x + 100, y + 100)
+        time.sleep(1)
+        x, y = gv.find_pic_position('ctrl_point')
+        gv.drag_coordinate(x, y, x + 100, y)
+
+        x, y = gv.find_pic_position('rotate_free')
+        gv.drag_coordinate(x, y, x + 50, y + 50)
+
+    @unittest.skip('skip test_pop_menu_shape')
+    def test_pop_menu_shape(self):
+        logging.info('==========test_pop_menu_shape==========')
+        cv = CreateView(self.driver)
+        type = 'pg'
+        cv.create_file(type)
+        gv = GeneralView(self.driver)
+        gv.group_button_click('插入')
+        gv.insert_shape(type)
+        time.sleep(1)
+        if type == 'pg':
+            gv.tap(550, 450, 2)
+            gv.tap(550, 450, 3)
+        else:
+            gv.tap(700, 700, 2)
+            gv.tap(700, 700, 3)
+
+        for i in range(50):
+            self.driver.press_keycode(random.randint(29, 54))
+
+        if type == 'pg':
+            gv.drag_coordinate(550, 450, 500, 400)
+            gv.pop_menu_click('copy')
+            gv.tap(550, 450)
+            time.sleep(1)
+            gv.long_press(550, 450)
+            gv.pop_menu_click('paste')
+            gv.drag_coordinate(550, 450, 500, 400)
+            gv.pop_menu_click('cut')
+            gv.tap(550, 450)
+            time.sleep(1)
+            gv.long_press(550, 450)
+            gv.pop_menu_click('paste')
+            gv.drag_coordinate(550, 450, 500, 400)
+            gv.pop_menu_click('delete')
+        else:
+            gv.drag_coordinate(700, 700, 550, 550)
+            gv.pop_menu_click('copy')
+            gv.tap(700, 700)
+            time.sleep(1)
+            gv.long_press(700, 700)
+            gv.pop_menu_click('paste')
+            gv.drag_coordinate(700, 700, 550, 550)
+            gv.pop_menu_click('cut')
+            gv.tap(700, 700)
+            time.sleep(1)
+            gv.long_press(700, 700)
+            gv.pop_menu_click('paste')
+            gv.drag_coordinate(700, 700, 550, 550)
+            gv.pop_menu_click('delete')
+
+    def test_pop_cell_row_col(self):  # 单元格、行、列相关操作
+        logging.info('==========test_pop_cell_row_col==========')
+        cv = CreateView(self.driver)
+        type = 'ss'
+        cv.create_file(type)
+        gv = GeneralView(self.driver)
+
+        time.sleep(1)
+        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5, 3)
+        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5, 2)
+        for i in range(8):
+            self.driver.press_keycode(random.randint(29, 54))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        time.sleep(0.5)
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)  # 复制粘贴
+        # gv.pop_menu_click('copy')
+        # time.sleep(1)
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 2.5)
+        # time.sleep(1)
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 2.5)
+        # gv.pop_menu_click('paste')
+        # gv.tap(110 + 263 * 2.5, 295 + 55 * 1.5)
+        # time.sleep(0.5)
+        # gv.tap(110 + 263 * 2.5, 295 + 55 * 1.5)
+        # gv.pop_menu_click('paste')
+        #
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)  # 剪切粘贴
+        # time.sleep(2)
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        # time.sleep(1)
+        # gv.pop_menu_click('cut')
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
+        # time.sleep(2)
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
+        # time.sleep(1)
+        # gv.pop_menu_click('paste')
+        # gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
+        # time.sleep(1)
+        # gv.pop_menu_click('cut')
+        # gv.tap(110 + 263 * 2.5, 295 + 55 * 3.5)
+        # time.sleep(2)
+        # gv.tap(110 + 263 * 2.5, 295 + 55 * 3.5)
+        # time.sleep(1)
+        # gv.pop_menu_click('paste')
+
+        # x, y = gv.find_pic_position('drag_point2')  # 多选单元格
+        # gv.drag_coordinate(x, y, x, y + 110)
+
+        gv.tap(55, 295 + 55 * 3.5)
+        gv.pop_menu_click('insert')
+        gv.tap(55, 295 + 55 * 3.5)
+        gv.pop_menu_click('delete')
+        gv.tap(55, 295 + 55 * 3.5)
+        gv.pop_menu_click('copy')
+        gv.tap(55, 295 + 55 * 4.5)
+        x1, y1 = gv.find_pic_position('copy')
+        x2, y2 = gv.find_pic_position('insert')
+        gv.swipe(x1, y1, x2, y2, 500)
+        gv.pop_menu_click('paste')
+        # gv.tap(55, 295 + 55 * 4.5)
+        # gv.pop_menu_click('cut')
+        # gv.tap(55, 295 + 55 * 4.5)
+        # gv.pop_menu_click('paste')
+        # gv.tap(55, 295 + 55 * 4.5)
+        # gv.pop_menu_click('hide')
+        # gv.tap(55, 295 + 55 * 4.5)
+        # x1, y1 = gv.find_pic_position('hide')
+        # x2, y2 = gv.find_pic_position('copy')
+        # gv.swipe(x1, y1, x2, y2, 500)
+        # gv.pop_menu_click('hide_cancel')
+        # gv.drag_coordinate(55, 295 + 55 * 5, 55, 295 + 55 * 6.5)
+        # gv.undo_option()
+        time.sleep(3)
+
+
+    # @unittest.skip('skip test_pop_menu_text_ss')
+    def test_pop_menu_cell_text(self):
+        logging.info('==========test_pop_menu_cell_text==========')
+        cv = CreateView(self.driver)
+        type = 'ss'
+        cv.create_file(type)
+        gv = GeneralView(self.driver)
+
+        time.sleep(1)
+        gv.tap(750, 670, 2)
+        gv.tap(750, 670, 3)
+        for i in range(15):
+            self.driver.press_keycode(random.randint(29, 54))
+        gv.drag_coordinate(700, 670, 850, 670)
+        gv.pop_menu_click('copy')
+        gv.tap(750, 670)
+        time.sleep(1)
+        # gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+        gv.drag_coordinate(700, 670, 850, 670)
+        gv.pop_menu_click('cut')
+        gv.tap(750, 670)
+        time.sleep(1)
+        # gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+
+        gv.tap(750, 670)
+        time.sleep(1)
+        gv.pop_menu_click('newline')
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        gv.tap(750, 670)
+        time.sleep(1)
+        gv.pop_menu_click('fill_data')
+        x, y = gv.find_pic_position('fill_down')
+        gv.drag_coordinate(x, y, x, y + 300)
+
+        gv.tap(750, 670)
+        time.sleep(1)
+        x, y = gv.find_pic_position('fill_data')
+        gv.swipe(x, y, x - 500, y, 500)
+        gv.pop_menu_click('clear_content')
+
+        time.sleep(3)
+
+    @unittest.skip('skip test_pop_menu_text_wp')
+    def test_pop_menu_text_wp(self):
+        logging.info('==========test_pop_menu_text_wp==========')
         cv = CreateView(self.driver)
         type = 'wp'
         cv.create_file(type)
         gv = GeneralView(self.driver)
 
-        gv.group_button_click('插入')
-        gv.insert_shape(type, 1)
+        time.sleep(1)
+        gv.tap(700, 700)
+        for i in range(100):
+            self.driver.press_keycode(random.randint(29, 54))
+        gv.drag_coordinate(300, 540, 300, 200)
+        gv.pop_menu_click('copy')
         gv.tap(700, 700)
         time.sleep(1)
+        gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+        gv.drag_coordinate(300, 540, 300, 200)
         gv.pop_menu_click('cut')
+        gv.tap(700, 700)
+        time.sleep(1)
+        gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+
         time.sleep(3)
 
     @unittest.skip('skip test_insert_chart1')
@@ -67,6 +284,10 @@ class TestFunc(StartEnd):
             gv.drag_coordinate(110 + 263 * 2, 295 + 55 * 2, 110 + 263 * 2, 295 + 55 * 4)
 
         gv.group_button_click('插入')
+        if type == 'pg':
+            ele1 = '//*[@text="幻灯片"]'
+            ele2 = '//*[@text="图片"]'
+            gv.swipe_ele(ele2, ele1)
         gv.insert_chart_insert('柱形图', random.randint(1, 9))
         gv.chart_color(random.randint(1, 8))
         gv.chart_element(type, '大标题', 1, 1)
@@ -96,6 +317,10 @@ class TestFunc(StartEnd):
 
         for i in chart_list:
             gv.group_button_click('插入')
+            if type == 'pg':
+                ele1 = '//*[@text="幻灯片"]'
+                ele2 = '//*[@text="图片"]'
+                gv.swipe_ele(ele2, ele1)
             gv.insert_chart_insert(i, random.randint(1, 9))
             gv.chart_template()
         ele1 = '//*[@text="图表类型"]'
@@ -573,8 +798,8 @@ class TestFunc(StartEnd):
         cv.create_file('ss')
         time.sleep(1)
         for i in range(10):
-            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))  # 双击进入编辑
-            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))
+            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i), 2)  # 双击进入编辑
+            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i), 3)
             self.driver.press_keycode(random.randint(7, 16))
         ss = SSView(self.driver)
 
