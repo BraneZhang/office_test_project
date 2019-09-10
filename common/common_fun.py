@@ -32,14 +32,20 @@ class Common(BaseView):
     def find_image_cv(self, obj_path, src_path):
         source = cv.imread(src_path)
         template = cv.imread(obj_path)
-        print('size')
+        print('source')
         print(source.shape)
+        print('template')
+        print(template.shape)
         result = cv.matchTemplate(source, template, cv.TM_CCOEFF_NORMED)
+        print('result')
         print(result)
+        print(len(result))
         pos_start = cv.minMaxLoc(result)[3]
         test = cv.minMaxLoc(result)
-        print(test)
+        print('pos_start')
         print(pos_start)
+        print('test')
+        print(test)
         x = int(pos_start[0]) + int(template.shape[1] / 2)
         y = int(pos_start[1]) + int(template.shape[0] / 2)
         similarity = cv.minMaxLoc(result)[1]
@@ -101,6 +107,13 @@ class Common(BaseView):
         action = TouchAction(self.driver)
 
         action.long_press(x=x1, y=y1).move_to(x=x2, y=y2).release()
+        action.perform()
+
+    def long_press(self, x, y):  # 长按
+        logging.info('long_press')
+        action = TouchAction(self.driver)
+
+        action.long_press(x=x, y=y).wait(1000).release()
         action.perform()
 
     def tap(self, x, y, count=1):  # 点击

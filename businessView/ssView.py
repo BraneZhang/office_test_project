@@ -19,14 +19,14 @@ class SSView(Common):
         self.swipe_search1(submethods)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % submethods).click()
 
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def auto_sum(self, method='求和'):  # 求和、平均值、计数、最大值、最小值
         logging.info('======auto_sum=====')
         self.group_button_click('公式')
         self.driver.find_element(By.XPATH, '//*[@text="自动求和"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % method).click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def sheet_style(self, option):  # (显示)100%、隐藏编辑栏、隐藏表头、隐藏网格线、冻结窗口
         logging.info('======sheet_style=====')
