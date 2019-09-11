@@ -5,10 +5,20 @@ import time
 
 from selenium.webdriver.common.by import By
 
-from common.common_fun import Common
+from businessView.generalView import GeneralView
 
 
-class SSView(Common):
+class SSView(GeneralView):
+
+    def object_position(self, A, B):  # 获取单元格的坐标
+        logging.info('======cell_position=====')
+        x1, y1 = self.find_pic_position(A)
+        x2, y2 = self.find_pic_position(B)
+        width = x2 - x1
+        height = y2 - y1
+        x = x2 - width / 2
+        y = y2 - height / 2
+        return x, y, width, height
 
     def formula_all(self, methods, submethods):  # 求和、平均值、计数、最大值、最小值
         logging.info('======formula_all=====')
