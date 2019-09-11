@@ -16,5 +16,5 @@ class BaseView(object):
     def get_window_size(self):
         return self.driver.get_window_size()
 
-    def swipe(self, start_x, start_y, end_x, end_y, duration):
+    def swipe(self, start_x, start_y, end_x, end_y, duration=1000):
         return self.driver.swipe(start_x, start_y, end_x, end_y, duration)
