@@ -30,6 +30,7 @@ def rm_file(file_name):
     os.system("adb shell rm -r /mnt/shell/emulated/0/%s.docx" % file_name)
     os.system("adb shell rm -r /mnt/shell/emulated/0/%s.ppt" % file_name)
     os.system("adb shell rm -r /mnt/shell/emulated/0/%s.pptx" % file_name)
+    os.system("adb shell rm -r /mnt/shell/emulated/0/%s.pdf" % file_name)
 
 
 def image_contrast():
@@ -54,14 +55,11 @@ def get_csv_data(csv_file, line):
 def get_data(file_path, sheet_name, begin=0, end=5000):  # 获取A2开始第一列的数据
     file = xlrd.open_workbook(file_path, encoding_override="uft-8")
     sheet = file.sheet_by_name(sheet_name)
-    # return sheet.col_values(0)[0:2499]
     return sheet.col_values(0)[begin:end]
 
 
 def get_project_path():  # 获取当前项目的路径
     path = os.path.dirname(os.path.dirname(__file__))
-    # loc = path.index('Mobile_Office')\
-    # print(path)
     return path
 
 

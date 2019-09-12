@@ -10,11 +10,13 @@ desired_caps:
   deviceName: xxxx
   udid: e7a9d079
   platformVersion: 6.0.1
+#  udid: 1d5e5e15
+#  platformVersion: 6.0.1
   platformName: Android
   automationName: uiautomator2
   systemPort: 8200
   appPackage: com.yozo.office
   noReset:  !!bool True
   appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
-#  appActivity: com.yozo.MainActivity
+#  appActivity: com.yozo.MainActivity  #模拟机可以从主活动进入
   newCommandTimeout: 120

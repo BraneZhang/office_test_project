@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import random
-import time
 
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-
 from businessView.loginView import LoginView
 from common.common_fun import Common
 
@@ -30,7 +26,6 @@ class CreateView(Common):
         logging.info('choose %s' % save)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_%s' % save).click()  # 点击保存或另存为
 
-        # exist_file = '//*[@resource-id = "com.yozo.office:id/yozo_ui_full_screen_select_path_title"]'
         exist_file = '//*[@resource-id = "com.yozo.office:id/yozo_ui_please_selcet_path_tv"]'
         if self.get_element_result(exist_file):  # 判断文件是否为新建
             self.save_action(file_name, save_path, item)
@@ -39,7 +34,7 @@ class CreateView(Common):
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_folder').click()
                 self.save_action(file_name, save_path, item)
 
-    def save_as_file(self,file_name, save_path, item=1):  # 另存为
+    def save_as_file(self, file_name, save_path, item=1):  # 另存为
         logging.info('==========save_as_file==========')
         if not self.get_element_result('//*[@text="另存为"]'):
             self.group_button_click('文件')

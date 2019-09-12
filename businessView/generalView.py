@@ -3,7 +3,6 @@
 import logging
 import time
 from selenium.webdriver.common.by import By
-from businessView.createView import CreateView
 from businessView.loginView import LoginView
 from common.common_fun import Common
 from common.tool import get_project_path

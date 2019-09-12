@@ -23,10 +23,14 @@ class SSView(GeneralView):
     def formula_all(self, methods, submethods):  # 求和、平均值、计数、最大值、最小值
         logging.info('======formula_all=====')
         self.group_button_click('公式')
-        self.swipe_search(methods)
+        ranges1 = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
+        methods_ele = '//*[@text="%s"]' % methods
+        self.swipe_search2(methods_ele,ranges1)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % methods).click()
 
-        self.swipe_search1(submethods)
+        ranges = '//android.widget.ListView/android.widget.LinearLayout'
+        name = '//*[@text="%s"]' % submethods
+        self.swipe_search2(name,ranges)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % submethods).click()
 
         # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()

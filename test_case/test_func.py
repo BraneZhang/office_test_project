@@ -36,7 +36,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
 @ddt
 class TestFunc(StartEnd):
 
-    # @unittest.skip('skip test_ss_chart_pop')
+    # #@unittest.skip('skip test_ss_chart_pop')
     def test_ss_chart_pop(self):  # 图表相关操作
         logging.info('==========test_ss_chart_pop==========')
         cv = CreateView(self.driver)
@@ -83,7 +83,7 @@ class TestFunc(StartEnd):
         x, y = ss.find_pic_position('chart_all1')
         ss.swipe(x, y, x - 100, y - 100)
 
-    @unittest.skip('skip test_ppt_slide')
+    #@unittest.skip('skip test_ppt_slide')
     def test_ppt_slide(self):  # 幻灯片复制、剪切、粘贴
         logging.info('==========test_pop_menu_shape1==========')
         cv = CreateView(self.driver)
@@ -136,7 +136,7 @@ class TestFunc(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_pop_menu_shape1')
+    #@unittest.skip('skip test_pop_menu_shape1')
     @data(*wps)
     def test_pop_menu_shape1(self, type):
         logging.info('==========test_pop_menu_shape1==========')
@@ -177,7 +177,7 @@ class TestFunc(StartEnd):
         x, y = gv.find_pic_position('rotate_free')
         gv.swipe(x, y, x + 50, y + 50)
 
-    @unittest.skip('skip test_pop_menu_shape')
+    #@unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_pop_menu_shape(self, type):
         logging.info('==========test_pop_menu_shape==========')
@@ -229,7 +229,7 @@ class TestFunc(StartEnd):
             gv.drag_coordinate(700, 700, 550, 550)
             gv.pop_menu_click('delete')
 
-    @unittest.skip('skip test_pop_cell_row_col')
+    #@unittest.skip('skip test_pop_cell_row_col')
     def test_pop_cell_row_col(self):  # 单元格、行、列相关操作
         logging.info('==========test_pop_cell_row_col==========')
         cv = CreateView(self.driver)
@@ -339,7 +339,7 @@ class TestFunc(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_pop_menu_text_ss')
+    #@unittest.skip('skip test_pop_menu_text_ss')
     def test_pop_menu_cell_text(self):
         logging.info('==========test_pop_menu_cell_text==========')
         cv = CreateView(self.driver)
@@ -384,7 +384,7 @@ class TestFunc(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_pop_menu_text_wp')
+    #@unittest.skip('skip test_pop_menu_text_wp')
     def test_pop_menu_text_wp(self):
         logging.info('==========test_pop_menu_text_wp==========')
         cv = CreateView(self.driver)
@@ -411,7 +411,7 @@ class TestFunc(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_insert_chart1')
+    #@unittest.skip('skip test_insert_chart1')
     @data(*ps)
     def test_insert_chart1(self, type):
         logging.info('==========test_insert_chart1==========')
@@ -441,7 +441,7 @@ class TestFunc(StartEnd):
         gv.change_row_column()
         time.sleep(3)
 
-    @unittest.skip('skip test_insert_chart')
+    #@unittest.skip('skip test_insert_chart')
     @data(*ps)
     def test_insert_chart(self, type):  # 插入图表，仅ss，pg
         logging.info('==========test_insert_chart==========')
@@ -477,7 +477,7 @@ class TestFunc(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_check_approve')
+    #@unittest.skip('skip test_wp_check_approve')
     def test_wp_check_approve(self):  # 修订
         logging.info('==========test_wp_check_approve==========')
         cv = CreateView(self.driver)
@@ -501,7 +501,7 @@ class TestFunc(StartEnd):
         wp.revision_on_off('关闭')
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_insert_watermark')
+    #@unittest.skip('skip test_wp_insert_watermark')
     def test_wp_insert_watermark(self):
         logging.info('==========test_wp_insert_watermark==========')
         cv = CreateView(self.driver)
@@ -514,7 +514,7 @@ class TestFunc(StartEnd):
         wp.insert_watermark('yozo', delete='delete')
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_font_attr')
+    #@unittest.skip('skip test_wp_font_attr')
     def test_wp_font_attr(self):
         logging.info('==========test_wp_font_attr===========')
         cv = CreateView(self.driver)
@@ -550,7 +550,7 @@ class TestFunc(StartEnd):
         wp.text_columns(2)
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_jump')
+    #@unittest.skip('skip test_wp_jump')
     def test_wp_jump(self):  # 跳转页
         logging.info('==========test_wp_bookmark==========')
         ov = OpenView(self.driver)
@@ -560,7 +560,7 @@ class TestFunc(StartEnd):
         wp.page_jump(7)
         time.sleep(2)
 
-    @unittest.skip('skip test_wp_bookmark')
+    #@unittest.skip('skip test_wp_bookmark')
     def test_wp_bookmark(self):
         logging.info('==========test_wp_bookmark==========')
         ov = OpenView(self.driver)
@@ -574,7 +574,7 @@ class TestFunc(StartEnd):
         wp.group_button_click('查看')
         wp.list_bookmark('test')
 
-    @unittest.skip('skip test_wp_text_select')
+    #@unittest.skip('skip test_wp_text_select')
     def test_wp_text_select(self):  # 文本选取
         logging.info('==========test_wp_text_select==========')
         ov = OpenView(self.driver)
@@ -585,7 +585,7 @@ class TestFunc(StartEnd):
         wp.drag_coordinate(x * 0.5, y * 0.4, x * 0.6, y * 0.5)
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_read_self_adaption')
+    #@unittest.skip('skip test_wp_read_self_adaption')
     def test_wp_read_self_adaption(self):  # wp阅读自适应
         logging.info('==========test_wp_read_self_adaption==========')
         ov = OpenView(self.driver)
@@ -596,7 +596,7 @@ class TestFunc(StartEnd):
         self.assertFalse(wp.get_element_result('//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]'),
                          'read self adaption set fail!')
 
-    @unittest.skip('skip test_ppt_play_switch')
+    #@unittest.skip('skip test_ppt_play_switch')
     @data(*switch_list)
     def test_ppt_play_switch(self, switch):  # 幻灯片切换
         logging.info('==========test_ppt_play_switch==========')
@@ -611,7 +611,7 @@ class TestFunc(StartEnd):
         pg.play_mode()
         time.sleep(20)
 
-    @unittest.skip('skip test_ppt_play')
+    #@unittest.skip('skip test_ppt_play')
     def test_ppt_play(self):  # ppt播放
         logging.info('==========test_ppt_play==========')
         ov = OpenView(self.driver)
@@ -647,7 +647,7 @@ class TestFunc(StartEnd):
         time.sleep(20)
         # pg.screen_rotate('PORTRAIT')
 
-    @unittest.skip('skip test_ppt_template')
+    #@unittest.skip('skip test_ppt_template')
     def test_ppt_template(self):
         logging.info('==========test_ppt_template==========')
         cv = CreateView(self.driver)
@@ -658,7 +658,7 @@ class TestFunc(StartEnd):
             pg.edit_template(i)
         time.sleep(3)
 
-    @unittest.skip('skip test_ppt_format')
+    #@unittest.skip('skip test_ppt_format')
     def test_ppt_format(self):
         logging.info('==========test_ppt_format==========')
         format = ['标题与副标题', '标题', '标题与文本', '标题与两栏文本', '标题与竖排文本-上下', '标题与竖排文本-左右',
@@ -671,7 +671,7 @@ class TestFunc(StartEnd):
             pg.edit_format(i)
         time.sleep(3)
 
-    @unittest.skip('skip test_ppt_add_scroll_comment')
+    #@unittest.skip('skip test_ppt_add_scroll_comment')
     def test_ppt_add_scroll_comment(self):  # ppt缩略图滚屏备注
         logging.info('==========test_ppt_add_scroll_comment==========')
         ov = OpenView(self.driver)
@@ -688,7 +688,7 @@ class TestFunc(StartEnd):
         pg.delete_comment()
         time.sleep(1)
 
-    @unittest.skip('skip test_shape_text_attr_pg')
+    #@unittest.skip('skip test_shape_text_attr_pg')
     def test_shape_text_attr_pg(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========test_shape_text_attr_pg==========')
         type = 'pg'
@@ -723,7 +723,7 @@ class TestFunc(StartEnd):
         gv.text_indent(type, '左缩进')
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_text_attr_wp')
+    #@unittest.skip('skip test_shape_text_attr_wp')
     def test_shape_text_attr_wp(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========test_shape_text_attr_wp==========')
         type = 'wp'
@@ -762,7 +762,7 @@ class TestFunc(StartEnd):
         gv.text_indent(type, '左缩进')
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_attr1')
+    #@unittest.skip('skip test_shape_attr1')
     @data(*wps)
     def test_shape_attr1(self, type):
         logging.info('==========test_shape_attr1==========')
@@ -812,7 +812,7 @@ class TestFunc(StartEnd):
         gv.shape_content_align(type, '水平居中', '垂直居中')
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_attr')
+    #@unittest.skip('skip test_shape_attr')
     @data(*wps)
     def test_shape_attr(self, type):
         logging.info('==========test_shape_attr==========')
@@ -842,7 +842,7 @@ class TestFunc(StartEnd):
         gv.shape_layer('置于顶层')
         time.sleep(3)
 
-    @unittest.skip('skip test_signature')
+    #@unittest.skip('skip test_signature')
     @data(*wps)
     def test_signature(self, type):  # 签批
         logging.info('==========test_signature==========')
@@ -865,7 +865,7 @@ class TestFunc(StartEnd):
         gv.swipe(200, 600, 900, 600, 500)
         time.sleep(3)
 
-    @unittest.skip('skip test_formula1')
+    #@unittest.skip('skip test_formula1')
     def test_formula1(self):  # 其他类型公式
         logging.info('==========test_formula1==========')
         cv = CreateView(self.driver)
@@ -935,7 +935,7 @@ class TestFunc(StartEnd):
         cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_formula')
+    #@unittest.skip('skip test_formula')
     def test_formula(self):
         logging.info('==========test_formula==========')
         cv = CreateView(self.driver)
@@ -983,7 +983,7 @@ class TestFunc(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
         time.sleep(3)
 
-    @unittest.skip('skip test_data_table')
+    #@unittest.skip('skip test_data_table')
     def test_data_table(self):  # 数据排序，工作表格式
         logging.info('==========test_data_table==========')
         cv = CreateView(self.driver)
@@ -1009,7 +1009,7 @@ class TestFunc(StartEnd):
         ss.sheet_style('100%')
         time.sleep(3)
 
-    @unittest.skip('skip test_insert_shape')
+    #@unittest.skip('skip test_insert_shape')
     @data(*wps)
     def test_insert_shape(self, type):
         logging.info('==========test_insert_shape==========')
@@ -1025,7 +1025,7 @@ class TestFunc(StartEnd):
             gv.shape_insert(type, 6, random.randint(1, 42))
         time.sleep(3)
 
-    @unittest.skip('skip test_table_style')
+    #@unittest.skip('skip test_table_style')
     def test_table_style(self):  # 表格样式
         logging.info('==========test_table_style==========')
         cv = CreateView(self.driver)
@@ -1046,7 +1046,7 @@ class TestFunc(StartEnd):
         ss.swipe_ele(ele5, ele1)
         ss.table_style()
 
-    @unittest.skip('skip test_cell_inser_delete_fit')
+    #@unittest.skip('skip test_cell_inser_delete_fit')
     def test_cell_insert_delete_fit(self):  # 插入删除行宽列高清除
         logging.info('==========test_cell_inser_delete_fit==========')
         cv = CreateView(self.driver)
@@ -1095,7 +1095,7 @@ class TestFunc(StartEnd):
         ss.cell_fit_width()
         time.sleep(3)
 
-    @unittest.skip('skip test_merge_wrap')
+    #@unittest.skip('skip test_merge_wrap')
     def test_merge_wrap(self):
         logging.info('==========test_merge_wrap==========')
         cv = CreateView(self.driver)
@@ -1123,7 +1123,7 @@ class TestFunc(StartEnd):
         ss.cell_auto_wrap()
         time.sleep(3)
 
-    @unittest.skip('skip test_num_style')
+    #@unittest.skip('skip test_num_style')
     def test_num_style(self):
         logging.info('==========test_num_style==========')
         cv = CreateView(self.driver)
@@ -1146,7 +1146,7 @@ class TestFunc(StartEnd):
         ss.swipe_ele(ele3, ele1)
         ss.cell_num_style()
 
-    @unittest.skip('skip test_cell_border')
+    #@unittest.skip('skip test_cell_border')
     def test_cell_border(self):  # 遍历边框所有功能
         logging.info('==========test_cell_border==========')
         cv = CreateView(self.driver)
@@ -1158,7 +1158,7 @@ class TestFunc(StartEnd):
         self.driver.swipe(200, 1856, 200, 1150, 2000)
         ss.cell_border()
 
-    @unittest.skip('skip test_cell_attr')
+    #@unittest.skip('skip test_cell_attr')
     def test_cell_attr(self):
         logging.info('==========test_cell_attr==========')
         cv = CreateView(self.driver)
@@ -1179,7 +1179,7 @@ class TestFunc(StartEnd):
         ss.cell_align('水平居中', '下对齐')
         # ss.cell_color()
 
-    @unittest.skip('skip test_font_attr')
+    #@unittest.skip('skip test_font_attr')
     def test_font_attr(self):
         logging.info('==========test_font_attr==========')
         cv = CreateView(self.driver)
@@ -1202,7 +1202,7 @@ class TestFunc(StartEnd):
         gv.font_style(type, '下划线')
         gv.font_color(type)
 
-    @unittest.skip('skip test_drag_sheet')
+    #@unittest.skip('skip test_drag_sheet')
     def test_drag_sheet(self):  # sheet拖动
         logging.info('==========test_drag_sheet==========')
         cv = CreateView(self.driver)
@@ -1217,7 +1217,7 @@ class TestFunc(StartEnd):
         # ele2 = ss.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/ll_ss_sheet_item"and @index="2"]')
         ss.drag_element(ele1, ele2)
 
-    @unittest.skip('skip test_sheet_operation1')
+    #@unittest.skip('skip test_sheet_operation1')
     def test_sheet_operation1(self):  # sheet相关功能
         logging.info('==========test_sheet_operation1==========')
         cv = CreateView(self.driver)
@@ -1230,7 +1230,7 @@ class TestFunc(StartEnd):
         ss.operate_sheet(0, 'hide')
         ss.unhide_sheet(0, 0)
 
-    @unittest.skip('skip test_sheet_operation')
+    #@unittest.skip('skip test_sheet_operation')
     def test_sheet_operation(self):  # sheet相关功能
         logging.info('==========test_sheet_operation==========')
         cv = CreateView(self.driver)
@@ -1243,7 +1243,7 @@ class TestFunc(StartEnd):
         ss.rename_sheet(0, 'test')
         self.assertTrue(ss.check_rename_sheet(0, 'test'))
 
-    @unittest.skip('skip test_expand_fold')
+    #@unittest.skip('skip test_expand_fold')
     @data(*wps)
     def test_expand_fold(self, type):  # 编辑栏收起展开
         logging.info('==========test_expand_fold==========')
@@ -1255,7 +1255,7 @@ class TestFunc(StartEnd):
         gv.fold_expand()
         gv.fold_expand()
 
-    @unittest.skip('skip test_search_replace')
+    #@unittest.skip('skip test_search_replace')
     @data(*wps)
     def test_search_replace(self, type):  # 查找替换
         logging.info('==========test_search_replace==========')
@@ -1271,7 +1271,7 @@ class TestFunc(StartEnd):
         time.sleep(3)
         gv.replace_content('得', 'all')
 
-    @unittest.skip('skip test_zoom_pinch')
+    #@unittest.skip('skip test_zoom_pinch')
     @data(*wps)
     def test_zoom_pinch(self, type):
         logging.info('==========test_zoom_pinch==========')
@@ -1282,7 +1282,7 @@ class TestFunc(StartEnd):
         ov.pinch()
         time.sleep(3)
 
-    @unittest.skip('skip test_read_mode')
+    #@unittest.skip('skip test_read_mode')
     @data(*wps)
     def test_read_mode(self, type):  # 阅读模式
         logging.info('==========test_read_mode==========')
@@ -1293,7 +1293,7 @@ class TestFunc(StartEnd):
         gv.switch_write_read()
         self.assertTrue(gv.check_write_read())
 
-    @unittest.skip('skip test_share_file')
+    #@unittest.skip('skip test_share_file')
     @data(*share_list)
     def test_share_file(self, way):  # 分享文件
         logging.info('==========test_share_file==========')
@@ -1305,7 +1305,7 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.share_file(way[0:index], way[index + 1:])
 
-    @unittest.skip('skip test_export_pdf')
+    #@unittest.skip('skip test_export_pdf')
     @data(*wp)
     def test_export_pdf(self, type):  # 导出pdf
         logging.info('==========test_export_pdf==========')
@@ -1319,7 +1319,7 @@ class TestFunc(StartEnd):
 
         self.assertTrue(gv.check_export_pdf())
 
-    @unittest.skip('skip test_scroll_screen')
+    #@unittest.skip('skip test_scroll_screen')
     @data(*wps)
     def test_scroll_screen(self, type):  # 滚屏
         logging.info('==========test_scroll_screen_==========')
@@ -1346,7 +1346,7 @@ class TestFunc(StartEnd):
             ov.swipeDown()
         time.sleep(3)
 
-    @unittest.skip('skip test_save_as_existFile')
+    #@unittest.skip('skip test_save_as_existFile')
     @data(*wps)
     def test_save_as_existFile(self, type):  # 已有文件另存为
         logging.info('==========test_save_as_existFile==========')
@@ -1358,7 +1358,7 @@ class TestFunc(StartEnd):
         cv.save_as_file(file_name, 'local', 1)
         self.assertTrue(cv.check_save_file())
 
-    @unittest.skip('skip test_save_existFile')
+    #@unittest.skip('skip test_save_existFile')
     @data(*wps)
     def test_save_existFile(self, type):  # 已有文件改动保存
         logging.info('==========test_save_existFile==========')
@@ -1374,7 +1374,7 @@ class TestFunc(StartEnd):
         cv.save_file()
         self.assertTrue(cv.check_save_file())
 
-    @unittest.skip('skip test_save_as_newFile')
+    #@unittest.skip('skip test_save_as_newFile')
     @data(*wps)
     def test_save_as_newFile(self, type):  # 新建脚本另存为
         logging.info('==========test_save_as_newFile==========')
@@ -1384,7 +1384,7 @@ class TestFunc(StartEnd):
         cv.save_as_file(file_name, 'local', 1)
         self.assertTrue(cv.check_save_file())
 
-    @unittest.skip('skip test_save_newFile')
+    #@unittest.skip('skip test_save_newFile')
     @data(*wps)
     def test_save_newFile(self, type):  # 新建脚本保存
         logging.info('==========test_save_newFile==========')
@@ -1394,7 +1394,7 @@ class TestFunc(StartEnd):
         cv.save_new_file(file_name, 'local', 2)
         self.assertTrue(cv.check_save_file())
 
-    @unittest.skip('skip test_rotate')
+    #@unittest.skip('skip test_rotate')
     @data(*wps)
     def test_rotate(self, type):
         logging.info('==========test_rotate==========')
@@ -1406,7 +1406,7 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_rotate())
         gv.screen_rotate('portrait')
 
-    @unittest.skip('skip test_undo_redo')
+    #@unittest.skip('skip test_undo_redo')
     @data(*wps)
     def test_undo_redo(self, type):  # 撤销、重做
         logging.info('==========test_undo_redo==========')

@@ -62,19 +62,6 @@ class Common(BaseView):
             self.swipe_ele1(eles[-1], eles[0])
             self.swipe_search2(target, range)
 
-    def swipe_search(self, target):
-        if not self.get_element_result('//*[@text="%s"]' % target):
-            eles = self.driver.find_elements(By.XPATH,
-                                             '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout')
-            self.swipe_ele1(eles[-1], eles[0])
-            self.swipe_search(target)
-
-    def swipe_search1(self, target):
-        if not self.get_element_result('//*[@text="%s"]' % target):
-            eles = self.driver.find_elements(By.XPATH, '//android.widget.ListView/android.widget.LinearLayout')
-            self.swipe_ele1(eles[-1], eles[0])
-            self.swipe_search1(target)
-
     def swipe_ele2(self, eleA, eleB):
         y_ele1 = eleA.location['y']
         x_ele1 = eleA.location['x']
