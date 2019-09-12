@@ -10,6 +10,21 @@ from businessView.generalView import GeneralView
 
 class SSView(GeneralView):
 
+    def cell_location(self):  # 获取单元格坐标及长宽
+        logging.info('======cell_location=====')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
+        cell = self.driver.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
+                                                  '/android.view.ViewGroup/android.view.ViewGroup[2]')
+        bounds = cell.get_attribute('bounds')
+        print('bounds')
+        print(type(bounds))
+        print(bounds)
+        bounds1 = bounds.replace('][',']:[').strip('[').strip(']').split(':')
+        print(type(bounds1))
+        print(bounds1)
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+
     def object_position(self, A, B):  # 获取单元格的坐标
         logging.info('======cell_position=====')
         x1, y1 = self.find_pic_position(A)
@@ -25,12 +40,12 @@ class SSView(GeneralView):
         self.group_button_click('公式')
         ranges1 = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
         methods_ele = '//*[@text="%s"]' % methods
-        self.swipe_search2(methods_ele,ranges1)
+        self.swipe_search2(methods_ele, ranges1)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % methods).click()
 
         ranges = '//android.widget.ListView/android.widget.LinearLayout'
         name = '//*[@text="%s"]' % submethods
-        self.swipe_search2(name,ranges)
+        self.swipe_search2(name, ranges)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % submethods).click()
 
         # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
@@ -78,21 +93,6 @@ class SSView(GeneralView):
             self.driver.keyevent(4)
         self.swipe_ele1(eles[-1], eles[0])
         self.swipe_chart(last_id)
-
-    def insert_chart(self):
-        logging.info('======insert_chart=====')
-        self.group_button_click('插入')
-        self.find_element(By.XPATH, '//android.widget.TextView[@text="图表"]').click()  # 点击插入图表
-        self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_type_0').click()  # 点击插入柱状图
-        self.find_element(By.XPATH,
-                          '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout[1]').click()  # 点击插入图表
-        self.find_element(By.XPATH, '//android.widget.TextView[@text="图表类型"]').click()  # 点击图表类型
-        # type_base_mark = '//android.widget.ScrollView/android.widget.LinearLayout/android.widget.RelativeLayout'
-        # first_id = 'com.yozo.office:id/yozo_ui_ss_option_id_chart_type_0'
-        # self.swipe_ss(self, type_base_mark, first_id)
-        time.sleep(1)
-        self.swipe_chart()
-        self.driver.keyevent(4)
 
     def table_style(self):  # 表格样式
         logging.info('==========table_style==========')

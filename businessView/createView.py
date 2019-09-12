@@ -11,28 +11,12 @@ from common.common_fun import Common
 class CreateView(Common):
 
     def create_file(self, type, subtype=1):  # 新建文档
-
         logging.info('==========create_file_%s==========' % type)
         self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
 
         logging.info('choose Template %s' % subtype)
         self.driver.find_elements(By.ID, 'com.yozo.office:id/iv_gv_image')[subtype - 1].click()
-
-    def save_file_option(self, file_name='', save_path='', item=1, save='save'):  # 保存、另存为 save=['save','save_as']
-        logging.info('==========save_file_option_%s==========' % save)
-        self.group_button_click('文件')
-
-        logging.info('choose %s' % save)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_%s' % save).click()  # 点击保存或另存为
-
-        exist_file = '//*[@resource-id = "com.yozo.office:id/yozo_ui_please_selcet_path_tv"]'
-        if self.get_element_result(exist_file):  # 判断文件是否为新建
-            self.save_action(file_name, save_path, item)
-        else:
-            if save == 'save_as':
-                self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_folder').click()
-                self.save_action(file_name, save_path, item)
 
     def save_as_file(self, file_name, save_path, item=1):  # 另存为
         logging.info('==========save_as_file==========')

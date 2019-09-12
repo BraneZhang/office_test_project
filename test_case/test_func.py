@@ -36,7 +36,17 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
 @ddt
 class TestFunc(StartEnd):
 
-    # #@unittest.skip('skip test_ss_chart_pop')
+    # @unittest.skip('skip test_get_cell_location')
+    def test_get_cell_location(self):
+        logging.info('==========test_get_cell_location==========')
+        cv = CreateView(self.driver)
+        type = 'ss'
+        cv.create_file(type)
+        ss = SSView(self.driver)
+        ss.cell_location()
+
+
+    # @unittest.skip('skip test_ss_chart_pop')
     def test_ss_chart_pop(self):  # 图表相关操作
         logging.info('==========test_ss_chart_pop==========')
         cv = CreateView(self.driver)
