@@ -10,20 +10,39 @@ from businessView.generalView import GeneralView
 
 class SSView(GeneralView):
 
+    def cell_edit(self):  # 编辑单元格
+        logging.info('======cell_edit=====')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
+
+    def row_col_loc(self):  # 获取行与列的尺寸
+        logging.info('======row_column_size=====')
+        table_area = self.driver.find_element(By.XPATH,
+                                              '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
+                                              '/android.view.ViewGroup')
+        # print('table_area.location')
+        # print(table_area.location)
+        x1, y1 = table_area.location['x'], table_area.location['y']
+        cell_area = self.driver.find_element(By.XPATH,
+                                             '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
+                                             '/android.view.ViewGroup/android.view.ViewGroup[1]')
+        x2, y2 = cell_area.location['x'], cell_area.location['y']
+        # row_height = y2 - y1
+        # column_width = x2 - x1
+        return x1, y1, x2, y2
+
     def cell_location(self):  # 获取单元格坐标及长宽
         logging.info('======cell_location=====')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
         cell = self.driver.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
                                                   '/android.view.ViewGroup/android.view.ViewGroup[2]')
         bounds = cell.get_attribute('bounds')
-        print('bounds')
-        print(type(bounds))
         print(bounds)
-        bounds1 = bounds.replace('][',']:[').strip('[').strip(']').split(':')
-        print(type(bounds1))
-        print(bounds1)
-
-        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        coordinate_str = bounds.replace('][', '],[').replace('[', '').replace(']', '').split(',')
+        loc_list = list(map(lambda x: int(x), coordinate_str))
+        print(loc_list)
+        width = loc_list[2] - loc_list[0]
+        height = loc_list[3] - loc_list[1]
+        return loc_list[0], loc_list[1], width, height
 
     def object_position(self, A, B):  # 获取单元格的坐标
         logging.info('======cell_position=====')
@@ -261,3 +280,12 @@ class SSView(GeneralView):
             logging.error('rename fail')
             self.getScreenShot('rename fail')
             return False
+
+
+if __name__ == '__main__':
+    str = '[373,666][635,718]'
+    li = []
+    bounds1 = str.replace('][', '],[').replace('[', '').replace(']', '').split(',')
+    c = list(map(lambda x: int(x), bounds1))
+
+    print(c)

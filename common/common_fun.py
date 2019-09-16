@@ -104,6 +104,7 @@ class Common(BaseView):
         action.perform()
 
     def tap(self, x, y, count=1):  # 点击
+        time.sleep(1)
         logging.info('Tap')
         action = TouchAction(self.driver)
 
