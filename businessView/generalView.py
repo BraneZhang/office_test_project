@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import time
+
 from selenium.webdriver.common.by import By
 from businessView.loginView import LoginView
 from common.common_fun import Common
@@ -9,6 +10,63 @@ from common.tool import get_project_path
 
 
 class GeneralView(Common):
+
+    def check_select_file_type(self, type):
+        logging.info('==========check_select_file_type==========')
+        suffix_dict = {'all': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'], 'wp': ['doc', 'docx'],
+                       'ss': ['xls', 'xlsx'],'pg': ['ppt', 'pptx'], 'pdf': ['pdf']}
+        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
+        eles_str = list(map(lambda x: x.text, eles))
+        eles_suffix = list(set(map(lambda x: x[x.rindex('.') + 1:], eles_str)))
+        print(eles_suffix)
+        if [False for i in eles_suffix if i not in suffix_dict[type]]:
+            return False
+        else:
+            return True
+
+    def select_file_type(self, type):  # 文档类型
+        logging.info('==========select_file_type==========')
+        type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
+        logging.info('select %s files', type)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filetype_%s' % type).click()
+        time.sleep(3)
+
+    def open_local_folder(self, folder):  # 打开本地文档
+        logging.info('==========open_local_folder==========')
+        folder_list = ['手机', '我的文档', 'DownLoad', 'QQ', '微信']
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder).click()
+
+    def check_open_folder(self, folder):
+        logging.info('==========check_open_folder==========')
+        folder_dict = {'手机': '浏览目录 > 手机', '我的文档': ' > Documents', 'DownLoad': ' > Download',
+                       'QQ': ' > QQfile_recv', '微信': ' > Download'}
+        path = self.driver.find_elements(By.XPATH, '//*[@resource-id="com.yozo.office:id/name_layout"]'
+                                                   '/android.widget.TextView')[-1].text
+        if path == folder_dict[folder]:
+            return True
+        else:
+            return False
+
+    def search_action(self, keyword):
+        logging.info('==========search_action==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
+        logging.info('input keyword %s' % keyword)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
+        logging.info('searching...')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
+        time.sleep(5)
+
+    def check_search_action(self, keyword):
+        logging.info('==========check_search_action==========')
+        name = keyword[:keyword.rindex('.') + 1]
+        suffix = keyword[keyword.rindex('.') + 1:].lower()
+        key = name + suffix
+        return self.get_element_result('//android.widget.TextView[@text="%s"]' % key)
+
+    def jump_to_index(self, type='last'):  # 5个主页界面
+        logging.info('===========jump_to_%s==========' % type)
+        # index = ['last', 'alldoc', 'cloud', 'star', 'my']  # office的五个页面组件尾缀
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_bottommenu_%s' % type).click()
 
     def pop_menu_click(self, option):  # 点击pop
         logging.info('==========pop_menu_click==========')

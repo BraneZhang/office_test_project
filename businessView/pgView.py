@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import time
 
 from selenium.webdriver.common.by import By
 
@@ -79,13 +80,11 @@ class PGView(GeneralView):
     def search_slide(self, index):  # 查找幻灯片
         logging.info('==========search_slide==========')
         for i in range(10000):
-            if not self.get_element_result('//android.widget.HorizontalScrollView/android.widget.LinearLayout'
-                                           '/android.view.View[@index="%s"]' % (int(index) - 1)):
+            if not self.get_element_result('//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (int(index) - 1)):
                 self.thumbnail_scroll()
             else:
                 break
-        self.driver.find_element(By.XPATH, '//android.widget.HorizontalScrollView/android.widget.LinearLayout'
-                                           '/android.view.View[@index="%s"]' % (int(index) - 1)).click()
+        self.driver.find_element(By.XPATH, '//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (int(index) - 1)).click()
 
     def check_comment(self, index):
         logging.info('==========add_new==========')
@@ -106,6 +105,7 @@ class PGView(GeneralView):
 
     def add_comment(self, index, comment):  # 插入备注
         logging.info('==========add_comment==========')
+        time.sleep(2)
         self.search_slide(index)
 
         if not self.get_element_result('//*[@text="备注"]'):

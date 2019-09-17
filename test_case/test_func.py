@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 
 from businessView.createView import CreateView
 from businessView.generalView import GeneralView
+from businessView.loginView import LoginView
 from businessView.openView import OpenView
 from businessView.pgView import PGView
 from businessView.ssView import SSView
@@ -31,31 +32,71 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
+csv_file = '../data/account.csv'
+folder_list = ['手机', '我的文档', 'DownLoad', 'QQ', '微信']
 
 
 @ddt
 class TestFunc(StartEnd):
 
-    @unittest.skip('skip test_get_cell_location')
-    def test_get_cell_location(self):
-        logging.info('==========test_get_cell_location==========')
-        cv = CreateView(self.driver)
-        type = 'ss'
-        cv.create_file(type)
-        ss = SSView(self.driver)
-        ss.cell_edit()
-        x, y, wid, hei = ss.cell_location()
-        ss.tap(x + wid * 1.5, y + hei * 1.5)
-        ss.tap(x + wid * 1.5, y + hei * 2.5)
-        time.sleep(1)
-        x1, y1, x2, y2 = ss.row_col_loc()
-        ss.tap(x2 - 10, y2 + hei * 3.5)
-        ss.tap(x2 - 10, y2 + hei * 4.5)
-        ss.tap(x + wid * 1.5, y + hei * 2.5)
-        time.sleep(1)
-        ss.tap(x2 + wid * 1.5, y2 - 10)
-        ss.tap(x2 + wid * 2.5, y2 - 10)
-        time.sleep(3)
+    @unittest.skip('skip test_select_file_type')
+    def test_select_file_type(self):#点击文件类型
+        logging.info('==========test_local_folder==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+
+        type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
+        for i in type_list:
+            gv.select_file_type(i)
+            self.assertTrue(gv.check_select_file_type(i),'filter fail')
+            self.driver.keyevent(4)
+        gv.select_file_type('pdf')
+        for i in type_list:
+            gv.select_file_type(i)
+            self.assertTrue(gv.check_select_file_type(i),'filter fail')
+
+
+    @unittest.skip('skip test_local_folder')
+    @data(*folder_list)
+    def test_local_folder(self, folder):  # 测试本地文档打开
+        logging.info('==========test_local_folder==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder(folder)
+        self.assertTrue(gv.check_open_folder(folder),'open fail')
+
+    @unittest.skip('skip test_search_file')
+    def test_search_file(self):  # 搜索功能
+        logging.info('==========test_search_file==========')
+        gv = GeneralView(self.driver)
+        search_file = '欢迎使用永中Office.pptx'
+        gv.search_action(search_file)
+        self.assertTrue(gv.check_search_action(search_file))
+
+    @unittest.skip('skip test_login_fail')
+    def test_login_fail(self):
+        logging.info('==========test_login_fail==========')
+        login = LoginView(self.driver)
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('my')
+        data = login.get_csv_data(csv_file, 5)
+
+        login.login_from_my(data[0], data[1])
+        self.assertTrue(login.get_element_result('//*[@text="忘记密码?"]'), msg='login success')
+
+    @unittest.skip('skip test_login_success')
+    def test_login_success(self):
+        logging.info('==========test_login_success==========')
+        login = LoginView(self.driver)
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('my')
+        data = login.get_csv_data(csv_file, 4)
+
+        login.login_from_my(data[0], data[1])
+        gv.jump_to_index('my')
+        self.assertTrue(login.check_login_status(), msg='login fail')
+
+        login.logout_action()
 
     @unittest.skip('skip test_ss_chart_pop')
     def test_ss_chart_pop(self):  # 图表相关操作
