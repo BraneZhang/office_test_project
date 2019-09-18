@@ -19,7 +19,7 @@ from common.myunit import StartEnd
 
 share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
-wps = ['wp', 'ss', 'pg']
+wps = ['ss']
 # wps = ['ss']
 ps = ['ss', 'pg']
 wp = ['wp', 'pg']
@@ -33,28 +33,82 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
 csv_file = '../data/account.csv'
-folder_list = ['手机', '我的文档', 'DownLoad', 'QQ', '微信']
-
+folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
+index_share_list = ['qq','wechat','email','more']
 
 @ddt
 class TestFunc(StartEnd):
 
+    @unittest.skip('skip test_copy_file')
+    def test_copy_file(self):
+        logging.info('==========test_copy_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+
+    @unittest.skip('skip test_upload_file')
+    def test_upload_file(self):#上传文件
+        logging.info('==========test_share_from_index==========')
+        check = False
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.select_file_type('all')
+            gv.file_more_info(1)
+            check = gv.upload_file()
+        self.assertTrue(check,'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
+
+    @unittest.skip('skip test_share_from_index')
+    @data(*index_share_list)
+    def test_share_from_index(self,way):
+        logging.info('==========test_share_from_index==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(4)
+        gv.share_file_index(way)
+
+    @unittest.skip('skip test_mark_star')
+    def test_mark_star(self):
+        logging.info('==========test_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(4)
+        file = gv.mark_satr()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(4)
+        gv.mark_satr()
+
+
     @unittest.skip('skip test_select_file_type')
-    def test_select_file_type(self):#点击文件类型
-        logging.info('==========test_local_folder==========')
+    def test_select_file_type(self):  # 点击文件类型
+        logging.info('==========test_select_file_type==========')
         gv = GeneralView(self.driver)
         gv.jump_to_index('alldoc')
 
         type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
         for i in type_list:
             gv.select_file_type(i)
-            self.assertTrue(gv.check_select_file_type(i),'filter fail')
+            self.assertTrue(gv.check_select_file_type(i), 'filter fail')
             self.driver.keyevent(4)
         gv.select_file_type('pdf')
         for i in type_list:
             gv.select_file_type(i)
-            self.assertTrue(gv.check_select_file_type(i),'filter fail')
-
+            self.assertTrue(gv.check_select_file_type(i), 'filter fail')
 
     @unittest.skip('skip test_local_folder')
     @data(*folder_list)
@@ -63,7 +117,7 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder(folder)
-        self.assertTrue(gv.check_open_folder(folder),'open fail')
+        self.assertTrue(gv.check_open_folder(folder), 'open fail')
 
     @unittest.skip('skip test_search_file')
     def test_search_file(self):  # 搜索功能
@@ -147,7 +201,7 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_ppt_slide')
     def test_ppt_slide(self):  # 幻灯片复制、剪切、粘贴
-        logging.info('==========test_pop_menu_shape1==========')
+        logging.info('==========test_ppt_slide==========')
         cv = CreateView(self.driver)
         type = 'pg'
         cv.create_file(type)
@@ -1217,7 +1271,9 @@ class TestFunc(StartEnd):
         ss = SSView(self.driver)
         ss.group_button_click('编辑')
         time.sleep(1)
-        self.driver.swipe(200, 1856, 200, 1150, 2000)
+        ele1 = '//*[@text="编辑"]'
+        ele2 = '//*[@text="字体颜色"]'
+        ss.swipe_ele(ele2, ele1)
         ss.cell_border()
 
     @unittest.skip('skip test_cell_attr')

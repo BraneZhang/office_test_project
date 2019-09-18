@@ -11,10 +11,71 @@ from common.tool import get_project_path
 
 class GeneralView(Common):
 
+    def copy_file(self):  # 复制文件
+        logging.info('=========copy_file==========')
+        self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/framelayout_cover').click()
+        time.sleep(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        return self.get_toast_message('操作成功')
+
+
+    def upload_file(self):  # 上传文件
+        logging.info('=========upload_file==========')
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        if self.get_toast_message('请先登录账号'):
+            if not self.get_element_result('//*[@text="我的"]'):
+                self.driver.keyevent(4)
+            self.jump_to_index('my')
+            l = LoginView(self.driver)
+            l.login_from_my('13915575564', 'zhang199412')
+            return
+        filename = 'upload ' + self.getTime('%Y-%m-%d %H_%M_%S')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_file_name').set_text(filename)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()
+        return self.get_toast_message('上传成功')
+
+    def share_file_index(self, way):  # 主页分享
+        logging.info('=========file_more_info==========')
+        share_list = ['qq', 'wechat', 'email', 'more']
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_%s_share' % way).click()
+        if way == 'more':
+            range = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
+            target = '//*[@text="钉钉"]'
+            self.swipe_search2(target, range)
+            self.driver.find_element(By.XPATH, target).click()
+
+    def check_mark_satr(self, file):
+        logging.info('=========check_mark_satr==========')
+        # ele = '//*[@text="%s"]/following-sibling::android.widget.ImageView' % file
+        ele = '//*[@text="%s"]/../android.widget.ImageView' % file
+        # ele = '//*[@text="%s"]/parent::android.widget.LinearLayout/android.widget.ImageView' % file
+        return self.get_element_result(ele)
+
+    def mark_satr(self):
+        logging.info('=========file_more_info==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filework_pop_star').click()
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text
+        file_type = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text
+        file = file_name + '.' + file_type
+        self.driver.keyevent(4)
+        return file
+
+    def file_more_info(self, index):  # 查看指定文件信息
+        logging.info('=========file_more_info==========')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/list_openfileinfo')
+        eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        if index < 1:
+            eles[0].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+        elif index > len(eles):
+            eles[-1].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+        else:
+            eles[index - 1].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+
     def check_select_file_type(self, type):
         logging.info('==========check_select_file_type==========')
         suffix_dict = {'all': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'], 'wp': ['doc', 'docx'],
-                       'ss': ['xls', 'xlsx'],'pg': ['ppt', 'pptx'], 'pdf': ['pdf']}
+                       'ss': ['xls', 'xlsx'], 'pg': ['ppt', 'pptx'], 'pdf': ['pdf']}
         eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
         eles_str = list(map(lambda x: x.text, eles))
         eles_suffix = list(set(map(lambda x: x[x.rindex('.') + 1:], eles_str)))
@@ -33,12 +94,12 @@ class GeneralView(Common):
 
     def open_local_folder(self, folder):  # 打开本地文档
         logging.info('==========open_local_folder==========')
-        folder_list = ['手机', '我的文档', 'DownLoad', 'QQ', '微信']
+        folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder).click()
 
     def check_open_folder(self, folder):
         logging.info('==========check_open_folder==========')
-        folder_dict = {'手机': '浏览目录 > 手机', '我的文档': ' > Documents', 'DownLoad': ' > Download',
+        folder_dict = {'手机': '浏览目录 > 手机', '我的文档': ' > Documents', 'Download': ' > Download',
                        'QQ': ' > QQfile_recv', '微信': ' > Download'}
         path = self.driver.find_elements(By.XPATH, '//*[@resource-id="com.yozo.office:id/name_layout"]'
                                                    '/android.widget.TextView')[-1].text
@@ -347,7 +408,7 @@ class GeneralView(Common):
         self.swipe_ele1(eles[-1], eles[0])
         seekbar = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_seekbar').rect
         x, y, width, height = int(seekbar['x']), int(seekbar['y']), int(seekbar['width']), int(seekbar['height'])
-        for i in range(x, x + width, 6):
+        for i in range(x, x + width, 5):
             display = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_seekbar_display').text
             display_num = int(display[:-1])
             if transparency == display_num:
@@ -434,7 +495,9 @@ class GeneralView(Common):
         if index >= 6:
             eleA = '//*[@text="最近使用"]'
             eleB = '//*[@text="基本形状"]'
-            self.swipe_ele(eleB, eleA)
+            if self.get_element_result(eleA):
+                self.swipe_ele(eleB, eleA)
+
             ele_id = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_more_shape_main_container"]' \
                      '/android.widget.FrameLayout'
             eles = self.driver.find_elements(By.XPATH, ele_id)
@@ -685,3 +748,9 @@ class GeneralView(Common):
         time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_redo').click()
         time.sleep(1)
+
+
+if __name__ == '__main__':
+    str = '123'
+    str1 = str[:-1]
+    print(str1)
