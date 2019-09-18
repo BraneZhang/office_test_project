@@ -199,23 +199,38 @@ class SSView(GeneralView):
         logging.info('==========cell_border==========')
         border_index = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_cell_border"]/android.widget.FrameLayout[6]'
         self.driver.find_element(By.XPATH, border_index).click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_color').click()
         eles = self.driver.find_elements(By.XPATH,
                                          '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
         for i in eles:
             i.click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style').click()
+
+        # 更多边框
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_more').click()
+        # 边框样式
         eles = self.driver.find_elements(By.XPATH,
-                                         '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
+                                         '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style"]'
+                                         '/android.widget.FrameLayout')
         for i in eles:
             i.click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+        # 边框颜色
         eles = self.driver.find_elements(By.XPATH,
-                                         '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
+                                         '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_border_color_all"]'
+                                         '/android.widget.FrameLayout')
         for i in eles:
             i.click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+        ele1 = '//*[@text="边框样式"]'
+        ele2 = '//*[@text="边框颜色"]'
+        self.swipe_ele(ele2, ele1)
+
+        # 预览
+        eles = self.driver.find_elements(By.XPATH,
+                                         '//*[@class="android.widget.RelativeLayout" and @index="8"]'
+                                         '/*')
+        for i in eles:
+            i.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_cancel').click()
 
     def cell_align(self, horizontal='左对齐', vertical='垂直居中'):
         logging.info('==========cell_align: %s_%s==========' % (horizontal, vertical))
