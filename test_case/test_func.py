@@ -19,8 +19,7 @@ from common.myunit import StartEnd
 
 share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
-wps = ['ss']
-# wps = ['ss']
+wps = ['wp', 'ss', 'pg']
 ps = ['ss', 'pg']
 wp = ['wp', 'pg']
 ws = ['wp', 'ss']
@@ -34,25 +33,76 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
 csv_file = '../data/account.csv'
 folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
-index_share_list = ['qq','wechat','email','more']
+index_share_list = ['qq', 'wechat', 'email', 'more']
+
 
 @ddt
 class TestFunc(StartEnd):
+
+
+    # def test_cloud_dowmload(self):
+    #     logging.info('==========test_cloud_dowmload==========')
+    #     gv = GeneralView(self.driver)
+    #     gv.jump_to_index('my')
+    #     l = LoginView(self.driver)
+    #     l.login_from_my('13915575564','zhang199412')
+    #     gv.jump_to_index('cloud')
+    #     i,e = gv.identify_file_index()
+    #     e.click()
+
+
+    @unittest.skip('skip test_select_all_file')
+    def test_select_all_file(self):
+        logging.info('==========test_select_all_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.swipe(500,1850,500,350)
+        gv.file_more_info(1)
+        gv.select_all('multi',[1,3,5,6,7])
+
+    @unittest.skip('skip test_delete_file')
+    def test_delete_file(self):
+        logging.info('==========test_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        gv.delete_file()
+
+    @unittest.skip('skip test_rename_file')
+    def test_rename_file(self):
+        logging.info('==========test_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        newName = 'rename'+gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    @unittest.skip('skip test_move_file')
+    def test_move_file(self):
+        logging.info('==========test_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
 
     @unittest.skip('skip test_copy_file')
     def test_copy_file(self):
         logging.info('==========test_copy_file==========')
         gv = GeneralView(self.driver)
-        l = LoginView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
         gv.file_more_info(1)
         check = gv.copy_file()
         self.assertTrue(check, 'copy fail')
 
-
     @unittest.skip('skip test_upload_file')
-    def test_upload_file(self):#上传文件
+    def test_upload_file(self):  # 上传文件
         logging.info('==========test_share_from_index==========')
         check = False
         gv = GeneralView(self.driver)
@@ -66,14 +116,14 @@ class TestFunc(StartEnd):
             gv.select_file_type('all')
             gv.file_more_info(1)
             check = gv.upload_file()
-        self.assertTrue(check,'upload fail')
+        self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
         l.logout_action()
 
     @unittest.skip('skip test_share_from_index')
     @data(*index_share_list)
-    def test_share_from_index(self,way):
+    def test_share_from_index(self, way):
         logging.info('==========test_share_from_index==========')
         gv = GeneralView(self.driver)
         gv.jump_to_index('alldoc')
@@ -92,7 +142,6 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_mark_satr(file))
         gv.file_more_info(4)
         gv.mark_satr()
-
 
     @unittest.skip('skip test_select_file_type')
     def test_select_file_type(self):  # 点击文件类型
@@ -352,105 +401,96 @@ class TestFunc(StartEnd):
         type = 'ss'
         cv.create_file(type)
         gv = GeneralView(self.driver)
-
+        ss = SSView(self.driver)
         time.sleep(1)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5, 3)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5, 2)
+
+        x, y, width, height = ss.cell_location()  # 新建默认B8
+        cv.tap(x + width * 0.5, y - height * 5.5)
+        ss.cell_edit()  # 进入编辑
         for i in range(8):
             self.driver.press_keycode(random.randint(29, 54))
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
         time.sleep(0.5)
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)  # 复制粘贴
+        cv.tap(x + width * 0.5, y - height * 5.5)  # 复制粘贴
         gv.pop_menu_click('copy')
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 2.5)
-        time.sleep(2)
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 2.5)
-        time.sleep(1)
+        cv.tap(x + width * 0.5, y - height * 4.5)
+        cv.tap(x + width * 0.5, y - height * 4.5)
         gv.pop_menu_click('paste')
-        gv.tap(110 + 263 * 2.5, 295 + 55 * 1.5)
-        time.sleep(2)
-        gv.tap(110 + 263 * 2.5, 295 + 55 * 1.5)
-        time.sleep(1)
+        cv.tap(x + width * 1.5, y - height * 4.5)
+        cv.tap(x + width * 1.5, y - height * 4.5)
         gv.pop_menu_click('paste')
 
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)  # 剪切粘贴
-        time.sleep(2)
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
-        time.sleep(1)
+        cv.tap(x + width * 1.5, y - height * 4.5)
         gv.pop_menu_click('cut')
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
-        time.sleep(2)
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
-        time.sleep(1)
+        cv.tap(x + width * 1.5, y - height * 3.5)
+        cv.tap(x + width * 1.5, y - height * 3.5)
         gv.pop_menu_click('paste')
-        gv.tap(110 + 263 * 1.5, 295 + 55 * 3.5)
-        time.sleep(1)
+        cv.tap(x + width * 1.5, y - height * 3.5)
         gv.pop_menu_click('cut')
-        gv.tap(110 + 263 * 2.5, 295 + 55 * 3.5)
-        time.sleep(2)
-        gv.tap(110 + 263 * 2.5, 295 + 55 * 3.5)
-        time.sleep(1)
+        cv.tap(x + width * 0.5, y - height * 4.5)
+        cv.tap(x + width * 0.5, y - height * 4.5)
         gv.pop_menu_click('paste')
 
         x, y = gv.find_pic_position('drag_point2')  # 多选单元格
-        gv.drag_coordinate(x, y, x, y + 110)
+        gv.drag_coordinate(x, y, x + width, y + height)
 
-        gv.tap(55, 295 + 55 * 3.5)
+        x1, y1, x2, y2 = ss.row_col_loc()
+        ss.tap(x2 - 10, y2 + height * 1.5)
         gv.pop_menu_click('insert')
-        gv.tap(55, 295 + 55 * 3.5)
+        ss.tap(x2 - 10, y2 + height * 1.5)
         gv.pop_menu_click('delete')
-        gv.tap(55, 295 + 55 * 3.5)
+        ss.tap(x2 - 10, y2 + height * 1.5)
         gv.pop_menu_click('copy')
-        gv.tap(55, 295 + 55 * 4.5)
-        x1, y1 = gv.find_pic_position('copy')
-        x2, y2 = gv.find_pic_position('insert')
-        gv.swipe(x1, y1, x2, y2, 500)
+        ss.tap(x2 - 10, y2 + height * 4.5)
+        x3, y3 = gv.find_pic_position('copy')
+        x4, y4 = gv.find_pic_position('insert')
+        gv.swipe(x3, y3, x4, y4)
         gv.pop_menu_click('paste')
-        gv.tap(55, 295 + 55 * 4.5)
+        ss.tap(x2 - 10, y2 + height * 1.5)
         gv.pop_menu_click('cut')
-        gv.tap(55, 295 + 55 * 5.5)
+        ss.tap(x2 - 10, y2 + height * 0.5)
         gv.pop_menu_click('paste')
-        gv.tap(55, 295 + 55 * 4.5)
+        ss.tap(x2 - 10, y2 + height * 1.5)
         gv.pop_menu_click('hide')
-        gv.tap(55, 295 + 55 * 4.5)
-        x1, y1 = gv.find_pic_position('hide')
-        x2, y2 = gv.find_pic_position('copy')
-        gv.swipe(x1, y1, x2, y2, 500)
+        ss.tap(x2 - 10, y2 + height * 1.5)
+        x3, y3 = gv.find_pic_position('hide')
+        x4, y4 = gv.find_pic_position('copy')
+        gv.swipe(x3, y3, x4, y4)
         gv.pop_menu_click('hide_cancel')
-        gv.tap(55, 295 + 55 * 4.5)
+        ss.tap(x2 - 10, y2 + height * 4.5)
         x, y = gv.find_pic_position('row_down')
-        gv.drag_coordinate(x, y, x, y + 55 * 2)
-        gv.drag_coordinate(55, 295 + 55 * 5, 55, 295 + 55 * 6.5)
+        gv.drag_coordinate(x, y, x, y + height * 2)
+        gv.drag_coordinate(x2 - 10, y, x2 - 10, y + height * 2)
         gv.undo_option()
 
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         gv.pop_menu_click('insert')
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         gv.pop_menu_click('delete')
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         gv.pop_menu_click('copy')
-        gv.tap(110 + 263 * 2.5, 270)
-        x1, y1 = gv.find_pic_position('copy')
-        x2, y2 = gv.find_pic_position('insert')
-        gv.swipe(x1, y1, x2, y2, 500)
+        ss.tap(x2 + width * 2.5, y2 - 10)
+        x3, y3 = gv.find_pic_position('copy')
+        x4, y4 = gv.find_pic_position('insert')
+        gv.swipe(x3, y3, x4, y4)
         time.sleep(1)
         gv.pop_menu_click('paste')
-        gv.tap(110 + 263 * 2.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         gv.pop_menu_click('cut')
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 2.5, y2 - 10)
         gv.pop_menu_click('paste')
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         gv.pop_menu_click('hide')
-        gv.tap(110 + 263 * 1.5, 270)
-        x1, y1 = gv.find_pic_position('hide')
-        x2, y2 = gv.find_pic_position('copy')
-        gv.swipe(x1, y1, x2, y2, 500)
+        ss.tap(x2 + width * 1.5, y2 - 10)
+        x3, y3 = gv.find_pic_position('hide')
+        x4, y4 = gv.find_pic_position('copy')
+        gv.swipe(x3, y3, x4, y4)
         time.sleep(1)
         gv.pop_menu_click('hide_cancel')
-        gv.tap(110 + 263 * 1.5, 270)
+        ss.tap(x2 + width * 1.5, y2 - 10)
         x, y = gv.find_pic_position('column_right')
-        gv.drag_coordinate(x, y, x + 263, y)
-        gv.drag_coordinate(110 + 263 * 2, 270, 110 + 263 * 3, 270)
+        gv.drag_coordinate(x, y, x + width, y)
+        gv.drag_coordinate(x, y2 - 10, x + width, y2 - 10)
         gv.undo_option()
 
         time.sleep(3)
@@ -534,14 +574,16 @@ class TestFunc(StartEnd):
         cv = CreateView(self.driver)
         cv.create_file(type)
         gv = GeneralView(self.driver)
+        ss = SSView(self.driver)
 
         time.sleep(1)
         if type == 'ss':
+            x, y, width, height = ss.cell_location()
             for i in range(3):
-                cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))  # 双击进入编辑
-                cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))
+                cv.tap(x + width * 0.5, y + height * (i + 0.5))
+                ss.cell_edit()  # 双击进入编辑
                 self.driver.press_keycode(random.randint(7, 16))
-            gv.drag_coordinate(110 + 263 * 2, 295 + 55 * 2, 110 + 263 * 2, 295 + 55 * 4)
+            gv.drag_coordinate(x, y + height * 2, x, y)
 
         gv.group_button_click('插入')
         if type == 'pg':
@@ -550,30 +592,32 @@ class TestFunc(StartEnd):
             gv.swipe_ele(ele2, ele1)
         gv.insert_chart_insert('柱形图', random.randint(1, 9))
         gv.chart_color(random.randint(1, 8))
-        gv.chart_element(type, '大标题', 1, 1)
-        gv.chart_element_XY('x', 0, 1, 1, 1, 1, 1)
-        gv.chart_element_XY('y', 0, 1, 1, 0)
+        gv.chart_element(type, '大标题', 1, 1, 1)
+        gv.chart_element_XY('x', 'x', 0, 1, 1, 1, 1, 1)
+        gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
         gv.change_row_column()
         time.sleep(3)
 
     @unittest.skip('skip test_insert_chart')
     @data(*ps)
-    def test_insert_chart(self, type):  # 插入图表，仅ss，pg
+    def test_insert_chart(self, type='ss'):  # 插入图表，仅ss，pg
         logging.info('==========test_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '圆柱图', '圆锥图',
                       '棱锥图']
         cv = CreateView(self.driver)
         cv.create_file(type)
         gv = GeneralView(self.driver)
+        ss = SSView(self.driver)
 
         time.sleep(1)
         if type == 'ss':
+            x, y, width, height = ss.cell_location()
             for i in range(3):
-                cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))  # 双击进入编辑
-                cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))
+                cv.tap(x + width * 0.5, y + height * (i + 0.5))
+                ss.cell_edit()  # 双击进入编辑
                 self.driver.press_keycode(random.randint(7, 16))
-            gv.drag_coordinate(110 + 263 * 2, 295 + 55 * 2, 110 + 263 * 2, 295 + 55 * 4)
+            gv.drag_coordinate(x, y + height * 2, x, y)
 
         for i in chart_list:
             gv.group_button_click('插入')
@@ -1137,7 +1181,7 @@ class TestFunc(StartEnd):
         # ss.insert_chart()
         gv.group_button_click('插入')
         gv.insert_shape(type)
-        for i in range(10):
+        for i in range(5):
             gv.shape_insert(type, 6, random.randint(1, 42))
         time.sleep(3)
 
@@ -1554,6 +1598,9 @@ class TestFunc(StartEnd):
         gv.getScreenShot4Compare('before_redo')
 
         gv.undo_option()
+        if type == 'ss':
+            gv.fold_expand()
+            gv.fold_expand()
         time.sleep(1)
         logging.info('capture after undo')
         gv.getScreenShot4Compare('after_undo')
