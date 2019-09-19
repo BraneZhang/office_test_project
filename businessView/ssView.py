@@ -32,7 +32,7 @@ class SSView(GeneralView):
 
     def cell_location(self):  # 获取单元格坐标及长宽
         logging.info('======cell_location=====')
-        # self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
         cell = self.driver.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
                                                   '/android.view.ViewGroup/android.view.ViewGroup[2]')
         bounds = cell.get_attribute('bounds')
