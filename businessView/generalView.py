@@ -12,29 +12,40 @@ from common.tool import get_project_path
 
 class GeneralView(Common):
 
-    def identify_file_index(self):#识别云文档中首个文件
+    def sort_files(self, way='type', order='down'):  # 排序
+        logging.info('=========sort_files==========')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_shot').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/rl_sort_%s' % way).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sort_%s' % order).click()
+
+    def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
         logging.info('=========identify_file_index==========')
         eles = self.driver.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView'
                                                    '/android.widget.RelativeLayout')
-        suffix_list = ['docx','doc','xlsx','xls','pptx','ppt','pdf']
-        index  = 0
-        for i,e in enumerate(eles): #尚有缺陷，将将用
-            index = i
-            name = e.find_element(By.ID,'com.yozo.office:id/tv_title').text
-            suffix = name[name.rindex('.')+1:]
-            if suffix in suffix_list:
-                return i,e
-        if index >=8:
-            self.swipe_ele1(eles[-1],eles[0])
-            time.sleep(2)
+        suffix_list = ['docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf']
+        index = 0
+        for i, e in enumerate(eles):  # 尚有缺陷，将将用
+            name = e.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+            if '.' in name:
+                suffix = name[name.rindex('.') + 1:]
+                if suffix in suffix_list:
+                    index = i
+                    break
+        if index == 0:
+            self.swipe_ele1(eles[-1], eles[0])
+            time.sleep(1)
             self.identify_file_index()
+        else:
+            return index
 
-    def download_file(self):#下载文件
+    def download_file(self):  # 下载文件
         logging.info('=========download_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
         return self.get_toast_message('文件下载成功')
 
-    def select_all(self, select='all', *del_list):  # 全选、多选
+    def select_all(self, select='all', del_list=[]):  # 全选、多选
         logging.info('=========select_all==========')
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         if select == 'all':
@@ -118,7 +129,7 @@ class GeneralView(Common):
 
     def file_more_info(self, index):  # 查看指定文件信息
         logging.info('=========file_more_info==========')
-        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/list_openfileinfo')
+        ele = self.driver.find_element(By.CLASS_NAME, 'android.support.v7.widget.RecyclerView')
         eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
         if index < 1:
             eles[0].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
@@ -209,9 +220,9 @@ class GeneralView(Common):
     def chart_element_XY(self, xy='x', title='', label=1, grid=0, sub_grid=0, axis=1, line=0, sub_line=0):
         logging.info('==========chart_element_XY==========')
         self.driver.find_element(By.XPATH, '//*[@text="%s轴"]' % str.upper(xy)).click()
+        title_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title_check"]' \
+                       '/android.widget.Switch'
         if title != '':
-            title_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title_check"]' \
-                           '/android.widget.Switch'
             if self.get_element(title_switch).text != '开启':
                 self.find_element(By.XPATH, title_switch).click()
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title').click()
@@ -236,16 +247,14 @@ class GeneralView(Common):
                                          'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_grid'
                                          % (xy)).click()
 
+        sub_grid_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid"]' \
+                          '/android.widget.Switch' % (xy)
         if sub_grid != 0:
-            sub_grid_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid"]' \
-                              '/android.widget.Switch' % (xy)
             if self.get_element(sub_grid_switch).text == '关闭':
                 self.driver.find_element(By.ID,
                                          'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid'
                                          % (xy)).click()
-        ele1 = '//*[@text="显示轴标题"]'
-        ele2 = '//*[@text="次网格线"]'
-        self.swipe_ele(ele2, ele1)
+        self.swipe_ele(sub_grid_switch, title_switch)
         time.sleep(1)
         if axis != 0:
             line_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_line"]' \
@@ -326,15 +335,6 @@ class GeneralView(Common):
         eles = self.driver.find_elements(By.XPATH, eles_name)
         target_ele = eles_name + '[%s]' % random.randint(1, len(eles))
         self.driver.find_element(By.XPATH, target_ele).click()
-        # if self.get_element_result(eles_name + '[1]'):
-        #     eles = self.driver.find_elements(By.XPATH, eles_name)
-        #     for e in eles:
-        #         e.click()
-        #     if len(eles) >= 9:
-        #         self.swipe_ele1(eles[-1], eles[0])
-        #         eles = self.driver.find_elements(By.XPATH, eles_name)
-        #         for e in eles:
-        #             e.click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def insert_chart_chart(self, chart, index):  # 插入图表，从图表选项进入
@@ -396,6 +396,7 @@ class GeneralView(Common):
                 eles[s_index - 19].click()
             else:
                 eles[s_index - 1].click()
+            time.sleep(1)
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def shape_layer(self, lay='置于顶层'):  # 图形叠放次序
@@ -819,9 +820,9 @@ class GeneralView(Common):
 
 
 if __name__ == '__main__':
-    list1 = ['dfs','ddfdf','gbg','ryy']
-    for e,i in enumerate(list1):
-        print(e,i)
+    list1 = ['dfs', 'ddfdf', 'gbg', 'ryy']
+    for e, i in enumerate(list1):
+        print(e, i)
     # str = '123'
     # str1 = str[:-1]
     # print(str1)
