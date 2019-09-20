@@ -180,8 +180,8 @@ class Common(BaseView):
         logging.info('==========get_toast_message==========')
         message = '//*[@text="' + toast_message + '"]'
         try:
-            # WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element(By.XPATH, message))
-            self.driver.find_element(By.XPATH, message)
+            WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element(By.XPATH, message))
+            # self.driver.find_element(By.XPATH, message)
         except NoSuchElementException:
             logging.error('get toast message: %s fail!' % toast_message)
             return False
