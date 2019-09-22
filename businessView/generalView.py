@@ -43,6 +43,7 @@ class GeneralView(Common):
     def download_file(self):  # 下载文件
         logging.info('=========download_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        time.sleep(2)
         return self.get_toast_message('文件下载成功')
 
     def select_all(self, select='all', del_list=[]):  # 全选、多选
@@ -514,7 +515,7 @@ class GeneralView(Common):
             height_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/shape_height')
             height_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(height))
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
-            self.group_button_click('形状')
+            self.fold_expand()
         if index == 6:
             top_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/margin_top')
             top_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(top))
@@ -528,7 +529,7 @@ class GeneralView(Common):
             right_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/margin_right')
             right_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(right))
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
-            self.group_button_click('形状')
+            self.fold_expand()
 
     def pen_size(self, type, index):  # 签批字粗细 1-6
         logging.info('======pen_size======')
