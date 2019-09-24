@@ -12,6 +12,13 @@ from common.tool import get_project_path
 
 class GeneralView(Common):
 
+    def insert_pic(self):  # 插入图片，基于vivoX9手机,选取图片只能点选坐标
+        logging.info('=========insert_pic==========')
+        self.driver.find_element(By.XPATH, '//*[@text="图片"]').click()
+        self.driver.find_element(By.XPATH, '//android.widget.ListView/android.widget.RelativeLayout[1]').click()
+        self.tap(145, 369)
+        self.driver.find_element(By.XPATH, '//*[@text="确定"]').click()
+
     def sort_files(self, way='type', order='down'):  # 排序
         logging.info('=========sort_files==========')
         way_list = ['type', 'name', 'size', 'time']
@@ -400,13 +407,30 @@ class GeneralView(Common):
             time.sleep(1)
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
+    def text_wrap(self, wrap='浮于文字上方'): #文字环绕
+        logging.info('======text_wrap======')
+        wrap_list = ['浮于文字上方', '衬于文字下方', '嵌入型', '四周型', '紧密型']
+        self.driver.find_element(By.XPATH, '//*[@text="文字环绕"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % wrap).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
     def shape_layer(self, lay='置于顶层'):  # 图形叠放次序
         logging.info('======shape_layer======')
         lay_dict = {'上移一层': '1', '置于顶层': '2', '下移一层': '3', '置于底层': '4'}
         self.driver.find_element(By.XPATH, '//*[@text="叠放次序"]').click()
-        self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[%s]'
-                                 % lay_dict[lay]).click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % lay).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def pic_effect_type(self, type, index=1, shadow=8):
+        logging.info('======pic_effect_type======')
+        self.driver.find_element(By.XPATH,
+                                 '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_picture_effect"]'
+                                 '/android.widget.FrameLayout[%s]' % (type, index)).click()
+        if index >= 6:
+            self.driver.find_element(By.XPATH,
+                                     '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_object_effect_shadow"]'
+                                     '/android.widget.FrameLayout[%s]' % shadow).click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def shape_effect_type(self, type, index=1, shadow=8, three_d=8):  # 边框效果
         logging.info('======shape_effect_type======')
@@ -422,6 +446,25 @@ class GeneralView(Common):
                                          '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_object_effect_3d"]'
                                          '/android.widget.FrameLayout[%s]' % three_d).click()
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def pic_border_width(self, type, index=1, size=1):  # 边框粗细size=1-30
+        logging.info('======pic_border_width======')
+        self.driver.find_element(By.XPATH,
+                                 '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_picture_border_width"]'
+                                 '/android.widget.FrameLayout[%s]' % (type, index)).click()
+        if index >= 6:
+            for i in range(60):
+                font_ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_number_picker_recycler_view"]' \
+                           '/android.widget.TextView[@index="1"]'
+                font = int((self.get_element(font_ele).text)[:-2])
+                if size != font:
+                    if size < font:
+                        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_arrow_left').click()
+                    else:
+                        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_arrow_right').click()
+                else:
+                    self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+                    break
 
     def shape_border_width(self, type, index=1, size=1):  # 边框粗细size=1-30
         logging.info('======shape_border_width======')
@@ -442,6 +485,18 @@ class GeneralView(Common):
                     self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
                     break
 
+    def pic_border_type(self, type, index=1, s_index=1):  # 边框格式
+        logging.info('======pic_border_type======')
+        self.driver.find_element(By.XPATH,
+                                 '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_picture_border_type"]'
+                                 '/android.widget.FrameLayout[%s]' % (
+                                     type, index)).click()
+        if index >= 6:
+            eles = self.driver.find_elements(By.XPATH,
+                                             '//*[@resource-id="com.yozo.office:id/yozo_ui_shape_border_type"]'
+                                             '/android.widget.FrameLayout')
+            eles[s_index - 1].click()
+
     def shape_border_type(self, type, index=1, s_index=1):  # 边框格式
         logging.info('======shape_boeder_type======')
         self.driver.find_element(By.XPATH,
@@ -451,6 +506,20 @@ class GeneralView(Common):
         if index >= 6:
             eles = self.driver.find_elements(By.XPATH,
                                              '//*[@resource-id="com.yozo.office:id/yozo_ui_shape_border_type"]'
+                                             '/android.widget.FrameLayout')
+            eles[s_index - 1].click()
+            time.sleep(0.5)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def pic_border_color(self, type, index=1, s_index=0):  # 边框颜色
+        logging.info('======shape_border_color======')
+        self.driver.find_element(By.XPATH,
+                                 '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_picture_broad"]'
+                                 '/android.widget.FrameLayout[%s]' % (
+                                     type, index)).click()
+        if index >= 6:
+            eles = self.driver.find_elements(By.XPATH,
+                                             '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_all"]'
                                              '/android.widget.FrameLayout')
             eles[s_index - 1].click()
             time.sleep(0.5)
@@ -502,6 +571,22 @@ class GeneralView(Common):
             eles[s_index - 1].click()
             time.sleep(0.5)
             # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def pic_option(self, type, index, width=3.81, height=3.81, position='drag_pic3', x=0, y=0):  # 图片旋转等操作
+        logging.info('======pic_option======')
+        self.driver.find_element(By.XPATH,
+                                 '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_picture_edit"]'
+                                 '/android.widget.FrameLayout[%s]' % (type, index)).click()
+        if index == 5:
+            width_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/shape_width')
+            width_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(width))
+            height_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/shape_height')
+            height_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(height))
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
+            self.fold_expand()
+        if index == 6:
+            x1, y1 = self.find_pic_position(position)
+            self.drag_coordinate(x1, y1, x1 + x, y1 + y)
 
     def shape_option(self, type, index, width=3.81, height=3.81, top=0.13, bottom=0.13, left=0.25,
                      right=0.25):  # 旋转、镜像、剪切

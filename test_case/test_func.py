@@ -39,6 +39,83 @@ index_share_list = ['qq', 'wechat', 'email', 'more']
 @ddt
 class TestFunc(StartEnd):
 
+    @unittest.skip('skip test_insert_pic1')
+    def test_insert_pic1(self, type='ss'):
+        logging.info('==========test_insert_pic==========')
+        suffix = search_dict[type]
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.%s' % suffix)
+        gv = GeneralView(self.driver)
+        gv.switch_write_read()
+        gv.group_button_click('插入')
+
+        gv.insert_pic()
+        gv.pic_option(type, 5, 4, 4)
+        ele1 = '//*[@text="图片"]'
+        ele2 = '//*[@text="轮廓"]'
+        # ele3 = '//*[@text="文字环绕"]'
+        # ele4 = '//*[@text="叠放次序"]'
+        gv.swipe_ele(ele2, ele1)
+        if type == 'wp':
+            gv.text_wrap('四周型')
+            gv.text_wrap('嵌入型')
+            gv.text_wrap('紧密型')
+            gv.text_wrap('衬于文字下方')
+            gv.text_wrap()
+
+        x, y = gv.find_pic_position('drag_pic')
+        gv.tap(x, y)
+        gv.pop_menu_click('cut')
+        if type == 'wp':
+            gv.long_press(x, y)
+        else:
+            gv.tap(x+100, y)
+            gv.tap(x+100, y)
+        gv.pop_menu_click('paste')
+
+        x, y = gv.find_pic_position('drag_pic')
+        gv.tap(x, y)
+        x, y = gv.find_pic_position('rotate_90')
+        gv.swipe(x, y, x - 50, y)
+
+        gv.pop_menu_click('save_to_album')
+
+        gv.pop_menu_click('delete')
+
+    @unittest.skip('skip test_insert_pic')
+    def test_insert_pic(self, type='ss'):
+        logging.info('==========test_insert_pic==========')
+        cv = CreateView(self.driver)
+        gv = GeneralView(self.driver)
+        cv.create_file(type)
+        cv.group_button_click('插入')
+
+        gv.insert_pic()
+        gv.pic_option(type, 5, 4, 4)
+        gv.pic_option(type, 1)
+        ele1 = '//*[@text="图片"]'
+        ele2 = '//*[@text="轮廓"]'
+        # ele3 = '//*[@text="文字环绕"]'
+        # ele4 = '//*[@text="叠放次序"]'
+        gv.swipe_ele(ele2, ele1)
+        if type == 'wp':
+            gv.text_wrap()
+
+        x, y = gv.find_pic_position('rotate_free')
+        gv.swipe(x, y, x + 100, y + 100)
+
+        x, y = gv.find_pic_position('drag_all')
+        gv.tap(x, y)
+        gv.pop_menu_click('copy')
+        gv.tap(x, y)
+        gv.pop_menu_click('paste')
+        gv.tap(x, y)
+        gv.pop_menu_click('paste')
+        gv.shape_layer('下移一层')
+        gv.shape_layer('置于底层')
+        gv.shape_layer('上移一层')
+        gv.shape_layer()
+
     # @unittest.skip('skip test_cloud_dowmload')
     def test_cloud_download(self):
         logging.info('==========test_cloud_dowmload==========')
@@ -957,7 +1034,7 @@ class TestFunc(StartEnd):
 
     # @unittest.skip('skip test_shape_attr1')
     @data(*wps)
-    def test_shape_attr1(self, type): #文本框字符属性
+    def test_shape_attr1(self, type):  # 文本框字符属性
         logging.info('==========test_shape_attr1==========')
         cv = CreateView(self.driver)
         cv.create_file(type)
@@ -975,16 +1052,11 @@ class TestFunc(StartEnd):
             self.driver.press_keycode(random.randint(7, 16))
 
         if type == 'pg':
-            # time.sleep(1)
             gv.tap(250, 250)
-            # time.sleep(1)
             gv.tap(550, 850)
         else:
-            # time.sleep(1)
             gv.tap(250, 250)
-            # time.sleep(1)
             gv.tap(700, 767)
-            # gv.group_button_click('形状')
         gv.fold_expand()
 
         gv.shape_option(type, 5, width=5, height=5)
@@ -1363,22 +1435,23 @@ class TestFunc(StartEnd):
     def test_cell_attr(self):
         logging.info('==========test_cell_attr==========')
         cv = CreateView(self.driver)
+        ss = SSView(self.driver)
         cv.create_file('ss')
         time.sleep(1)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)  # 双击进入编辑
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        x, y, width, height = ss.cell_location()
         self.driver.press_keycode(45)
         self.driver.press_keycode(45)
         self.driver.press_keycode(45)
         self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        ss = SSView(self.driver)
         ss.group_button_click('编辑')
         time.sleep(1)
-        self.driver.swipe(200, 1856, 200, 1150, 2000)
+
+        ele1 = '//*[@text="编辑"]'
+        ele2 = '//*[@text="字体颜色"]'
+        ss.swipe_ele(ele2, ele1)
         ss.cell_align('水平居中', '下对齐')
-        # ss.cell_color()
 
     # @unittest.skip('skip test_font_attr')
     def test_font_attr(self):
