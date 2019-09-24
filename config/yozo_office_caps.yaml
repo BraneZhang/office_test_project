@@ -9,9 +9,10 @@ desired_caps:
 #  platformVersion: 5.1.1
   deviceName: xxxx
   udid: e7a9d079
-  platformVersion: 6.0.1
-#  udid: 1d5e5e15
-#  platformVersion: 6.0.1
+  platformVersion: 7.1.2
+#  deviceName: xxxx
+#  udid: emulator-5554
+#  platformVersion: 7.1.1
   platformName: Android
   automationName: uiautomator2
   systemPort: 8200
