@@ -52,9 +52,3 @@ class TestFunc0(StartEnd):
         wp.delete_table_row_col_all(del0='row')
         wp.delete_table_row_col_all(del0='col')
         wp.delete_table_row_col_all(del0='all')
-
-
-
-
-if __name__ == '__main__':
-    pass
