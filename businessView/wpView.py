@@ -91,8 +91,81 @@ class WPView(GeneralView):
         else:
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_revision_reject').click()
 
-    def change_name(self,name='root'):
+    def change_name(self, name='root'):
         logging.info('==========change_name==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_revision_change_name').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_name').set_text(name)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
+
+    def insert_example_table(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_table')
+        parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[0].click()
+
+    def table_list(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_style')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_options_table_style_all')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+        table_list0 = (40 - len(childs0)) / 5
+        ele_b = '//*[@text="表格样式"]'
+        ele_a = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout[20]'
+        if int(table_list0) != 0:
+            self.swipe_ele(ele_a, ele_b)
+            # for i in range(-(int(table_list0) * 5), 0):
+            #     parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click()
+            list(map(lambda i: parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click(),
+                     range(-(int(table_list0) * 5), 0)))
+
+    def fill_color(self):  # 填充色
+
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_cells_fill_color')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+
+    def border_line(self):  # 边框线
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_border')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+        # 边框线样式
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_group_all')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+        # 边框线颜色
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_color').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        # 边框线线条样式
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def insert_row_col(self, direction=''):
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_insert_table').click()
+        row_col = ['up', 'down', 'left', 'light']
+        self.driver.find_element(By.XPATH,
+                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
+                                 row_col.index(direction)).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+    def delete_table_row_col_all(self, del0=''):
+        ele_a = '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_table_option_id_insert_table"]'
+        ele_b = '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_table_border"]'
+        self.swipe_ele(ele_a, ele_b)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_delete_table').click()
+        del_ = ['row', 'col', 'all']
+        self.driver.find_element(By.XPATH,
+                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
+                                 del_.index(del0)).click()
+        if del0 != 'all':
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+
+
