@@ -152,7 +152,7 @@ class GeneralView(Common):
                        'ss': ['xls', 'xlsx'], 'pg': ['ppt', 'pptx'], 'pdf': ['pdf']}
         eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
         eles_str = list(map(lambda x: x.text, eles))
-        eles_suffix = list(set(map(lambda x: x[x.rindex('.') + 1:], eles_str)))
+        eles_suffix = list(set(map(lambda x: x[x.rindex('.') + 1:].lower(), eles_str)))
         print(eles_suffix)
         if [False for i in eles_suffix if i not in suffix_dict[type]]:
             return False
