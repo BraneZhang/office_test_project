@@ -1,0 +1,26 @@
+desc: deviceA
+port: 4723
+bp: 4724
+ip: 127.0.0.1
+desired_caps:
+  #模拟器
+#  deviceName: 127.0.0.1:62001
+#  udid: 127.0.0.1:62001
+#  platformVersion: 5.1.1
+  deviceName: xxxx
+  udid: 1d5e5e15
+  platformVersion: 6.0.1
+#  udid: e7a9d079
+#  platformVersion: 7.1.2
+#  deviceName: xxxx
+#  udid: emulator-5554
+#  platformVersion: 7.1.1
+  platformName: Android
+  automationName: uiautomator1
+  systemPort: 8200
+  noReset:  !!bool True
+  appPackage: com.tencent.weread
+  #  appActivity: com.tencent.weread.WeReadFragmentActivity #模拟器需要从最开始的activity进入
+  appActivity: .LauncherActivity #真机需要从最开始的activity进入
+#  appActivity: com.yozo.MainActivity  #模拟机可以从主活动进入
+  newCommandTimeout: 120
