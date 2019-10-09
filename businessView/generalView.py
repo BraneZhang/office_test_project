@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from businessView.loginView import LoginView
 from common.common_fun import Common
 from common.tool import get_project_path
+from selenium.common.exceptions import NoSuchElementException
 
 
 class GeneralView(Common):
@@ -903,6 +904,49 @@ class GeneralView(Common):
         time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_redo').click()
         time.sleep(1)
+
+    def close_file(self):
+        """
+        点击X关闭文档
+        :return: None
+        """
+        logging.info('==========close_file==========')
+        time.sleep(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+        time.sleep(1)
+
+    def check_close_file(self):
+        """
+        验证文档是否被关闭
+        :return: flag
+        """
+        logging.info('==========check_close_file==========')
+        flag = False
+        try:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close')
+        except NoSuchElementException:
+            logging.info('==========the file closed==========')
+            flag = True
+
+        return flag
+
+    def file_info(self, file_type):
+        """
+        打开文档信息
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return:
+        """
+        logging.info('==========file_info==========')
+        self.group_button_click('文件')
+        try:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_file_info' % file_type)
+        except NoSuchElementException:
+            ele_save = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_save' % file_type)
+            ele_export_pdf = self.driver.find_element(By.ID,
+                                                      'com.yozo.office:id/yozo_ui_%s_option_id_export_pdf' % file_type)
+            Common(self).swipe_ele1(ele_export_pdf, ele_save)
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_file_info' % file_type).click()
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ import logging
 import random
 
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 
 from businessView.loginView import LoginView
 from common.common_fun import Common
@@ -65,6 +66,23 @@ class CreateView(Common):
     def check_save_file(self):
         logging.info('==========check_create_file==========')
         return self.get_toast_message('保存成功')
+
+    def cover_file(self, is_cover):
+        """
+        是否覆盖文档
+        :param is_cover: True or False
+        :return: None
+        """
+        logging.info('==========cover_file==========')
+        try:
+            self.driver.find_element(By.ID, 'android:id/message')
+        except NoSuchElementException:
+            pass
+        else:
+            if is_cover:
+                self.driver.find_element(By.ID, 'android:id/button1').click()
+            else:
+                self.driver.find_element(By.ID, 'android:id/button2').click()
 
 
 if __name__ == '__main__':
