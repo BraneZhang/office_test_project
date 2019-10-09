@@ -126,7 +126,7 @@ class GeneralView(Common):
         # ele = '//*[@text="%s"]/parent::android.widget.LinearLayout/android.widget.ImageView' % file
         return self.get_element_result(ele)
 
-    def mark_satr(self):
+    def mark_star(self):
         logging.info('=========file_more_info==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filework_pop_star').click()
         file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text
