@@ -26,6 +26,7 @@ class GeneralView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_shot').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/rl_sort_%s' % way).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sort_%s' % order).click()
+        time.sleep(1)
 
     def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
         logging.info('=========identify_file_index==========')
@@ -56,15 +57,24 @@ class GeneralView(Common):
     def select_all(self, select='all', del_list=[]):  # 全选、多选
         logging.info('=========select_all==========')
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        name_list = []
         if select == 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
         else:
             eles = self.driver.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView'
                                                        '/android.widget.RelativeLayout')
             for i in del_list:
+                name = eles[i - 1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+                name_list.append(name)
                 eles[i - 1].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_check_bottom_del').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        return name_list
+
+    def delete_last_file(self):  # "最近"删除文件
+        logging.info('=========delete_file==========')
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        return self.get_toast_message('此操作只是将文件从最近列表中删除')
 
     def delete_file(self):  # 删除文件
         logging.info('=========delete_file==========')
@@ -189,12 +199,14 @@ class GeneralView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
         logging.info('searching...')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
-        time.sleep(5)
+        time.sleep(3)
+        return self.get_element_result('//android.widget.TextView[@text="%s"]' % keyword)
+
 
     def check_search_action(self, keyword):
         logging.info('==========check_search_action==========')
         name = keyword[:keyword.rindex('.') + 1]
-        suffix = keyword[keyword.rindex('.') + 1:].lower()
+        suffix = keyword[keyword.rindex('.') + 1:]
         key = name + suffix
         return self.get_element_result('//android.widget.TextView[@text="%s"]' % key)
 
