@@ -198,6 +198,7 @@ class TestFunc(StartEnd):
     def test_alldoc_search_file(self):  # 搜索功能
         logging.info('==========test_alldoc_search_file==========')
         gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
         search_file = '欢迎使用永中Office.pptx'
         result = gv.search_action(search_file)
         self.assertTrue(result)
@@ -430,6 +431,175 @@ class TestFunc(StartEnd):
         # ss.sheet_style('取消冻结')
         ss.sheet_style('100%')
         time.sleep(3)
+
+    ##########“打开”中“Download”相关功能
+    @unittest.skip('skip test_Download_copy_file')
+    def test_download_copy_file(self):
+        logging.info('==========test_Download_copy_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+    @unittest.skip('skip test_Download_delete_file')
+    def test_download_delete_file(self):
+        logging.info('==========test_Download_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        file_path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        index_e = file_path.rindex('/') + 1
+        name = file_path[index_e:]
+        gv.delete_file()
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
+
+    @unittest.skip('skip test_Download_file_info')
+    def test_download_file_info(self):  # 文档信息显示
+        logging.info('==========test_Download_file_info==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_Download_mark_star')
+    def test_download_mark_star(self):
+        logging.info('==========test_Download_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    @unittest.skip('skip test_Download_move_file')
+    def test_download_move_file(self):  # “打开”移动文件
+        logging.info('==========test_Download_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
+
+    @unittest.skip('skip test_Download_rename_file')
+    def test_download_rename_file(self):
+        logging.info('==========test_Download_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    @unittest.skip('skip test_Download_search_file')
+    def test_download_search_file(self):  # 搜索功能
+        logging.info('==========test_Download_search_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        search_file = '欢迎使用永中Office.pptx'
+        result = gv.search_action(search_file)
+        self.assertTrue(result)
+
+    @unittest.skip('skip test_Download_select_all')
+    def test_download_select_all(self):  # “最近”全选操作
+        logging.info('==========test_Download_select_all==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+
+    @unittest.skip('skip test_Download_select_all1')
+    def test_download_select_all1(self):
+        logging.info('==========test_Download_select_all1==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(2)
+        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        for i in name_list:
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
+
+    @unittest.skip('skip test_Download_share')
+    @data(*index_share_list)
+    def test_download_share(self, way):
+        logging.info('==========test_Download_share==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    @unittest.skip('skip test_Download_share_back')
+    def test_download_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_Download_share_back==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(7)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_Download_sort_file')
+    def test_download_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_Download_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+
+    @unittest.skip('skip test_Download_upload_file')
+    def test_download_upload_file(self):  # 上传文件
+        logging.info('==========test_Download_upload_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('Download')
+        self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+        gv.file_more_info(7)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.open_local_folder('Download')
+            self.assertTrue(gv.check_open_folder('Download'), 'open fail')
+            gv.file_more_info(7)
+            check = gv.upload_file()
+        self.assertTrue(check, 'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
 
     @unittest.skip('skip test_drag_sheet')
     def test_drag_sheet(self):  # sheet拖动
@@ -830,6 +1000,369 @@ class TestFunc(StartEnd):
         ss.cell_auto_wrap()
         ss.cell_auto_wrap()
         time.sleep(3)
+
+    ##########“打开”中“手机”相关功能
+    @unittest.skip('skip test_mobile_copy_file')
+    def test_mobile_copy_file(self):
+        logging.info('==========test_mobile_copy_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+    @unittest.skip('skip test_mobile_delete_file')
+    def test_mobile_delete_file(self):
+        logging.info('==========test_mobile_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        gv.file_more_info(1)
+        file_path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        index_e = file_path.rindex('/') + 1
+        name = file_path[index_e:]
+        gv.delete_file()
+        # self.driver.keyevent(4)
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
+
+    @unittest.skip('skip test_mobile_file_info')
+    def test_mobile_file_info(self):  # 文档信息显示
+        logging.info('==========test_mobile_file_info==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_mobile_mark_star')
+    def test_mobile_mark_star(self):
+        logging.info('==========test_mobile_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    @unittest.skip('skip test_mobile_move_file')
+    def test_mobile_move_file(self):  # “打开”移动文件
+        logging.info('==========test_mobile_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
+
+    @unittest.skip('skip test_mobile_rename_file')
+    def test_mobile_rename_file(self):
+        logging.info('==========test_mobile_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    @unittest.skip('skip test_mobile_search_file')
+    def test_mobile_search_file(self):  # 搜索功能
+        logging.info('==========test_mobile_search_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        search_file = '欢迎使用永中Office.pptx'
+        result = gv.search_action(search_file)
+        self.assertTrue(result)
+
+    @unittest.skip('skip test_mobile_select_all')
+    def test_mobile_select_all(self):  # “最近”全选操作
+        logging.info('==========test_mobile_select_all==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+
+    @unittest.skip('skip test_mobile_select_all1')
+    def test_mobile_select_all1(self):
+        logging.info('==========test_mobile_select_all1==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(1)
+        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        for i in name_list:
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
+
+    @unittest.skip('skip test_mobile_share')
+    @data(*index_share_list)
+    def test_mobile_share(self, way):
+        logging.info('==========test_mobile_share==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    @unittest.skip('skip test_mobile_share_back')
+    def test_mobile_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_mobile_share_back==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(7)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_mobile_sort_file')
+    def test_mobile_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_mobile_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+
+    @unittest.skip('skip test_mobile_upload_file')
+    def test_mobile_upload_file(self):  # 上传文件
+        logging.info('==========test_mobile_upload_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('手机')
+        self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+        for i in range(10):
+            gv.swipeUp()
+        gv.file_more_info(7)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.open_local_folder('手机')
+            self.assertTrue(gv.check_open_folder('手机'), 'open fail')
+            for i in range(10):
+                gv.swipeUp()
+            gv.file_more_info(7)
+            check = gv.upload_file()
+        self.assertTrue(check, 'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
+
+    ##########“打开”中“我的文档”相关功能
+    @unittest.skip('skip test_myfile_copy_file')
+    def test_myfile_copy_file(self):
+        logging.info('==========test_myfile_copy_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+    @unittest.skip('skip test_myfile_delete_file')
+    def test_myfile_delete_file(self):
+        logging.info('==========test_myfile_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        file_path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        index_e = file_path.rindex('/') + 1
+        name = file_path[index_e:]
+        gv.delete_file()
+        # self.driver.keyevent(4)
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
+
+    @unittest.skip('skip test_myfile_file_info')
+    def test_myfile_file_info(self):  # 文档信息显示
+        logging.info('==========test_myfile_file_info==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_myfile_mark_star')
+    def test_myfile_mark_star(self):
+        logging.info('==========test_myfile_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    @unittest.skip('skip test_myfile_move_file')
+    def test_myfile_move_file(self):  # “打开”移动文件
+        logging.info('==========test_myfile_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
+
+    @unittest.skip('skip test_myfile_rename_file')
+    def test_myfile_rename_file(self):
+        logging.info('==========test_myfile_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    @unittest.skip('skip test_myfile_search_file')
+    def test_myfile_search_file(self):  # 搜索功能
+        logging.info('==========test_myfile_search_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        search_file = '欢迎使用永中Office.pptx'
+        result = gv.search_action(search_file)
+        self.assertTrue(result)
+
+    @unittest.skip('skip test_myfile_select_all')
+    def test_myfile_select_all(self):  # “最近”全选操作
+        logging.info('==========test_myfile_select_all==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+
+    @unittest.skip('skip test_myfile_select_all1')
+    def test_myfile_select_all1(self):
+        logging.info('==========test_myfile_select_all1==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(2)
+        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        for i in name_list:
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
+
+    @unittest.skip('skip test_myfile_share')
+    @data(*index_share_list)
+    def test_myfile_share(self, way):
+        logging.info('==========test_myfile_share==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    @unittest.skip('skip test_myfile_share_back')
+    def test_myfile_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_myfile_share_back==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(7)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_myfile_sort_file')
+    def test_myfile_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_myfile_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+
+    @unittest.skip('skip test_myfile_upload_file')
+    def test_myfile_upload_file(self):  # 上传文件
+        logging.info('==========test_myfile_upload_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('我的文档')
+        self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+        gv.file_more_info(7)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.open_local_folder('我的文档')
+            self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
+            gv.file_more_info(7)
+            check = gv.upload_file()
+        self.assertTrue(check, 'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
 
     @unittest.skip('skip test_num_style')
     def test_num_style(self):
@@ -1287,6 +1820,176 @@ class TestFunc(StartEnd):
             pg.edit_template(i)
         time.sleep(3)
 
+    ##########“打开”中“QQ”相关功能
+    @unittest.skip('skip test_QQ_copy_file')
+    def test_qq_copy_file(self):
+        logging.info('==========test_QQ_copy_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+    @unittest.skip('skip test_QQ_delete_file')
+    def test_qq_delete_file(self):
+        logging.info('==========test_QQ_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        file_path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        index_e = file_path.rindex('/') + 1
+        name = file_path[index_e:]
+        gv.delete_file()
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
+
+    @unittest.skip('skip test_QQ_file_info')
+    def test_qq_file_info(self):  # 文档信息显示
+        logging.info('==========test_QQ_file_info==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_QQ_mark_star')
+    def test_qq_mark_star(self):
+        logging.info('==========test_QQ_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    @unittest.skip('skip test_QQ_move_file')
+    def test_qq_move_file(self):  # “打开”移动文件
+        logging.info('==========test_QQ_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
+
+    @unittest.skip('skip test_QQ_rename_file')
+    def test_qq_rename_file(self):
+        logging.info('==========test_QQ_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    @unittest.skip('skip test_QQ_search_file')
+    def test_qq_search_file(self):  # 搜索功能
+        logging.info('==========test_QQ_search_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        search_file = '欢迎使用永中Office.pptx'
+        result = gv.search_action(search_file)
+        self.assertTrue(result)
+
+    @unittest.skip('skip test_QQ_select_all')
+    def test_qq_select_all(self):  # “最近”全选操作
+        logging.info('==========test_QQ_select_all==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+
+    @unittest.skip('skip test_QQ_select_all1')
+    def test_qq_select_all1(self):
+        logging.info('==========test_QQ_select_all1==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(2)
+        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        for i in name_list:
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
+
+    @unittest.skip('skip test_QQ_share')
+    @data(*index_share_list)
+    def test_qq_share(self, way):
+        logging.info('==========test_QQ_share==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    @unittest.skip('skip test_QQ_share_back')
+    def test_qq_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_QQ_share_back==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(7)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    @unittest.skip('skip test_QQ_sort_file')
+    def test_qq_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_QQ_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+
+    @unittest.skip('skip test_QQ_upload_file')
+    def test_qq_upload_file(self):  # 上传文件
+        logging.info('==========test_QQ_upload_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('QQ')
+        self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+        gv.file_more_info(7)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.open_local_folder('QQ')
+            self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
+            gv.file_more_info(7)
+            check = gv.upload_file()
+        self.assertTrue(check, 'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
+
+    ##################################
     @unittest.skip('skip test_read_mode')
     @data(*wps)
     def test_read_mode(self, type):  # 阅读模式
@@ -1754,6 +2457,176 @@ class TestFunc(StartEnd):
         self.assertLess(result1, 100, 'undo fail!')
         self.assertLess(result2, 100, 'redo fail!')
 
+    ##########“打开”中“微信”相关功能
+    # @unittest.skip('skip test_wechat_copy_file')
+    def test_wechat_copy_file(self):
+        logging.info('==========test_wechat_copy_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.copy_file()
+        self.assertTrue(check, 'copy fail')
+
+    # @unittest.skip('skip test_wechat_delete_file')
+    def test_wechat_delete_file(self):
+        logging.info('==========test_wechat_delete_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        file_path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        index_e = file_path.rindex('/') + 1
+        name = file_path[index_e:]
+        gv.delete_file()
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
+
+    # @unittest.skip('skip test_wechat_file_info')
+    def test_wechat_file_info(self):  # 文档信息显示
+        logging.info('==========test_wechat_file_info==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    # @unittest.skip('skip test_wechat_mark_star')
+    def test_wechat_mark_star(self):
+        logging.info('==========test_wechat_mark_star==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    # @unittest.skip('skip test_wechat_move_file')
+    def test_wechat_move_file(self):  # “打开”移动文件
+        logging.info('==========test_wechat_move_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        check = gv.move_file()
+        self.assertTrue(check, 'move fail')
+
+    # @unittest.skip('skip test_wechat_rename_file')
+    def test_wechat_rename_file(self):
+        logging.info('==========test_wechat_rename_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        check = gv.rename_file(newName)
+        self.assertTrue(check, 'rename fail')
+
+    # @unittest.skip('skip test_wechat_search_file')
+    def test_wechat_search_file(self):  # 搜索功能
+        logging.info('==========test_wechat_search_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        search_file = '欢迎使用永中Office.pptx'
+        result = gv.search_action(search_file)
+        self.assertTrue(result)
+
+    # @unittest.skip('skip test_wechat_select_all')
+    def test_wechat_select_all(self):  # “最近”全选操作
+        logging.info('==========test_wechat_select_all==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+
+    # @unittest.skip('skip test_wechat_select_all1')
+    def test_wechat_select_all1(self):
+        logging.info('==========test_wechat_select_all1==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(2)
+        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        for i in name_list:
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
+
+    # @unittest.skip('skip test_wechat_share')
+    @data(*index_share_list)
+    def test_wechat_share(self, way):
+        logging.info('==========test_wechat_share==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    # @unittest.skip('skip test_wechat_share_back')
+    def test_wechat_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_wechat_share_back==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(7)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+
+    # @unittest.skip('skip test_wechat_sort_file')
+    def test_wechat_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_wechat_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+
+    # @unittest.skip('skip test_wechat_upload_file')
+    def test_wechat_upload_file(self):  # 上传文件
+        logging.info('==========test_wechat_upload_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.open_local_folder('微信')
+        self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+        gv.file_more_info(7)
+        check = gv.upload_file()
+        if check == None:
+            gv.jump_to_index('alldoc')
+            gv.open_local_folder('微信')
+            self.assertTrue(gv.check_open_folder('微信'), 'open fail')
+            gv.file_more_info(7)
+            check = gv.upload_file()
+        self.assertTrue(check, 'upload fail')
+        self.driver.keyevent(4)
+        gv.jump_to_index('my')
+        l.logout_action()
+
+    ##################################
     @unittest.skip('skip test_wp_bookmark')
     def test_wp_bookmark(self):
         logging.info('==========test_wp_bookmark==========')
