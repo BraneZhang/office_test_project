@@ -101,6 +101,7 @@ class GeneralView(Common):
         self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/framelayout_cover').click()
         time.sleep(1)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
         return self.get_toast_message('操作成功')
 
