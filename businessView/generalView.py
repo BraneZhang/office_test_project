@@ -5,6 +5,9 @@ import random
 import time
 
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+import selenium.webdriver.support.expected_conditions as EC
 from businessView.loginView import LoginView
 from common.common_fun import Common
 from common.tool import get_project_path
@@ -916,6 +919,49 @@ class GeneralView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_redo').click()
         time.sleep(1)
 
+    def file_info(self, file_type):
+        """
+        打开文档信息
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return:
+        """
+        logging.info('==========file_info==========')
+        self.group_button_click('文件')
+        try:
+            if file_type != 'pg':
+                self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_file_info' % file_type)
+            else:
+                self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_file_file_info')
+
+        except NoSuchElementException:
+            if file_type != 'pg':
+                ele_save = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_save' % file_type)
+                ele_share = self.driver.find_element(By.ID,
+                                                    'com.yozo.office:id/yozo_ui_%s_option_id_share' % file_type)
+            else:
+                ele_save = self.driver.find_element(By.ID,
+                                                    'com.yozo.office:id/yozo_ui_pg_option_id_file_save')
+                ele_share = self.driver.find_element(By.ID,
+                                                'com.yozo.office:id/yozo_ui_pg_option_id_file_share')
+            Common(self).swipe_ele1(ele_share, ele_save)
+
+        if file_type != 'pg':
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_file_info' % file_type).click()
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_file_file_info').click()
+
+    def wait_loading(self, timeout=180):
+        """
+        等待加载控件消失,默认等待3分钟，超时则抛出异常
+        :param timeout: 等待时间
+        :return:
+        """
+        logging.info('==========wait_loading==========')
+        try:
+            WebDriverWait(self.driver, timeout).until_not(
+                EC.visibility_of_element_located((By.CLASS_NAME, 'android.widget.ProgressBar')))
+        except TimeoutException:
+            logging.error('等待超时，抛出异常')
 
 if __name__ == '__main__':
     list1 = ['dfs', 'ddfdf', 'gbg', 'ryy']
