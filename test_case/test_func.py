@@ -158,7 +158,16 @@ class TestFunc(StartEnd):
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
         gv.file_more_info(1)
-        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        self.assertTrue(filename != '-')
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.assertTrue(suffix != '-')
+        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
+        self.assertTrue(size != '-')
+        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
+        self.assertTrue(chang_time != '-')
+        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        self.assertTrue(path != '-')
 
     @unittest.skip('skip test_alldoc_mark_star')
     def test_alldoc_mark_star(self):
@@ -172,6 +181,17 @@ class TestFunc(StartEnd):
         gv.file_more_info(1)
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
+
+    @unittest.skip('skip test_alldoc_scroll')
+    def test_alldoc_scroll(self):  # 测试“最近”中的滑屏
+        logging.info('==========test_alldoc_scroll==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        first_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
+        gv.swipeUp()
+        second_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
+        self.assertTrue(first_name != second_name)
 
     @unittest.skip('skip test_alldoc_move_file')
     def test_alldoc_move_file(self):  # “打开”移动文件
@@ -390,19 +410,164 @@ class TestFunc(StartEnd):
         ss.cell_fit_width()
         time.sleep(3)
 
-    @unittest.skip('skip test_cloud_dowmload')
-    def test_cloud_download(self):
-        logging.info('==========test_cloud_dowmload==========')
+    @unittest.skip('skip test_cloud_create_folder')
+    def test_cloud_11_create_folder(self):  # "云文档"新建文件夹
+        logging.info('==========test_cloud_create_folder==========')
         gv = GeneralView(self.driver)
-        gv.jump_to_index('my')
         l = LoginView(self.driver)
-        l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        folder_name = 'NewFolder'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        text_name = self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').text
+        self.assertTrue(folder_name == text_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_chanle').click()
+        self.assertTrue(gv.get_element_result('//*[@text="自动上传"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name))
+
+    @unittest.skip('skip test_cloud_rename_folder')
+    def test_cloud_12_rename_folder(self):  # "云文档"新建文件夹
+        logging.info('==========test_cloud_rename_folder==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(2)
+        folder_rename = 'RenameFolder'
+        gv.rename_file(folder_rename)
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename))
+
+    @unittest.skip('skip test_cloud_13_deletd_folder')
+    def test_cloud_13_deletd_folder(self):  # "云文档"新建文件夹
+        logging.info('==========test_cloud_13_deletd_folder==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(2)
+        gv.delete_file()
+        folder_rename = 'RenameFolder'
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename))
+
+    @unittest.skip('skip test_cloud_show_folder')
+    def test_cloud_1_show_folder(self):  # "云文档"中显示“自动上传”文件夹
+        logging.info('==========test_cloud_show_folder==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
+        name = ele.find_element(By.XPATH, '//*[@text="自动上传"]').text
+        self.assertTrue(name != None)
+
+    @unittest.skip('skip test_cloud_delete_file')
+    def test_cloud_delete_file(self):
+        logging.info('==========test_cloud_delete_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        name = filename + '.' + suffix
+        gv.delete_file()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % name), 'rename fail')
+
+    @unittest.skip('skip test_cloud_download')
+    def test_cloud_download(self):  # "云文档"中下载
+        logging.info('==========test_cloud_download==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
         gv.jump_to_index('cloud')
         time.sleep(3)
         index = gv.identify_file_index()
         gv.file_more_info(index + 1)
         check = gv.download_file()
         self.assertTrue(check, 'download fail')
+
+    @unittest.skip('skip test_cloud_file_info')
+    def test_cloud_file_info(self):  # 云文件相关信息
+        logging.info('==========test_cloud_file_info==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        self.assertTrue(filename != '-')
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.assertTrue(suffix != '-')
+        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
+        self.assertTrue(size != '-')
+        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
+        self.assertTrue(chang_time != '-')
+        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        self.assertTrue(path == '云文档/')
+
+    @unittest.skip('skip test_cloud_rename_file')
+    def test_cloud_rename_file(self):
+        logging.info('==========test_cloud_rename_file==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        gv.rename_file(newName)
+        name = newName + '.' + suffix
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % name), 'rename fail')
+
+    @unittest.skip('skip test_cloud_share')
+    @data(*index_share_list)
+    def test_cloud_share(self, way):
+        logging.info('==========test_cloud_share==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        gv.share_file_index(way)
+
+    # @unittest.skip('skip test_cloud_sort_file')
+    def test_cloud_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_cloud_sort_file==========')
+        gv = GeneralView(self.driver)
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
         gv.jump_to_index('my')
         l.logout_action()
 
@@ -630,7 +795,7 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_export_pdf')
     @data(*wp)
-    def test_export_pdf(self, type='wp'):  # 导出pdf
+    def test_export_pdf(self, type):  # 导出pdf
         logging.info('==========test_export_pdf==========')
         suffix = search_dict[type]
         ov = OpenView(self.driver)
@@ -791,8 +956,8 @@ class TestFunc(StartEnd):
         time.sleep(3)
 
     @unittest.skip('skip test_insert_chart')
-    @data(*ps)
-    def test_insert_chart(self, type='pg'):  # 插入图表，仅ss，pg
+    # @data(*ps)
+    def test_insert_chart(self, type):  # 插入图表，仅ss，pg
         logging.info('==========test_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '圆柱图', '圆锥图',
                       '棱锥图']
@@ -810,7 +975,7 @@ class TestFunc(StartEnd):
                 self.driver.press_keycode(random.randint(7, 16))
             gv.drag_coordinate(x, y + height * 2, x, y)
 
-        for i in range(5):
+        for i in range(3):
             gv.group_button_click('插入')
             if type == 'pg':
                 ele1 = '//*[@text="幻灯片"]'
@@ -818,8 +983,8 @@ class TestFunc(StartEnd):
                 gv.swipe_ele(ele2, ele1)
             gv.insert_chart_insert(chart_list[i], random.randint(1, 9))
             gv.chart_template()
-        ele1 = '//*[@text="图表类型"]'
-        ele2 = '//*[@text="图表元素"]'
+        ele1 = '//*[@text="图表"]'
+        ele2 = '//*[@text="图表样式"]'
         gv.swipe_ele(ele2, ele1)
         gv.shape_layer('下移一层')
         gv.shape_layer('置于底层')
@@ -870,7 +1035,7 @@ class TestFunc(StartEnd):
         self.assertFalse(gv.check_mark_satr(file))
 
     @unittest.skip('skip test_last_scroll')
-    def test_last_scroll(self):  # 测试“最近”中的滑屏
+    def test_z_last_scroll(self):  # 测试“最近”中的滑屏
         logging.info('==========test_last_scroll==========')
         gv = GeneralView(self.driver)
         first_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
@@ -2111,24 +2276,41 @@ class TestFunc(StartEnd):
         cv = CreateView(self.driver)
         cv.create_file(type)
         gv = GeneralView(self.driver)
+        x1, y1 = 0, 0
+        if type == 'ss':
+            ss = SSView(self.driver)
+            x1, y1, w, h = ss.cell_location()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+
         gv.group_button_click('插入')
         gv.insert_shape(type)
         time.sleep(1)
-        if type == 'pg':
-            gv.tap(550, 450)  # 进入编辑
+        x, y = gv.find_pic_position('drag_all')
+        gv.tap(x, y)  # 进入编辑
+        gv.pop_menu_click('editText')
+
+        if type == 'ss':
+            gv.fold_expand()
+            gv.fold_expand()
+            x, y = gv.find_pic_position('drag_all')
+            gv.tap(x, y)  # 进入编辑
             gv.pop_menu_click('editText')
-        else:
-            gv.tap(700, 767)  # 进入编辑
-            gv.pop_menu_click('editText')
+
         for i in range(50):
             self.driver.press_keycode(random.randint(7, 16))
 
         if type == 'pg':
             gv.tap(250, 250)
             gv.tap(550, 850)
+        elif type == 'ss':
+            gv.tap(x1, y1)
+            gv.tap(x, y)
         else:
-            gv.tap(250, 250)
-            gv.tap(700, 767)
+            gv.tap(250, 450)
+            time.sleep(1)
+            gv.fold_expand()
+            gv.tap(x, y)
+            time.sleep(1)
         gv.fold_expand()
 
         gv.shape_option(type, 5, width=5, height=5)
@@ -2136,6 +2318,9 @@ class TestFunc(StartEnd):
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
         ele3 = '//*[@text="效果"]'
+        if type == 'pg':
+            ele0 = '//*[@text="插入"]'
+            gv.swipe_ele(ele0, ele1)
         gv.swipe_ele(ele2, ele1)
         gv.swipe_ele(ele3, ele1)
         gv.shape_content_align(type, '右对齐', '下对齐')
@@ -2157,6 +2342,9 @@ class TestFunc(StartEnd):
         gv.shape_fill_color_transparency(5)
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
+        if type == 'pg':
+            ele0 = '//*[@text="插入"]'
+            gv.swipe_ele(ele0, ele1)
         gv.swipe_ele(ele2, ele1)
         gv.shape_border_color(type, 6, 5)
         gv.shape_border_type(type, 6, 3)
@@ -2179,6 +2367,9 @@ class TestFunc(StartEnd):
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
         ele3 = '//*[@text="效果"]'
+        if type == 'pg':
+            ele0 = '//*[@text="插入"]'
+            gv.swipe_ele(ele0, ele1)
         gv.swipe_ele(ele2, ele1)
         gv.swipe_ele(ele3, ele1)
         gv.shape_layer('下移一层')
@@ -2201,11 +2392,11 @@ class TestFunc(StartEnd):
         gv.font_style(type, '倾斜')
         gv.font_color(type, 6, 29)
         gv.swipe_ele('//*[@text="字体颜色"]', '//*[@text="编辑"]')
+        gv.fold_expand()
         time.sleep(1)
-        gv.tap(550, 450)
-        time.sleep(1)
-        gv.tap(550, 450, 6)
-        time.sleep(1)
+        x, y = gv.find_pic_position('drag_all')
+        gv.tap(x, y)  # 进入编辑
+        gv.pop_menu_click('editText')
         for i in range(20):
             self.driver.press_keycode(random.randint(29, 54))
         time.sleep(1)
@@ -2244,7 +2435,7 @@ class TestFunc(StartEnd):
             self.driver.press_keycode(random.randint(29, 54))
         time.sleep(1)
         gv.swipe_ele('//*[@text="高亮颜色"]', '//*[@text="编辑"]')
-        gv.drag_coordinate(680, 750, 500, 550)
+        gv.drag_coordinate(680, 750, 680, 600)
         gv.high_light_color(type, 6, random.randint(1, 15))
         gv.bullets_numbers(type, 6, 10)
         gv.text_align(type, '分散对齐')
@@ -2298,9 +2489,10 @@ class TestFunc(StartEnd):
     def test_show_cloud_file(self):  # 登录时显示云文件
         logging.info('==========test_show_cloud_file==========')
         gv = GeneralView(self.driver)
-        gv.jump_to_index('my')
         l = LoginView(self.driver)
-        l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
         gv.jump_to_index('last')
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/tv_from"]'))
         gv.jump_to_index('my')
@@ -2458,7 +2650,7 @@ class TestFunc(StartEnd):
         self.assertLess(result2, 100, 'redo fail!')
 
     ##########“打开”中“微信”相关功能
-    # @unittest.skip('skip test_wechat_copy_file')
+    @unittest.skip('skip test_wechat_copy_file')
     def test_wechat_copy_file(self):
         logging.info('==========test_wechat_copy_file==========')
         gv = GeneralView(self.driver)
@@ -2469,7 +2661,7 @@ class TestFunc(StartEnd):
         check = gv.copy_file()
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_wechat_delete_file')
+    @unittest.skip('skip test_wechat_delete_file')
     def test_wechat_delete_file(self):
         logging.info('==========test_wechat_delete_file==========')
         gv = GeneralView(self.driver)
@@ -2483,7 +2675,7 @@ class TestFunc(StartEnd):
         gv.delete_file()
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_wechat_file_info')
+    @unittest.skip('skip test_wechat_file_info')
     def test_wechat_file_info(self):  # 文档信息显示
         logging.info('==========test_wechat_file_info==========')
         gv = GeneralView(self.driver)
@@ -2493,7 +2685,7 @@ class TestFunc(StartEnd):
         gv.file_more_info(2)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_wechat_mark_star')
+    @unittest.skip('skip test_wechat_mark_star')
     def test_wechat_mark_star(self):
         logging.info('==========test_wechat_mark_star==========')
         gv = GeneralView(self.driver)
@@ -2507,7 +2699,7 @@ class TestFunc(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_wechat_move_file')
+    @unittest.skip('skip test_wechat_move_file')
     def test_wechat_move_file(self):  # “打开”移动文件
         logging.info('==========test_wechat_move_file==========')
         gv = GeneralView(self.driver)
@@ -2518,7 +2710,7 @@ class TestFunc(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_wechat_rename_file')
+    @unittest.skip('skip test_wechat_rename_file')
     def test_wechat_rename_file(self):
         logging.info('==========test_wechat_rename_file==========')
         gv = GeneralView(self.driver)
@@ -2530,7 +2722,7 @@ class TestFunc(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_wechat_search_file')
+    @unittest.skip('skip test_wechat_search_file')
     def test_wechat_search_file(self):  # 搜索功能
         logging.info('==========test_wechat_search_file==========')
         gv = GeneralView(self.driver)
@@ -2541,7 +2733,7 @@ class TestFunc(StartEnd):
         result = gv.search_action(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_wechat_select_all')
+    @unittest.skip('skip test_wechat_select_all')
     def test_wechat_select_all(self):  # “最近”全选操作
         logging.info('==========test_wechat_select_all==========')
         gv = GeneralView(self.driver)
@@ -2557,7 +2749,7 @@ class TestFunc(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_wechat_select_all1')
+    @unittest.skip('skip test_wechat_select_all1')
     def test_wechat_select_all1(self):
         logging.info('==========test_wechat_select_all1==========')
         gv = GeneralView(self.driver)
@@ -2569,7 +2761,7 @@ class TestFunc(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_wechat_share')
+    @unittest.skip('skip test_wechat_share')
     @data(*index_share_list)
     def test_wechat_share(self, way):
         logging.info('==========test_wechat_share==========')
@@ -2580,7 +2772,7 @@ class TestFunc(StartEnd):
         gv.file_more_info(7)
         gv.share_file_index(way)
 
-    # @unittest.skip('skip test_wechat_share_back')
+    @unittest.skip('skip test_wechat_share_back')
     def test_wechat_share_back(self):  # “打开”中的分享的返回键
         logging.info('==========test_wechat_share_back==========')
         gv = GeneralView(self.driver)
@@ -2592,7 +2784,7 @@ class TestFunc(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_wechat_sort_file')
+    @unittest.skip('skip test_wechat_sort_file')
     def test_wechat_sort_file(self):  # “打开”文档按条件排序
         logging.info('==========test_wechat_sort_file==========')
         gv = GeneralView(self.driver)
@@ -2605,7 +2797,7 @@ class TestFunc(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_wechat_upload_file')
+    @unittest.skip('skip test_wechat_upload_file')
     def test_wechat_upload_file(self):  # 上传文件
         logging.info('==========test_wechat_upload_file==========')
         gv = GeneralView(self.driver)
