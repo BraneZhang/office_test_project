@@ -342,6 +342,9 @@ class GeneralView(Common):
 
     def chart_color(self, index):  # 图表颜色
         logging.info('==========chart_color==========')
+        ele1 = '//*[@text="数据源"]'
+        ele2 = '//*[@text="图表类型"]'
+        self.swipe_ele(ele2, ele1)
         self.driver.find_element(By.XPATH, '//*[@text="更改颜色"]').click()
         eles_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
         eles = self.driver.find_elements(By.XPATH, eles_name)
@@ -373,7 +376,7 @@ class GeneralView(Common):
         self.driver.find_element(By.XPATH, '//*[@text="图表"]').click()
         self.insert_chart(chart, index)
 
-    def insert_chart(self, chart, index):  # 插入图表,从插入选项进入
+    def insert_chart(self, chart, index):  # 插入图表,从图表选项进入
         logging.info('==========insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
                       '圆锥图', '棱锥图']
@@ -875,6 +878,7 @@ class GeneralView(Common):
 
     def check_export_pdf(self):
         logging.info('==========check_export_pdf==========')
+        time.sleep(1)
         return self.get_toast_message('导出成功')
 
     def switch_write_read(self):  # 阅读模式与编辑模式切换
