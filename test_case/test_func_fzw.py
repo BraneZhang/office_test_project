@@ -4,9 +4,13 @@ import logging
 import random
 import time
 import unittest
+import os
 
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+import selenium.webdriver.support.expected_conditions as ec
 
 from businessView.createView import CreateView
 from businessView.generalView import GeneralView
@@ -33,6 +37,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
 csv_file = '../data/account.csv'
+ss_file = '../screenshots/'
 folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
 index_share_list = ['qq', 'wechat', 'email', 'more']
 
@@ -116,9 +121,152 @@ class TestFunc1(StartEnd):
         """
         logging.info('==========test_share_newFile==========')
         ov = OpenView(self.driver)
-        ov.open_random_file("行列复制.%s" % search_dict[file_type])
+        ov.open_random_file(search_dict[file_type])
 
         logging.info('==========show file info==========')
         gv = GeneralView(self.driver)
         gv.wait_loading()
-        gv.file_info(file_type)
+        gv.file_info()
+
+    @unittest.skip('skip test_ppt_insert_new')
+    def test_ppt_insert_new(self):
+        logging.info('==========test_ppt_insert_new==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.pptx')
+
+        gv = GeneralView(self.driver)
+        gv.wait_loading()
+        gv.switch_write_read()
+        time.sleep(1)
+
+        logging.info('==========save picture to validate==========')
+        thumbnails_list = self.driver.find_elements(By.CLASS_NAME, "android.view.View")
+        pv = PGView(self.driver)
+        pv.screenshot_edit_ppt(ss_file+'first.png')
+        thumbnails_list[1].click()
+        pv.screenshot_edit_ppt(ss_file + 'second.png')
+
+        logging.info('==========insert new ppt==========')
+        thumbnails_list[0].click()
+        pv.insert_new_ppt()
+        gv.fold_expand()
+
+        logging.info('==========validate insert success==========')
+        thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
+        thumbnails_list[0].click()
+        pv.screenshot_edit_ppt(ss_file + 'new_first.png')
+        thumbnails_list[1].click()
+        pv.screenshot_edit_ppt(ss_file + 'new_second.png')
+        thumbnails_list[2].click()
+        pv.screenshot_edit_ppt(ss_file + 'new_third.png')
+
+        result1 = gv.compare_pic('first.png', 'new_first.png')
+        result2 = gv.compare_pic('new_second.png', 'new_ppt.png')
+        result3 = gv.compare_pic('second.png', 'new_third.png')
+
+        self.assertEqual(result1, 0.0)
+        self.assertEqual(result2, 0.0)
+        self.assertEqual(result3, 0.0)
+
+        logging.info('==========delete pngs==========')
+        os.remove(ss_file + 'first.png')
+        os.remove(ss_file + 'second.png')
+        os.remove(ss_file + 'new_first.png')
+        os.remove(ss_file + 'new_second.png')
+        os.remove(ss_file + 'new_third.png')
+
+    @unittest.skip('skip test_ppt_play_to_first')
+    @data(*['current', 'first'])
+    def test_ppt_play_to_first(self, play_type):
+        logging.info('==========test_ppt_play_to_first==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.pptx')
+
+        logging.info('==========modify played pages==========')
+        gv = GeneralView(self.driver)
+        gv.wait_loading()
+        gv.switch_write_read()
+        thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
+        index = random.randint(1, len(thumbnails_list)-4)
+        thumbnails_list[index].click()
+
+        logging.info('==========play to the first page==========')
+        pg = PGView(self.driver)
+        pg.group_button_click('播放')
+        pg.play_mode(play_type)
+        if play_type == 'first':
+            index = 0
+        pg.play_to_first(index+1)
+        time.sleep(1)
+
+        logging.info('==========validate toast==========')
+        try:
+            toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
+        except NoSuchElementException:
+            self.assertTrue(False, '未出现弹窗')
+        else:
+            self.assertEqual(toast.text, '已是简报首页', '验证弹窗信息为已是简报首页')
+
+    @unittest.skip('skip test_ppt_play_to_last')
+    @data(*['current', 'first'])
+    def test_ppt_play_to_last(self, play_type='current'):
+        logging.info('==========test_ppt_play_to_last==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.pptx')
+
+        logging.info('==========modify played pages==========')
+        gv = GeneralView(self.driver)
+        gv.wait_loading()
+        gv.switch_write_read()
+        thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
+        index = random.randint(1, len(thumbnails_list) - 4)
+        thumbnails_list[index].click()
+
+        logging.info('==========play to the last page==========')
+        pg = PGView(self.driver)
+        pg.group_button_click('播放')
+        pg.play_mode(play_type)
+        if play_type == 'first':
+            index = 0
+        pg.play_to_last(index-1, len(thumbnails_list))
+        time.sleep(1)
+
+        logging.info('==========validate toast==========')
+        try:
+            toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
+        except NoSuchElementException:
+            self.assertTrue(False, '未出现弹窗')
+        else:
+            self.assertEqual(toast.text, '已是简报尾页', '验证弹窗信息为已是简报尾页')
+
+    @unittest.skip('skip test_ppt_autoplay_to_last')
+    def test_ppt_autoplay_to_last(self):
+        logging.info('==========test_ppt_autoplay_to_last==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.pptx')
+
+        logging.info('==========modify played pages==========')
+        gv = GeneralView(self.driver)
+        gv.wait_loading()
+        gv.switch_write_read()
+        thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
+        index = random.randint(1, len(thumbnails_list) - 4)
+        thumbnails_list[index].click()
+
+        logging.info('==========autoplay to the last page==========')
+        pg = PGView(self.driver)
+        pg.group_button_click('播放')
+        pg.play_mode('autoplay')
+
+        logging.info('==========validate toast==========')
+        try:
+            WebDriverWait(self.driver, 120).until(
+                ec.visibility_of_element_located((By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')))
+        except TimeoutException:
+            self.assertTrue(False, '等待自动播放两分钟，未找到弹窗')
+        else:
+            toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
+            self.assertEqual(toast.text, '已是简报尾页', '验证弹窗信息为已是简报尾页')
+
+    
+
