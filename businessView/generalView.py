@@ -229,7 +229,8 @@ class GeneralView(Common):
         logging.info('==========find_pic_position==========')
         self.getScreenShot4Compare('source')
         src_path = get_project_path() + '\\screenshots\\source.png'  # （当前页面）
-        obj_path = get_project_path() + '\\clickPicture\\%s.png' % option  # （需要点击的地方）
+        obj_path = get_project_path() + '\\clickPicture_CN\\%s.png' % option  # （需要点击的地方）
+        # obj_path = get_project_path() + '\\clickPicture_EN\\%s.png' % option  # （需要点击的地方）
         x, y = self.find_image_cv(obj_path, src_path)
         return x, y
         # self.tap(x,y)
