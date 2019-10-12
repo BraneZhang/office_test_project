@@ -5,6 +5,9 @@ import random
 import time
 
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support.wait import WebDriverWait
+import selenium.webdriver.support.expected_conditions as ec
 from businessView.loginView import LoginView
 from common.common_fun import Common
 from common.tool import get_project_path
@@ -101,6 +104,7 @@ class GeneralView(Common):
         self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/framelayout_cover').click()
         time.sleep(1)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
         return self.get_toast_message('操作成功')
 
@@ -225,7 +229,8 @@ class GeneralView(Common):
         logging.info('==========find_pic_position==========')
         self.getScreenShot4Compare('source')
         src_path = get_project_path() + '\\screenshots\\source.png'  # （当前页面）
-        obj_path = get_project_path() + '\\clickPicture\\%s.png' % option  # （需要点击的地方）
+        obj_path = get_project_path() + '\\clickPicture_CN\\%s.png' % option  # （需要点击的地方）
+        # obj_path = get_project_path() + '\\clickPicture_EN\\%s.png' % option  # （需要点击的地方）
         x, y = self.find_image_cv(obj_path, src_path)
         return x, y
         # self.tap(x,y)
@@ -338,6 +343,9 @@ class GeneralView(Common):
 
     def chart_color(self, index):  # 图表颜色
         logging.info('==========chart_color==========')
+        ele1 = '//*[@text="数据源"]'
+        ele2 = '//*[@text="图表类型"]'
+        self.swipe_ele(ele2, ele1)
         self.driver.find_element(By.XPATH, '//*[@text="更改颜色"]').click()
         eles_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
         eles = self.driver.find_elements(By.XPATH, eles_name)
@@ -369,7 +377,7 @@ class GeneralView(Common):
         self.driver.find_element(By.XPATH, '//*[@text="图表"]').click()
         self.insert_chart(chart, index)
 
-    def insert_chart(self, chart, index):  # 插入图表,从插入选项进入
+    def insert_chart(self, chart, index):  # 插入图表,从图表选项进入
         logging.info('==========insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
                       '圆锥图', '棱锥图']
@@ -878,6 +886,7 @@ class GeneralView(Common):
 
     def check_export_pdf(self):
         logging.info('==========check_export_pdf==========')
+        time.sleep(1)
         return self.get_toast_message('导出成功')
 
     def switch_write_read(self):  # 阅读模式与编辑模式切换
@@ -922,6 +931,36 @@ class GeneralView(Common):
         time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_redo').click()
         time.sleep(1)
+
+    def file_info(self):
+        """
+        打开文档信息
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return:
+        """
+        logging.info('==========file_info==========')
+        self.group_button_click('文件')
+        try:
+            self.driver.find_element(By.XPATH, '//*[@text="文档信息"]')
+        except NoSuchElementException:
+            ele_save = self.driver.find_element(By.XPATH, '//*[@text="保存"]')
+            ele_share = self.driver.find_element(By.XPATH, '//*[@text="分享"]')
+            Common(self).swipe_ele1(ele_share, ele_save)
+
+        self.driver.find_element(By.XPATH, '//*[@text="文档信息"]').click()
+
+    def wait_loading(self, timeout=180):
+        """
+        等待加载控件消失,默认等待3分钟，超时则抛出异常
+        :param timeout: 等待时间
+        :return:
+        """
+        logging.info('==========wait_loading==========')
+        try:
+            WebDriverWait(self.driver, timeout).until_not(
+                ec.visibility_of_element_located((By.CLASS_NAME, 'android.widget.ProgressBar')))
+        except TimeoutException:
+            logging.error('等待超时，抛出异常')
 
 
 if __name__ == '__main__':

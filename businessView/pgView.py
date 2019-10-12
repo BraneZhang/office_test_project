@@ -4,6 +4,7 @@ import logging
 import time
 
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 
 from businessView.generalView import GeneralView
 
@@ -113,6 +114,59 @@ class PGView(GeneralView):
         self.driver.find_element(By.XPATH, '//*[@text="备注"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_eidt_note_et').set_text(comment)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_eidt_note_ok').click()
+
+    def insert_new_ppt(self):
+        """
+        菜单插入幻灯片
+        :return:
+        """
+        logging.info('==========insert_new_ppt==========')
+        if not self.get_element_result('//*[@text="幻灯片"]'):
+            self.group_button_click('插入')
+        self.driver.find_element(By.XPATH, '//*[@text="幻灯片"]').click()
+
+    def screenshot_edit_ppt(self, file_name):
+        """
+        截取当前编辑的ppt图片
+        注：工具栏会被收缩
+        :param file_name:
+        :return:
+        """
+        logging.info('==========screenshot_current_editPpt==========')
+        try:
+            self.driver.find_element(By.CLASS_NAME, 'android.support.v4.view.ViewPager')
+        except NoSuchElementException:
+            pass
+        else:
+            self.driver.find_element(By.ID,
+                                     'com.yozo.office:id/yozo_ui_option_expand_button').click()
+        time.sleep(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_pg_slide_view_id').screenshot(file_name)
+
+    def play_to_first(self, start_page):
+        """
+        非自动播放下，点击播放至首页
+        :param start_page: 起始播放页，首页为0
+        :return: None
+        """
+        x, y = self.get_size()
+        while start_page > 0:
+            time.sleep(1)
+            self.tap(y * 0.25, x * 0.5)
+            start_page -= 1
+
+    def play_to_last(self, start_page, total_pages):
+        """
+        非自动播放下，点击播放至最后页
+        :param start_page: 起始播放页，首页为0
+        :param total_pages: ppt总页数
+        :return: None
+        """
+        x, y = self.get_size()
+        while total_pages-start_page > 1:
+            time.sleep(1)
+            self.tap(y * 0.75, x * 0.5)
+            start_page += 1
 
 
 if __name__ == '__main__':

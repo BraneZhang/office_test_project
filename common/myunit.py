@@ -1,3 +1,4 @@
+import os
 import unittest
 from common.desired_caps import appium_desired
 import logging
@@ -19,6 +20,14 @@ class StartEnd(unittest.TestCase):
 
     def setUp(self):
         logging.info('=====setUp====')
+        # os.system('adb shell pm clear com.tencent.mobileqq')
+        # os.system('adb shell pm clear com.tencent.mm')
+        # os.system('adb shell pm clear com.vivo.email')
+        # os.system('adb shell pm clear com.alibaba.android.rimet')
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
         self.driver = appium_desired()
 
     def tearDown(self):
