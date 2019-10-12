@@ -23,29 +23,29 @@ class TestFunc0(StartEnd):
         wp.group_button_click('插入')
         wp.insert_example_table()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_insert_table(self):
         self.wp_insert_table()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_table_attr_1_type(self):
         self.wp_insert_table()
         wp = WPView(self.driver)
         wp.table_list()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_table_attr_2_fill_color(self):
         self.wp_insert_table()
         wp = WPView(self.driver)
         wp.fill_color()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_table_attr_3_border_line(self):
         self.wp_insert_table()
         wp = WPView(self.driver)
         wp.border_line()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_table_attr_4_insert_row_col(self):
         self.wp_insert_table()
         wp = WPView(self.driver)
@@ -57,7 +57,7 @@ class TestFunc0(StartEnd):
         wp.insert_row_col(direction='left')
         wp.insert_row_col(direction='light')
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_table_attr_5_delete_table(self):
         self.wp_insert_table()
         wp = WPView(self.driver)
@@ -77,7 +77,7 @@ class TestFunc0(StartEnd):
                        '/android.widget.FrameLayout[1]' % type).click()
         time.sleep(1)
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_insert_testbox(self, type1):
         self.insert_testbox(type1)
@@ -90,7 +90,7 @@ class TestFunc0(StartEnd):
         gv.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_insert_shape"]'
                        '/android.widget.FrameLayout[3]' % type).click()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_shape_fixed_rotate(self, type1):  # 形状四种固定旋转角度
 
@@ -101,7 +101,7 @@ class TestFunc0(StartEnd):
                            '/android.widget.FrameLayout[%s]' % (type1, i)).click()
             # print(i)
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_shape_text_round(self):
         # 仅wp存在文字环绕功能
         self.insert_shape_rect('wp')
@@ -115,7 +115,7 @@ class TestFunc0(StartEnd):
         gv.text_wrap('衬于文字下方')
         gv.text_wrap()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     def test_wp_pic_text_round(self):
         # 仅wp存在文字环绕功能
         self.insert_pic_rect('wp')
@@ -129,7 +129,7 @@ class TestFunc0(StartEnd):
         gv.text_wrap('衬于文字下方')
         gv.text_wrap()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pop_menu_shape_all_4(self, type='wp'):  # 该用例未完全需重写
         cv = CreateView(self.driver)
@@ -170,7 +170,7 @@ class TestFunc0(StartEnd):
         gv.group_button_click('插入')
         gv.insert_pic()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pic_fixed_rotate(self, type1):  # 图片四种固定旋转角度
         # type1 = 'pg'
@@ -185,7 +185,7 @@ class TestFunc0(StartEnd):
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pic_width_to_height(self, type1='wp'):  # 无法调整插入对象位置，ss,pg手势调整大小，裁剪未实现
         # type1 = 'wp'
@@ -223,7 +223,7 @@ class TestFunc0(StartEnd):
             gv.swipe(x, y + 200, x, y + 90)
             time.sleep(10)
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     # @data(*wps)
     def test_wp_pic_shadow(self, type1='wp'):
         # type1 = 'wp'
@@ -257,7 +257,7 @@ class TestFunc0(StartEnd):
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
         time.sleep(10)
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     # @data(*wps)
     def test_wp_pic_outline_color(self, type1='wp'):
         # type1 = 'wp'
@@ -299,7 +299,7 @@ class TestFunc0(StartEnd):
         #         '//*[@resource-id="%s"]'
         #         '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     # @data(*wps)
     def test_wp_pic_outline_border_type(self, type1='wp'):
         # type1 = 'wp'
@@ -337,7 +337,7 @@ class TestFunc0(StartEnd):
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pic_outline_border_px(self, type1='wp'):
         # type1 = 'wp'
@@ -375,7 +375,7 @@ class TestFunc0(StartEnd):
             gv.get_element(
                 '//*[@resource-id="com.yozo.office:id/yozo_ui_number_picker_arrow_right"]').click()
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pic_order(self, type1='wp'):
         # type1 = 'wp'
@@ -425,7 +425,7 @@ class TestFunc0(StartEnd):
             gv.shape_layer('衬于文字下方')
             gv.shape_layer('浮于文字上方')
 
-    #@unittest.skip('skip test_pop_menu_shape')
+    # @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
     def test_wp_pop_menu_pic_all_4(self, type1='wp'):  # 该用例未完全需重写
         self.insert_pic_rect(type1)
@@ -447,4 +447,3 @@ class TestFunc0(StartEnd):
         gv.pop_menu_click('paste')  # 粘贴
         gv.pop_menu_click('drag_pic')
         gv.pop_menu_click('cut')  # 剪切
-
