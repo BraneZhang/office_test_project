@@ -448,25 +448,3 @@ class TestFunc0(StartEnd):
         gv.pop_menu_click('drag_pic')
         gv.pop_menu_click('cut')  # 剪切
 
-    @unittest.skip('skip test_pop_menu_shape')
-    # @data(*wps)
-    def test_wp_pic_free_rotate(self, type1='wp'):
-        self.insert_pic_rect(type1)
-        gv = GeneralView(self.driver)
-
-        if type1 == 'pg':
-            cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        else:
-            cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
-        gv.get_element(
-            '//*[@resource-id="%s"]'
-            '/android.widget.FrameLayout[5]' % cc).click()
-        # 属性调整大小
-        gv.shape_option_5()
-        if gv.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
-            gv.fold_expand()
-        x, y = gv.find_pic_position('rotate_free')
-        print(x,y)
-        # 有毒
-
-        gv.swipe(x+10, y+10, x + 400, y)
