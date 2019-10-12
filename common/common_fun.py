@@ -132,8 +132,8 @@ class Common(BaseView):
         pinch_action = MultiAction(self.driver)  # 放大手势
 
         x, y = self.get_size()
-        action1.press(x=x * 0.2, y=y * 0.2).move_to(x=x * 0.4, y=y * 0.4).release()
-        action2.press(x=x * 0.8, y=y * 0.8).move_to(x=x * 0.6, y=y * 0.6).release()
+        action1.press(x=x * 0.8, y=y * 0.3).move_to(x=x * 0.5, y=y * 0.5).release()
+        action2.press(x=x * 0.3, y=y * 0.8).move_to(x=x * 0.5, y=y * 0.5).release()
 
         pinch_action.add(action1, action2)  # 加载
         time.sleep(2)

@@ -628,6 +628,13 @@ class GeneralView(Common):
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
             self.fold_expand()
 
+    def shape_option_5(self,width=5, height=5):
+        width_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/shape_width')
+        width_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(width))
+        height_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/shape_height')
+        height_ele.find_element(By.ID, 'com.yozo.office:id/margin_value').set_text(str(height))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
+
     def pen_size(self, type, index):  # 签批字粗细 1-6
         logging.info('======pen_size======')
         self.driver.find_element(By.XPATH,

@@ -131,20 +131,21 @@ class WPView(GeneralView):
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_border')
         childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
         list(map(lambda i: i.click(), childs))
-        # 边框线样式
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_group_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
-        # 边框线颜色
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_color').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        # # 边框线样式
+        # parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_group_all')
+        # childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        # list(map(lambda i: i.click(), childs0))
+        # # 边框线颜色
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_color').click()
+        # parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
+        # childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        # list(map(lambda i: i.click(), childs0))
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
         # 边框线线条样式
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style').click()
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.RadioButton')
+        print(len(childs0))
         list(map(lambda i: i.click(), childs0))
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
@@ -167,5 +168,4 @@ class WPView(GeneralView):
                                  del_.index(del0)).click()
         if del0 != 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
-
 

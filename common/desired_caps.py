@@ -13,7 +13,7 @@ logging = logging.getLogger()
 
 def appium_desired():
     with open('../config/yozo_office_caps.yaml', 'r', encoding='utf-8') as file:
-    # with open('../config/wx_read_caps.yaml', 'r', encoding='utf-8') as file:
+        # with open('../config/wx_read_caps.yaml', 'r', encoding='utf-8') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
         print(data)
     desired_caps = data['desired_caps']
@@ -38,6 +38,7 @@ def appium_desired():
     driver.implicitly_wait(3)
 
     return driver
+
 
 if __name__ == '__main__':
     # print( os.path.dirname(os.path.dirname(__file__)))
