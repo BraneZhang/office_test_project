@@ -15,6 +15,47 @@ from common.tool import get_project_path
 
 class GeneralView(Common):
 
+    def opinion_feedback(self, fb='func', content=''):  # 意见反馈
+        logging.info('=========suggestion_feedback==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        type = ['func', 'content', 'bug', 'other']
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/%sRg' % fb)
+        ele.click()
+        checked = ele.get_attribute('checked')
+        if checked != 'true':
+            return False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').set_text(content)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/uploadTv').click()
+        upway = random.randint(0,2)
+        if upway == 0:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/photo_sec').click()
+            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+                                               '/android.widget.FrameLayout[1]').click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/button_apply').click()
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/file_sec').click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/file_item').click()
+            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+                                               '/android.widget.RelativeLayout[2]').click()
+            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+                                               '/android.widget.RelativeLayout[2]').click()
+        uped = self.driver.find_element(By.ID, 'com.yozo.office:id/uploadTv').text
+        if uped != '已上传':
+            return False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contactEt').set_text('13915575564')
+        self.swipeUp()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        if self.get_element_result('//*[@text="提交成功"]'):
+            return True
+        else:
+            return False
+
+    def wifi_trans(self, state='开启'):  # 设置wifi传输的开或者关
+        logging.info('=========wifi_trans==========')
+        state_set = self.driver.find_element(By.ID, 'com.yozo.office:id/wifiSwitch').text
+        if state != state_set:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/wifiSwitch').click()
+
     def insert_pic(self):  # 插入图片，基于vivoX9手机,选取图片只能点选坐标
         logging.info('=========insert_pic==========')
         self.driver.find_element(By.XPATH, '//*[@text="图片"]').click()
