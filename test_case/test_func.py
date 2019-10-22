@@ -5,6 +5,7 @@ import random
 import time
 import unittest
 
+from appium.webdriver.connectiontype import ConnectionType
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
@@ -569,7 +570,6 @@ class TestFunc(StartEnd):
     def test_cloud_sort_file(self):  # “打开”文档按条件排序
         logging.info('==========test_cloud_sort_file==========')
         gv = GeneralView(self.driver)
-        gv = GeneralView(self.driver)
         l = LoginView(self.driver)
         gv.jump_to_index('my')
         if not gv.get_element_result('//*[@text="退出登录"]'):
@@ -582,6 +582,21 @@ class TestFunc(StartEnd):
                 gv.sort_files(i, j)
         gv.jump_to_index('my')
         l.logout_action()
+
+    @unittest.skip('skip test_create_file')
+    @data(*wps)
+    def test_create_file(self, type):  # 新建文档
+        logging.info('==========test_create_file==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
+        create_dict = {'wp': ['新建空白.doc', '小清新个人简历.doc', '会议议程.doc', '蓝色应届生简历.doc', '项目合作协议书.doc', '房屋租赁合同.doc'],
+                       'ss': ['新建空白.xls', '地域销售柱形图.xls', '会议议程.xls', '可视化自动分析.xls', '数据可视化.xls', '年度销售额统计.xls'],
+                       'pg': ['新建空白.ppt', '秋分.ppt', '多彩商业创意计划书.ppt', '简约灰橙商务.ppt', '黑金简约商务风.ppt', '蓝色简约商务.ppt']}
+        for i in range(6):
+            self.driver.find_elements(By.ID, 'com.yozo.office:id/iv_gv_image')[i].click()
+            file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
+            self.assertTrue(file_name == create_dict[type][i])
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
 
     @unittest.skip('skip test_data_table')
     def test_data_table(self):  # 数据排序，工作表格式
@@ -609,7 +624,6 @@ class TestFunc(StartEnd):
         ss.sheet_style('100%')
         time.sleep(3)
 
-    ##########“打开”中“Download”相关功能
     @unittest.skip('skip test_Download_copy_file')
     def test_download_copy_file(self):
         logging.info('==========test_Download_copy_file==========')
@@ -934,6 +948,35 @@ class TestFunc(StartEnd):
         ss.tap(x + width * 0.5, y - height * 6.5)
         ss.drag_coordinate(x + width, y - height * 6, x + width, y - height * 2)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+
+    @unittest.skip('skip test_head_logo_show')
+    def test_head_logo_show(self):  # 头像显示
+        logging.info('==========test_head_logo_show==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if gv.get_element_result('//*[@text="退出登录"]'):
+            l.logout_action()
+        gv.jump_to_index('last')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('alldoc')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('cloud')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('star')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('my')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon')
+        self.assertTrue(ele != None)
+        l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('my')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/iv_userinfo')
+        self.assertTrue(ele != None)
+        l.logout_action()
 
     @unittest.skip('skip test_insert_chart1')
     @data(*ps)
@@ -1370,14 +1413,6 @@ class TestFunc(StartEnd):
         gv.jump_to_index('my')
         l.logout_action()
 
-    @unittest.skip('skip test_my1_head_logo')
-    def test_my1_head_logo(self):
-        logging.info('==========test_my1_head_logo==========')
-        gv = GeneralView(self.driver)
-        gv.jump_to_index('my')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
-        self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
-
     @unittest.skip('skip test_my1_about_yozo')
     def test_my1_about_yozo(self):
         logging.info('==========test_my1_about_yozo==========')
@@ -1395,7 +1430,162 @@ class TestFunc(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="关于YOZO"]'))
 
+    @unittest.skip('skip test_my1_head_unlog')
+    def test_my1_head_unlog(self):
+        logging.info('==========test_my1_head_unlog==========')
+        gv = GeneralView(self.driver)
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
+        self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
 
+    @unittest.skip('skip test_my2_account_edit')
+    def test_my2_account_edit(self):  # 登录账号信息展示及修改
+        logging.info('==========test_my2_about_head_login==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+            gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_useredit').click()
+        username = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').text
+        loc = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').location
+        self.assertTrue(username != "")
+        account = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfochange_username').text
+        self.assertTrue(account == '139****5564')
+        email = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_email').text
+        self.assertTrue(email == 'branezhang@163.com')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').click()
+        self.assertTrue(gv.get_element_result('//*[@text="修改昵称"]'))
+        gv.tap(loc['x'], loc['y'])
+        self.assertFalse(gv.get_element_result('//*[@text="修改昵称"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').click()
+        name_time = gv.getTime("%Y%m%d%H%M%S")
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newname').set_text(name_time)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        username = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').text
+        self.assertTrue(username == name_time)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_email').click()
+        self.assertTrue(gv.get_element_result('//*[@text="绑定邮箱"]'))
+        self.assertTrue(self.driver.find_element(By.ID, 'com.yozo.office:id/et_newemai').is_displayed())
+        self.assertTrue(self.driver.find_element(By.ID, 'com.yozo.office:id/et_code').is_displayed())
+        gv.tap(loc['x'], loc['y'])
+        self.assertFalse(gv.get_element_result('//*[@text="绑定邮箱"]'))
+
+    @unittest.skip('skip test_my2_about_head_login')
+    def test_my2_head_login(self):  # 已登陆头像功能
+        logging.info('==========test_my2_about_head_login==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+            gv.jump_to_index('my')
+        username = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_username').text
+        self.assertTrue(username != "")
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_userinfo').click()
+        self.assertTrue(gv.get_element_result('//*[@text="拍照"]'))
+        self.assertTrue(gv.get_element_result('//*[@text="从相册中选取"]'))
+        self.assertTrue(gv.get_element_result('//*[@text="取消"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancle').click()
+
+    @unittest.skip('skip test_my2_login_way')
+    def test_my2_login_way(self):  # 登录操作
+        logging.info('==========test_my2_login_way==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_findpwd').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/et_account"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/et_pwd"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_verifycode"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_true"]'))
+        self.driver.keyevent(4)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_wechat').click()
+        self.driver.keyevent(4)
+        self.driver.keyevent(4)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_register').click()
+        self.assertTrue(gv.get_element_result('//*[@text="短信登录"]'))
+
+    @unittest.skip('skip test_my2_logout')
+    def test_my2_logout(self):  # 退出登录
+        logging.info('==========test_my2_logout==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+            gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_sure').click()
+        self.assertTrue(gv.get_element_result('//*[@text="是否退出登录？"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_chanle').click()
+        self.assertTrue(gv.get_element_result('//*[@text="退出登录"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_sure').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
+
+    @unittest.skip('skip test_my2_opinion_feedback')
+    def test_my2_opinion_feedback(self):
+        logging.info('==========test_my2_opinion_feedback==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+            gv.jump_to_index('my')
+        content = gv.getTime("%Y-%m-%d %H:%M:%S")
+        result = gv.opinion_feedback('content', content)
+        self.assertTrue(result)
+        self.driver.keyevent(4)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % content))
+
+    @unittest.skip('skip test_my2_sign_up')
+    def test_my2_sign_up(self):  # 注册
+        logging.info('==========test_my2_login_way==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_register').click()
+        self.assertTrue(gv.get_element_result('//*[@text="注册"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').set_text('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_password').set_text('zhang199412')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/checkbox_privacy').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/tv_pwd_login2"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/et_figure_code"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/et_pwd"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_verifycode"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_register"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/tv_pwd_login2"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="《隐私协议》"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
+
+    @unittest.skip('skip test_my2_sys_setting')
+    def test_my2_sys_setting(self):  # 系统设置
+        logging.info('==========test_my2_sys_setting==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not gv.get_element_result('//*[@text="退出登录"]'):
+            l.login_from_my('13915575564', 'zhang199412')
+            gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('关闭')
+        gv.wifi_trans('开启')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.assertTrue(gv.get_toast_message('仅在WI-FI下传输'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     @unittest.skip('skip test_myfile_copy_file')
     def test_myfile_copy_file(self):
@@ -2022,7 +2212,6 @@ class TestFunc(StartEnd):
             pg.edit_template(i)
         time.sleep(3)
 
-    ##########“打开”中“QQ”相关功能
     @unittest.skip('skip test_QQ_copy_file')
     def test_qq_copy_file(self):
         logging.info('==========test_QQ_copy_file==========')
@@ -2191,7 +2380,6 @@ class TestFunc(StartEnd):
         gv.jump_to_index('my')
         l.logout_action()
 
-    ##################################
     @unittest.skip('skip test_read_mode')
     @data(*wps)
     def test_read_mode(self, type):  # 阅读模式
@@ -2213,6 +2401,25 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         # gv.screen_rotate('landscape')
         self.assertTrue(gv.check_rotate())
+        gv.screen_rotate('portrait')
+
+    @unittest.skip('skip test_rotate_index')
+    def test_rotate_index(self):
+        logging.info('==========test_rotate_index==========')
+        gv = GeneralView(self.driver)
+        gv.screen_rotate('landscape')
+        gv.screen_rotate('portrait')
+        gv.jump_to_index('alldoc')
+        gv.screen_rotate('landscape')
+        gv.screen_rotate('portrait')
+        gv.jump_to_index('cloud')
+        gv.screen_rotate('landscape')
+        gv.screen_rotate('portrait')
+        gv.jump_to_index('star')
+        gv.screen_rotate('landscape')
+        gv.screen_rotate('portrait')
+        gv.jump_to_index('my')
+        gv.screen_rotate('landscape')
         gv.screen_rotate('portrait')
 
     @unittest.skip('skip test_scroll_screen')
@@ -2241,6 +2448,19 @@ class TestFunc(StartEnd):
             ov.swipeUp()
             ov.swipeDown()
         time.sleep(3)
+
+    @unittest.skip('skip test_search_icon_show')
+    def test_search_icon_show(self):  # 搜索键显示
+        logging.info('==========test_search_icon_show==========')
+        gv = GeneralView(self.driver)
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('alldoc')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search')
+        self.assertTrue(ele != None)
+        gv.jump_to_index('star')
+        ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search')
+        self.assertTrue(ele != None)
 
     @unittest.skip('skip test_search_replace')
     @data(*wps)
@@ -2809,7 +3029,6 @@ class TestFunc(StartEnd):
         self.assertLess(result1, 100, 'undo fail!')
         self.assertLess(result2, 100, 'redo fail!')
 
-    ##########“打开”中“微信”相关功能
     @unittest.skip('skip test_wechat_copy_file')
     def test_wechat_copy_file(self):
         logging.info('==========test_wechat_copy_file==========')
@@ -2978,7 +3197,6 @@ class TestFunc(StartEnd):
         gv.jump_to_index('my')
         l.logout_action()
 
-    ##################################
     @unittest.skip('skip test_wp_bookmark')
     def test_wp_bookmark(self):
         logging.info('==========test_wp_bookmark==========')
