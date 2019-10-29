@@ -265,7 +265,7 @@ class Common(BaseView):
 
     def exist(self, element):
         try:
-            self.find_element(By.XPATH, element)
+            self.driver.find_element(By.XPATH, element)
         except NoSuchElementException:
             logging.info('=====%s element not exist!======' % element)
             return False
@@ -279,6 +279,47 @@ class Common(BaseView):
         for i in c:
             a = a.replace(i, '')
         return a
+
+    def get_element_xy(self, ele1, x_y=5):
+        element = self.driver.find_element(By.XPATH, ele1)
+        x1 = int(element.location['x']) + 1
+        y1 = int(element.location['y']) + 1
+
+        x9 = int(element.size['width']) + x1 - 1
+        y9 = int(element.size['height']) + y1 - 1
+
+        x5 = (x1 + x9) / 2
+        y5 = (y1 + y9) / 2
+        if x_y == 1:
+            return x1, y1
+        elif x_y == 2:
+            x2 = x5
+            y2 = y1
+            return x2, y2
+        elif x_y == 3:
+            x3 = x9
+            y3 = y1
+            return x3, y3
+        elif x_y == 4:
+            x4 = x1
+            y4 = y5
+            return x4, y4
+        elif x_y == 5:
+            return x5, y5
+        elif x_y == 6:
+            x6 = x9
+            y6 = y5
+            return x6, y6
+        elif x_y == 7:
+            x7 = x1
+            y7 = y9
+            return x7, y7
+        elif x_y == 8:
+            x8 = x5
+            y8 = y9
+            return x8, y8
+        elif x_y == 9:
+            return x9, y9
 
 
 if __name__ == '__main__':
