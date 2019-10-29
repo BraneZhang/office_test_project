@@ -40,12 +40,18 @@ class OpenView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(file_name)  # 输入搜索内容
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()  # 点击搜索按钮
         self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % file_name).click()  # 打开对应文件
+        time.sleep(5)
 
     def check_open_status(self, file_name):
         logging.info('======test_open_status_%s=====' % file_name)
         try:
             # 查找指定元素判断是否加载成功
-            self.find_element(By.XPATH, "//*[@resource-id='com.yozo.office:id/yozo_ui_option_group_button']")
+            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_title_text_view"))
+            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_toolbar_button_close"))
+            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_option_group_button"))
+            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_title_text_view")
+            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_toolbar_button_close")
+            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_option_group_button")
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
             self.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
         except NoSuchElementException:
