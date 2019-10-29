@@ -4,6 +4,7 @@ import logging
 import logging.config
 import os
 
+from airtest.core.api import auto_setup
 from appium import webdriver
 
 CON_LOG = '../config/log.conf'
@@ -13,10 +14,11 @@ logging = logging.getLogger()
 
 def appium_desired():
     with open('../config/yozo_office_caps.yaml', 'r', encoding='utf-8') as file:
-        # with open('../config/wx_read_caps.yaml', 'r', encoding='utf-8') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
         print(data)
     desired_caps = data['desired_caps']
+    auto_setup(__file__, devices=["Android:///%s" % data['desired_caps']['udid']],
+               project_root=os.path.dirname(os.getcwd()))
     # desired_caps['platformName']=data['platformName']
     # desired_caps['platformVersion']=data['platformVersion']
     # desired_caps['deviceName']=data['deviceName']
