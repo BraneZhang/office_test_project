@@ -288,8 +288,8 @@ class Common(BaseView):
         x9 = int(element.size['width']) + x1 - 1
         y9 = int(element.size['height']) + y1 - 1
 
-        x5 = int((x1 + x9) / 2)
-        y5 = int((y1 + y9) / 2)
+        x5 = (x1 + x9) / 2
+        y5 = (y1 + y9) / 2
         if x_y == 1:
             return x1, y1
         elif x_y == 2:
