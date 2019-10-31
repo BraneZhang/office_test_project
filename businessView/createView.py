@@ -15,7 +15,10 @@ class CreateView(Common):
         logging.info('==========create_file_%s==========' % type)
         self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/create_empty_offline_img').click()
+        null_file = '//*[@resource-id="com.yozo.office:id/createEmpty"]'
+        if not self.exist(null_file):
+            null_file = '//*[@resource-id="com.yozo.office:id/create_empty_offline_img"]'
+        self.driver.find_element(By.XPATH, null_file).click()
 
     def save_as_file(self, file_name, save_path, item=1):  # 另存为
         logging.info('==========save_as_file==========')
