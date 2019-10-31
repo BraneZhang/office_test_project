@@ -19,8 +19,10 @@ def start_server():
         os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (port, bp, udid))
         time.sleep(5)
 
+
 def stop_server():
     os.system("start /b taskkill /F /t /IM node.exe")
+
 
 def get_desired_caps():
     yml_path = os.path.join("../config/yozo_office_caps.yaml")

@@ -101,7 +101,7 @@ class WPView(GeneralView):
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_table')
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[0].click()
 
-    def table_list(self):
+    def table_type_list(self):
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_style')
         childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
         list(map(lambda i: i.click(), childs))
@@ -169,3 +169,23 @@ class WPView(GeneralView):
         if del0 != 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
+    def chart_list(self, chart_type):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        s_main = self.get_element_xy('//*[@resource-id="com.yozo.office:id/a0000_main_view_container"]', x_y=1)
+        for i in childs:
+
+            self.tap(s_main[0], s_main[1])
+            time.sleep(1)
+            self.group_button_click('插入')
+            s = self.swipe_option('up')
+            while not self.exist('//*[@text="图表"]'):
+                self.swipe(s[0], s[1], s[2], s[3])
+            self.get_element('//*[@text="图表"]').click()
+
+            while not self.exist('//*[@text="%s"]' % chart_type):
+                self.swipe(s[0], s[1], s[2], s[3])
+            self.get_element('//*[@text="%s"]' % chart_type).click()
+            i.click()
+        self.tap(s_main[0], s_main[1])
+        time.sleep(1)
