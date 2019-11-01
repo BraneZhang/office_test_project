@@ -5,6 +5,7 @@ from argparse import Action
 from functools import reduce
 
 from PIL import Image
+from airtest.core.cv import Template
 from appium.webdriver.common.multi_action import MultiAction
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support.wait import WebDriverWait
@@ -16,6 +17,7 @@ import logging
 from selenium.webdriver.common.by import By
 import time, os
 import csv
+from airtest.core.settings import Settings as ST
 
 from common.tool import get_project_path
 
@@ -282,44 +284,45 @@ class Common(BaseView):
 
     def get_element_xy(self, ele1, x_y=5):
         element = self.driver.find_element(By.XPATH, ele1)
-        x1 = int(element.location['x']) + 1
-        y1 = int(element.location['y']) + 1
+        x1 = int(element.location['x'])
+        y1 = int(element.location['y'])
 
-        x9 = int(element.size['width']) + x1 - 1
-        y9 = int(element.size['height']) + y1 - 1
+        x9 = int(element.size['width']) + x1
+        y9 = int(element.size['height']) + y1
 
         x5 = (x1 + x9) / 2
         y5 = (y1 + y9) / 2
+        px = 1
         if x_y == 1:
-            return x1, y1
+            return x1+px, y1+px
         elif x_y == 2:
             x2 = x5
             y2 = y1
-            return x2, y2
+            return x2, y2+px
         elif x_y == 3:
             x3 = x9
             y3 = y1
-            return x3, y3
+            return x3-px, y3+px
         elif x_y == 4:
-            x4 = x1
+            x4 = x1+px
             y4 = y5
             return x4, y4
         elif x_y == 5:
             return x5, y5
         elif x_y == 6:
-            x6 = x9
+            x6 = x9-px
             y6 = y5
             return x6, y6
         elif x_y == 7:
             x7 = x1
             y7 = y9
-            return x7, y7
+            return x7+px, y7-px
         elif x_y == 8:
             x8 = x5
             y8 = y9
-            return x8, y8
+            return x8, y8-px
         elif x_y == 9:
-            return x9, y9
+            return x9-px, y9-px
 
     def swipe_option(self, direction):
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
@@ -336,6 +339,12 @@ class Common(BaseView):
                 return s5[0], s5[1], s4[0], s4[1]
             elif direction == 'right':
                 return s5[0], s5[1], s6[0], s6[1]
+
+    def template_object(self, filename):
+        pro_path = ST.PROJECT_ROOT
+        clickpic_path = os.path.join(pro_path, 'clickPicture_CN')
+        t = Template(os.path.join(clickpic_path, filename), resolution=(1080, 1920), rgb=True, threshold=0.5)
+        return t
 
 
 if __name__ == '__main__':
