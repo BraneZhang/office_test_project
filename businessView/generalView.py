@@ -989,6 +989,25 @@ class GeneralView(Common):
 
         self.driver.find_element(By.XPATH, '//*[@text="文档信息"]').click()
 
+    def check_file_info(self):
+        """
+        查看文档信息
+        :return:
+        """
+        logging.info('==========check_file_info==========')
+        try:
+            file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text
+            file_type = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text
+            location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+            file_size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text
+            edit_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text
+            if file_name != '-' and file_type != '-' and location != '-' and file_size != '-' and edit_time != '-':
+                return True
+            else:
+                return False
+        except NoSuchElementException:
+            return False
+
     def wait_loading(self, timeout=180):
         """
         等待加载控件消失,默认等待3分钟，超时则抛出异常

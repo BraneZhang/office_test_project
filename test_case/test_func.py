@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import os
 import random
 import time
 import unittest
@@ -273,6 +274,10 @@ class TestFunc(StartEnd):
         gv.select_file_type('all')
         gv.file_more_info(1)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_alldoc_share_back')
     def test_alldoc_share_back(self):  # “打开”中的分享的返回键
@@ -565,6 +570,10 @@ class TestFunc(StartEnd):
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_cloud_sort_file')
     def test_cloud_sort_file(self):  # “打开”文档按条件排序
@@ -587,16 +596,11 @@ class TestFunc(StartEnd):
     @data(*wps)
     def test_create_file(self, type):  # 新建文档
         logging.info('==========test_create_file==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
-        create_dict = {'wp': ['新建空白.doc', '小清新个人简历.doc', '会议议程.doc', '蓝色应届生简历.doc', '项目合作协议书.doc', '房屋租赁合同.doc'],
-                       'ss': ['新建空白.xls', '地域销售柱形图.xls', '会议议程.xls', '可视化自动分析.xls', '数据可视化.xls', '年度销售额统计.xls'],
-                       'pg': ['新建空白.ppt', '秋分.ppt', '多彩商业创意计划书.ppt', '简约灰橙商务.ppt', '黑金简约商务风.ppt', '蓝色简约商务.ppt']}
-        for i in range(6):
-            self.driver.find_elements(By.ID, 'com.yozo.office:id/iv_gv_image')[i].click()
-            file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
-            self.assertTrue(file_name == create_dict[type][i])
-            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+        cv = CreateView(self.driver)
+        cv.create_file(type)
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
+        create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
+        self.assertTrue(file_name == create_dict[type])
 
     @unittest.skip('skip test_data_table')
     def test_data_table(self):  # 数据排序，工作表格式
@@ -631,7 +635,7 @@ class TestFunc(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
-        gv.file_more_info(2)
+        gv.file_more_info(7)
         check = gv.copy_file()
         self.assertTrue(check, 'copy fail')
 
@@ -745,6 +749,10 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_Download_share_back')
     def test_download_share_back(self):  # “打开”中的分享的返回键
@@ -1105,7 +1113,7 @@ class TestFunc(StartEnd):
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
-        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        self.assertTrue(gv.get_element_result('//*[@text="全选"]'))
         num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
         self.assertTrue(num != 0)
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
@@ -1132,6 +1140,10 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.file_more_info(1)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_last_share_back')
     def test_last_share_back(self):  # “最近”中的分享的返回键
@@ -1171,8 +1183,11 @@ class TestFunc(StartEnd):
     @unittest.skip('skip test_login_fail')
     def test_login_fail(self):
         logging.info('==========test_login_fail==========')
-        login = LoginView(self.driver)
         gv = GeneralView(self.driver)
+        login = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if gv.get_element_result('//*[@text="退出登录"]'):
+            login.logout_action()
         gv.jump_to_index('my')
         data = login.get_csv_data(csv_file, 5)
 
@@ -1182,8 +1197,11 @@ class TestFunc(StartEnd):
     @unittest.skip('skip test_login_success')
     def test_login_success(self):
         logging.info('==========test_login_success==========')
-        login = LoginView(self.driver)
         gv = GeneralView(self.driver)
+        login = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if gv.get_element_result('//*[@text="退出登录"]'):
+            login.logout_action()
         gv.jump_to_index('my')
         data = login.get_csv_data(csv_file, 4)
 
@@ -1360,6 +1378,10 @@ class TestFunc(StartEnd):
             gv.swipeUp()
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_mobile_share_back')
     def test_mobile_share_back(self):  # “打开”中的分享的返回键
@@ -1709,6 +1731,10 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_myfile_share_back')
     def test_myfile_share_back(self):  # “打开”中的分享的返回键
@@ -2333,6 +2359,10 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_QQ_share_back')
     def test_qq_share_back(self):  # “打开”中的分享的返回键
@@ -2667,6 +2697,55 @@ class TestFunc(StartEnd):
 
         gv = GeneralView(self.driver)
         gv.share_file(way[0:index], way[index + 1:])
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_share_file_create')
+    @data(*share_list)
+    def test_share_file_create(self, way):
+        logging.info('==========test_share_file_create==========')
+        index = way.index('_')
+        type = way[0:index]
+        share_way = way[index + 1:]
+        gv = GeneralView(self.driver)
+        cv = CreateView(self.driver)
+        cv.create_file(type)
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
+        create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
+        self.assertTrue(file_name == create_dict[type])
+        gv.share_file(type, share_way)
+        self.driver.find_element(By.ID, 'android:id/button1').click()
+        save_name = gv.getTime("%Y%m%d%H%M%S")
+        cv.save_step('local', save_name, 1)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_share_file_edit')
+    @data(*share_list)
+    def test_share_file_edit(self, way):
+        logging.info('==========test_share_file_edit==========')
+        index = way.index('_')
+        suffix = search_dict[way[0:index]]
+        type = way[0:index]
+        share_way = way[index + 1:]
+        gv = GeneralView(self.driver)
+        ov = OpenView(self.driver)
+        cv = CreateView(self.driver)
+
+        ov.open_file('欢迎使用永中Office.%s' % suffix)
+        gv.switch_write_read()
+        gv.group_button_click('插入')
+        gv.insert_shape(type)
+        gv.share_file(type, share_way)
+        self.driver.find_element(By.ID, 'android:id/button1').click()
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_sheet_operation')
     def test_sheet_operation(self):  # sheet相关功能
@@ -2693,6 +2772,15 @@ class TestFunc(StartEnd):
         ss.operate_sheet(0, 'remove')
         ss.operate_sheet(0, 'hide')
         ss.unhide_sheet(0, 0)
+
+    @unittest.skip('skip test_show_file_info')
+    def test_show_file_info(self):
+        logging.info('==========test_show_file_info==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.xlsx')
+        gv = GeneralView(self.driver)
+        gv.file_info()
+        self.assertTrue(gv.check_file_info())
 
     @unittest.skip('skip test_show_cloud_file')
     def test_show_cloud_file(self):  # 登录时显示云文件
@@ -2927,6 +3015,10 @@ class TestFunc(StartEnd):
         gv.jump_to_index('star')
         gv.file_more_info(1)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_star_share_back')
     def test_star_share_back(self):  # “打开”中的分享的返回键
@@ -3150,6 +3242,10 @@ class TestFunc(StartEnd):
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
         gv.file_more_info(7)
         gv.share_file_index(way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_wechat_share_back')
     def test_wechat_share_back(self):  # “打开”中的分享的返回键
