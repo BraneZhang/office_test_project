@@ -17,8 +17,7 @@ def appium_desired():
         data = yaml.load(file, Loader=yaml.FullLoader)
         print(data)
     desired_caps = data['desired_caps']
-    auto_setup(__file__, devices=["Android:///%s" % data['desired_caps']['udid']],
-               project_root=os.path.dirname(os.getcwd()))
+    auto_setup(__file__, devices=["Android:///%s" % data['desired_caps']['udid']])
     # desired_caps['platformName']=data['platformName']
     # desired_caps['platformVersion']=data['platformVersion']
     # desired_caps['deviceName']=data['deviceName']
