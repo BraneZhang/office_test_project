@@ -8,16 +8,12 @@ from PIL import Image
 from airtest.core.cv import Template
 from appium.webdriver.common.multi_action import MultiAction
 from appium.webdriver.common.touch_action import TouchAction
-from selenium.webdriver.support.wait import WebDriverWait
-
 from baseView.baseView import BaseView
-from common.desired_caps import appium_desired
 from selenium.common.exceptions import NoSuchElementException
 import logging
 from selenium.webdriver.common.by import By
 import time, os
 import csv
-from airtest.core.settings import Settings as ST
 
 from common.tool import get_project_path
 
@@ -341,7 +337,7 @@ class Common(BaseView):
                 return s5[0], s5[1], s6[0], s6[1]
 
     def template_object(self, filename):
-        pro_path = ST.PROJECT_ROOT
+        pro_path = get_project_path()
         clickpic_path = os.path.join(pro_path, 'clickPicture_CN')
         t = Template(os.path.join(clickpic_path, filename), resolution=(1080, 1920), rgb=True, threshold=0.5)
         return t
