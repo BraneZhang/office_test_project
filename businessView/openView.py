@@ -46,17 +46,14 @@ class OpenView(Common):
         logging.info('======test_open_status_%s=====' % file_name)
         try:
             # 查找指定元素判断是否加载成功
-            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_title_text_view"))
-            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_toolbar_button_close"))
-            # WebDriverWait(self.driver, 10).until(lambda x: x.find_element_by_id("com.yozo.office:id/yozo_ui_option_group_button"))
             self.find_element(By.ID, "com.yozo.office:id/yozo_ui_title_text_view")
             self.find_element(By.ID, "com.yozo.office:id/yozo_ui_toolbar_button_close")
             self.find_element(By.ID, "com.yozo.office:id/yozo_ui_option_group_button")
-            self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
-            self.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
+            # self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+            # self.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
         except NoSuchElementException:
             logging.error(file_name + 'open fail!')
-            self.getScreenShot(file_name + 'open fail')
+            self.getScreenShot(file_name + ' open fail')
             return False
         else:
             logging.info(file_name + 'open success!')
