@@ -188,4 +188,5 @@ class WPView(GeneralView):
             self.get_element('//*[@text="%s"]' % chart_type).click()
             i.click()
         self.tap(s_main[0], s_main[1])
+
         time.sleep(1)
