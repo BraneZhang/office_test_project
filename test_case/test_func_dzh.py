@@ -21,6 +21,7 @@ class TestFunc0(StartEnd):
         wp.group_button_click('插入')
         wp.insert_example_table()
 
+
     def test_wp_insert_table(self):
         self.wp_insert_table()
 
