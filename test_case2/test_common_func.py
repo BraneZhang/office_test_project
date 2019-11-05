@@ -31,9 +31,6 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
-csv_file = '../data/account.csv'
-folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
-index_share_list = ['qq', 'wechat', 'email', 'more']
 auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
 
 
@@ -273,21 +270,6 @@ class TestFunc(StartEnd):
             gv.pop_menu_click('paste')
             gv.drag_coordinate(700, 700, 550, 550)
             gv.pop_menu_click('delete')
-
-    @unittest.skip('skip test_ppt_play_switch')
-    @data(*switch_list)
-    def test_ppt_play_switch(self, switch):  # 幻灯片切换
-        logging.info('==========test_ppt_play_switch==========')
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.pptx')
-        pg = PGView(self.driver)
-        pg.switch_write_read()
-
-        pg.group_button_click('切换')
-        pg.switch_mode(switch, 'all')
-        pg.group_button_click('播放')
-        pg.play_mode()
-        time.sleep(20)
 
     @unittest.skip('skip test_read_mode')
     @data(*wps)
@@ -652,3 +634,89 @@ class TestFunc(StartEnd):
         file_name = 'save_new ' + cv.getTime('%Y-%m-%d %H-%M-%S')
         cv.save_new_file(file_name, 'local', 2)
         self.assertTrue(cv.check_save_file())
+
+    logging.info('==========2019-11-05 add==========')
+
+    @unittest.skip('skip test_close_file')
+    @data(*wps)
+    def test_close_file(self, file_type):
+        """
+        关闭功能（X）
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return: None
+        """
+        logging.info('==========test_close_file==========')
+        ov = OpenView(self.driver)
+        ov.open_random_file(search_dict[file_type])
+        ov.close_file()
+        self.assertTrue(ov.check_close_file())
+
+    @unittest.skip('skip test_share_newFile')
+    @data(*share_list)
+    def test_share_newFile(self, share_info):
+        """
+        新建文档分享
+        :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
+        :return: None
+        """
+        logging.info('==========test_share_newFile==========')
+        file_type = share_info.split('_')[0]
+        share_type = share_info.split('_')[1]
+
+        logging.info('==========create and save new File==========')
+        cv = CreateView(self.driver)
+        cv.create_file(file_type)
+        cv.save_new_file('%s%s分享' % (file_type, share_type), 'local')
+        time.sleep(1)
+        cv.cover_file(True)
+        self.assertTrue(cv.get_toast_message('保存成功'))
+
+        logging.info('==========share new File==========')
+        gv = GeneralView(self.driver)
+        gv.share_file(file_type, share_type)
+
+    @unittest.skip('skip test_share_editFile')
+    @data(*share_list)
+    def test_share_editFile(self, share_info):
+        """
+        编辑文档分享
+        :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
+        :return: None
+        """
+        logging.info('==========test_share_newFile==========')
+        file_type = share_info.split('_')[0]
+        share_type = share_info.split('_')[1]
+
+        logging.info('==========edit and save File==========')
+        ov = OpenView(self.driver)
+        ov.open_random_file(search_dict[file_type])
+
+        gv = GeneralView(self.driver)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()
+        gv.group_button_click('插入')
+        gv.insert_shape(file_type, 1)
+
+        cv = CreateView(self.driver)
+        cv.save_file()
+        self.assertTrue(cv.get_toast_message('保存成功'))
+
+        logging.info('==========share new File==========')
+        gv = GeneralView(self.driver)
+        gv.share_file(file_type, share_type)
+
+    @unittest.skip('skip test_file_info')
+    @data(*wps)
+    def test_file_info(self, file_type):
+        """
+        文档信息
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return: None
+        """
+        logging.info('==========test_share_newFile==========')
+        ov = OpenView(self.driver)
+        ov.open_random_file(search_dict[file_type])
+
+        logging.info('==========show file info==========')
+        gv = GeneralView(self.driver)
+        gv.wait_loading()
+        gv.file_info()
