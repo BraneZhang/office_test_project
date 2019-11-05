@@ -233,23 +233,72 @@ class TestFunc(StartEnd):
         wp.swipe(t[0], t[1], t[0], t[1] + 200, duration=2000)
         time.sleep(5)
 
-    # def test_wp_table_pop_menu(self):
-    #     self.wp_insert_one_table()
-    #     wp = WPView(self.driver)
-    #     x = loop_find(wp.template_object('table_select.png'))
-    #     touch(wp.template_object('table_select.png'))
-    #     time.sleep(2)
-    #     touch(wp.template_object('copy.png'))
-    #     time.sleep(10)
-    # touch(wp.template_object('table_select.png'))
-    # touch(wp.template_object('delete_table.png'))
-    # if not exists(wp.template_object('point.png')):
-    #     wp.tap(x[0],x[1])
-    # touch(wp.template_object('point.png'))
-    # touch(wp.template_object('paste.png'))
-    # wp.tap(x[0]+200, x[1]+200)
-    # touch(wp.template_object('table_select.png'))
-    # touch(wp.template_object('cut.png'))
+    def test_wp_table_pop_menu(self):
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+        touch(wp.template_object('table_select.png'))
+        touch(wp.template_object('copy.png'))
+        touch(wp.template_object('table_select.png'))
+        touch(wp.template_object('delete_table.png'))
+        # time.sleep(2)
+        if wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            wp.fold_expand()
+        text("YOZOYOZOYOZO")
+        text("YOZOYOZOYOZO")
+        if not exists(wp.template_object('point.png')):
+            wp.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]').click()
+        touch(wp.template_object('point.png'))
+        touch(wp.template_object('selectAll.png'))
+        touch(wp.template_object('cut.png'))
+        wp.group_button_click('插入')
+        wp.insert_example_table()
+        touch(wp.template_object('table_select.png'))
+        touch(wp.template_object('paste.png'))
+        touch(wp.template_object('table_select.png'))
+        touch(wp.template_object('clear.png'))
+        touch(wp.template_object('table_select.png'))
+        touch(wp.template_object('cut.png'))
+
+    def test_wp_table_size(self):
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+        ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]'
+        e7 = wp.get_element_xy(ele, x_y=7)
+        e9 = wp.get_element_xy(ele, x_y=9)
+        # 改变表格大小
+        while not exists(wp.template_object('table_size.png')):
+            wp.swipe(e9[0], e9[1], e7[0], e7[1])
+        swipe(wp.template_object('table_size.png'), wp.get_element_xy(ele, x_y=4))
+        time.sleep(5)
+
+    def test_wp_table_right_cols(self):
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+
+        ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]'
+        e7 = wp.get_element_xy(ele, x_y=7)
+        e9 = wp.get_element_xy(ele, x_y=9)
+        # 插入列
+        while not exists(wp.template_object('table_size.png')):
+            wp.swipe(e9[0], e9[1], e7[0], e7[1])
+        touch(wp.template_object('table_cols_rows.png'))
+        time.sleep(5)
+
+    def test_wp_table_left_rows(self):
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+        ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]'
+        e7 = wp.get_element_xy(ele, x_y=7)
+        e9 = wp.get_element_xy(ele, x_y=9)
+        # 插入行
+        while not exists(wp.template_object('table_select.png')):
+            wp.swipe(e7[0], e7[1], e9[0], e9[1])
+        touch(wp.template_object('table_cols_rows.png'))
+
+    def test_wp_table_cell_pop(self):
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+        touch(wp.template_object('table_select.png', target_pos=9))
 
     def test_wp_table_merge_split(self):
         self.wp_insert_one_table()
