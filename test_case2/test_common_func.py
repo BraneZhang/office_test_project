@@ -31,9 +31,6 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
-csv_file = '../data/account.csv'
-folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
-index_share_list = ['qq', 'wechat', 'email', 'more']
 auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
 
 
@@ -273,21 +270,6 @@ class TestFunc(StartEnd):
             gv.pop_menu_click('paste')
             gv.drag_coordinate(700, 700, 550, 550)
             gv.pop_menu_click('delete')
-
-    @unittest.skip('skip test_ppt_play_switch')
-    @data(*switch_list)
-    def test_ppt_play_switch(self, switch):  # 幻灯片切换
-        logging.info('==========test_ppt_play_switch==========')
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.pptx')
-        pg = PGView(self.driver)
-        pg.switch_write_read()
-
-        pg.group_button_click('切换')
-        pg.switch_mode(switch, 'all')
-        pg.group_button_click('播放')
-        pg.play_mode()
-        time.sleep(20)
 
     @unittest.skip('skip test_read_mode')
     @data(*wps)
@@ -654,6 +636,7 @@ class TestFunc(StartEnd):
         self.assertTrue(cv.check_save_file())
 
     logging.info('==========2019-11-05 add==========')
+
     @unittest.skip('skip test_close_file')
     @data(*wps)
     def test_close_file(self, file_type):

@@ -17,13 +17,6 @@ from common.myunit import StartEnd
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import selenium.webdriver.support.expected_conditions as ec
 
-share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
-              'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
-wps = ['wp', 'ss', 'pg']
-ps = ['ss', 'pg']
-wp = ['wp', 'pg']
-ws = ['wp', 'ss']
-search_dict = {'wp': 'docx', 'ss': 'xlsx', 'pg': 'pptx'}
 switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全黑切出', '溶解', '向下擦除', '向左擦除', '向右擦除',
                '向上擦除', '扇形展开', '从下抽出', '从左抽出', '从右抽出', '从上抽出', '从左下抽出', '从左上抽出',
                '从右下抽出', '从右上抽出', '盒状收缩', '盒状展开', '1根轮辐', '2根轮辐', '3根轮辐', '4根轮辐', '8根轮辐',
@@ -31,11 +24,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
-csv_file = '../data/account.csv'
 ss_file = '../screenshots/'
-folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
-index_share_list = ['qq', 'wechat', 'email', 'more']
-auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
 
 @ddt
 class TestFunc(StartEnd):
@@ -346,3 +335,18 @@ class TestFunc(StartEnd):
         else:
             toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
             self.assertEqual(toast.text, '已是简报尾页', '验证弹窗信息为已是简报尾页')
+
+    @unittest.skip('skip test_ppt_play_switch')
+    @data(*switch_list)
+    def test_ppt_play_switch(self, switch):  # 幻灯片切换
+        logging.info('==========test_ppt_play_switch==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.pptx')
+        pg = PGView(self.driver)
+        pg.switch_write_read()
+
+        pg.group_button_click('切换')
+        pg.switch_mode(switch, 'all')
+        pg.group_button_click('播放')
+        pg.play_mode()
+        time.sleep(20)
