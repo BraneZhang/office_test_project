@@ -97,6 +97,11 @@ class WPView(GeneralView):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
 
     def insert_example_table(self):
+        # 移动视图插入表格，预防插入后取不到全选按钮
+        ele5 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
+        ele9 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=9)
+        self.swipe(ele5[0], ele5[1], ele9[0], ele9[1])
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_table')
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[0].click()
 
