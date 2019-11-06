@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import random
 import time
 
 from selenium.webdriver.common.by import By
@@ -9,6 +10,46 @@ from businessView.generalView import GeneralView
 
 
 class SSView(GeneralView):
+
+    def filter_data(self, x, y, filter, cd1=None, cd2=None, cd_color=None):  # 点击绘图区域的筛选下拉，图片识别实现错误，使用坐标
+        logging.info('======filter_data=====')
+        filter_list = ['升序', '降序', '自定义','清除筛选']
+        # self.group_button_click('查看')
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        self.tap(x, y)  # 根据坐标来点击
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % filter).click()
+        if filter=='自定义':
+            ele = '//*[@resource-id="com.yozo.office:id/listView_filter_select"]'
+            if cd1 != None:
+                self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_condition1').click()
+                cd1_ele = '//*[@text="%s"]' % cd1
+                if not self.get_element_result(cd1_ele):
+                    self.swipe_options(ele, 'up')
+                self.driver.find_element(By.XPATH, cd1_ele).click()
+                self.driver.find_element(By.ID, 'com.yozo.office:id/iv_filter_input_content1').click()
+                self.driver.find_element(By.XPATH, '//android.widget.ListView/android.widget.LinearLayout[1]').click()
+            if cd2 != None:
+                logic_list = ['and', 'or']
+                self.driver.find_element(By.ID,
+                                         'com.yozo.office:id/tv_filter_%s' % logic_list[random.randint(0, 1)]).click()
+                self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_condition2').click()
+                cd2_ele = '//*[@text="%s"]' % cd2
+                if not self.get_element_result(cd2_ele):
+                    self.swipe_options(ele, 'up')
+                self.driver.find_element(By.XPATH, cd2_ele).click()
+                self.driver.find_element(By.ID, 'com.yozo.office:id/iv_filter_input_content2').click()
+                self.driver.find_element(By.XPATH, '//android.widget.ListView/android.widget.LinearLayout[1]').click()
+            if cd_color != None:
+                self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_color_type').click()
+                self.driver.find_element(By.XPATH, '//*[@text="%s"]' % cd_color).click()
+                eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/iv_filter_color_item')
+                color_pick = random.randint(1,len(eles))
+                self.driver.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/recyclerview_ss_filter_color"]'
+                                                   '/android.widget.RelativeLayout[%s]' % color_pick).click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
+        if filter == '清除筛选':
+            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
+
 
     def cell_edit(self):  # 编辑单元格
         logging.info('======cell_edit=====')
