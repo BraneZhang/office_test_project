@@ -8,8 +8,8 @@ desired_caps:
 #  udid: 127.0.0.1:62001
 #  platformVersion: 5.1.1
   deviceName: xxxx
-  udid: 9613fafd
-  platformVersion: 7.1.2
+  udid: db798018
+  platformVersion: 8.0.0
 #  deviceName: xxxx
 #  udid: emulator-5554
 #  platformVersion: 7.1.1
