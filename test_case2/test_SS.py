@@ -13,9 +13,14 @@ from businessView.generalView import GeneralView
 from businessView.openView import OpenView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
+from data import data_info
+
+date_filter = data_info.date_filter
+num_filter = data_info.num_filter
+text_filter = data_info.text_filter
 
 
-class TestFunc(StartEnd):
+class TestSS(StartEnd):
 
     @unittest.skip('skip test_cell_attr')
     def test_cell_attr(self):
@@ -102,31 +107,36 @@ class TestFunc(StartEnd):
         ss.cell_fit_width()
         time.sleep(3)
 
-    @unittest.skip('skip test_data_table')
-    def test_data_table(self):  # 数据排序，工作表格式
-        logging.info('==========test_data_table==========')
+    @unittest.skip('skip test_ss_data_table')
+    def test_ss_data_table(self):  # 数据排序，工作表格式
+        logging.info('==========test_ss_data_table==========')
         cv = CreateView(self.driver)
         cv.create_file('ss')
-        time.sleep(1)
-        for i in range(10):
-            time.sleep(1)
-            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))  # 双击进入编辑
-            cv.tap(110 + 263 * 1.5, 295 + 55 * (1.5 + i))
-            self.driver.press_keycode(random.randint(7, 16))
         ss = SSView(self.driver)
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        for i in range(10):
+            ss.tap(x - width * 1.5, y - height * (4.5-i))
+            ss.cell_edit()
+            self.driver.press_keycode(random.randint(7, 16))
         ss.group_button_click('查看')
-        time.sleep(1)
         ss.data_sort('降序')
         ss.data_sort('升序')
         ss.sheet_style('隐藏编辑栏')
         ss.sheet_style('隐藏编辑栏')
+        ele = '//android.widget.ScrollView'
+        ss.swipe_options(ele, 'up')
         ss.sheet_style('隐藏表头')
         ss.sheet_style('隐藏表头')
         ss.sheet_style('隐藏网格线')
-        # ss.sheet_style('冻结窗口') 功能未完成
-        # ss.sheet_style('取消冻结')
+        ss.sheet_style('隐藏网格线')
+        ss.sheet_style('冻结窗格')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_freeze_current').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_freeze_row').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_freeze_column').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        ss.sheet_style('取消冻结')
         ss.sheet_style('100%')
-        time.sleep(3)
 
     @unittest.skip('skip test_drag_sheet')
     def test_drag_sheet(self):  # sheet拖动
@@ -478,6 +488,183 @@ class TestFunc(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
         state = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_checkbox_switch').text
         self.assertTrue(state == '开启')
+        gv.tap(x - width - 10, y - height * 3 - 10)
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_complete'))
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_cancel'))
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_asc'))
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_desc'))
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_customize'))
+        self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_clean'))
+
+    @unittest.skip('skip test_ss_filter2')
+    def test_ss_filter2(self):
+        logging.info('==========test_ss_filter2==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x - width - 18
+        y1 = y - height * 3 - 27
+        ss.tap(x1, y1)
+        self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_asc').click()
+        ss.tap(x1, y1)
+        self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_desc').click()
+        ss.tap(x1, y1)
+        self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_clean').click()
+        self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_complete').click()
+        ss.tap(x1, y1)
+        self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_cancel').click()
+        ss.tap(x1, y1)
+        self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_select_all').click()
+        self.driver.find_element_by_id('com.yozo.office:id/iv_ss_filter_select').click()
+        self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_select_all').click()
+        self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_customize').click()
+        self.driver.find_element_by_id('com.yozo.office:id/iv_ss_customize_back').click()
+
+    @unittest.skip('skip test_ss_filter_by_date')
+    def test_ss_filter_by_date(self):
+        logging.info('==========test_ss_filter_by_date==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x - width - 18
+        y1 = y - height * 3 - 27
+        ss.filter_data(x1, y1, '自定义', date_filter[random.randint(1, 12)], date_filter[random.randint(1, 12)])
+
+        # ss.filter_data(x1, y1, '自定义', '等于', '等于')
+        # ss.tap(x1, y1)
+        # ss.filter_data(x1, y1, '自定义', '等于', '不等于')
+
+        # for cd1 in date_filter:
+        #     for cd2 in date_filter:
+        #         time.sleep(1)
+        #         if cd2 != '等于' and cd1 != '等于':
+        #             ss.tap(x1, y1,3)
+        #         ss.filter_data(x1, y1, '自定义', cd1, cd2)
+
+    @unittest.skip('skip test_ss_filter_by_num')
+    def test_ss_filter_by_num(self):
+        logging.info('==========test_ss_filter_by_num==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x - 18
+        y1 = y - height * 3 - 27
+        ss.filter_data(x1, y1, '自定义', num_filter[random.randint(1, 12)], num_filter[random.randint(1, 12)])
+
+    @unittest.skip('skip test_ss_filter_by_num_shortcut')
+    def test_ss_filter_by_num_shortcut(self):
+        logging.info('==========test_ss_filter_by_num_shortcut==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x - 18
+        y1 = y - height * 3 - 27
+        ss.tap(x1, y1)
+        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="前十项"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ok').click()
+        ss.tap(x1, y1, 2)  # 非初次需要点两次
+        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="高于平均值"]').click()
+        ss.tap(x1, y1, 2)
+        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="低于平均值"]').click()
+
+    @unittest.skip('skip test_ss_filter_by_text')
+    def test_ss_filter_by_text(self):
+        logging.info('==========test_ss_filter_by_text==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x + width - 18
+        y1 = y - height * 3 - 27
+        ss.filter_data(x1, y1, '自定义', text_filter[random.randint(1, 12)], text_filter[random.randint(1, 12)])
+
+    @unittest.skip('skip test_ss_filter_cd1_none')
+    def test_ss_filter_cd1_none(self):
+        logging.info('==========test_ss_filter_cd1_none==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        for i in range(3):
+            x1 = x - width * (1 - i) - 18
+            y1 = y - height * 3 - 27
+            ss.tap(x1, y1)
+            self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_condition1').click()
+            self.driver.find_element(By.XPATH, '//android.widget.ListView/android.widget.LinearLayout[1]').click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
+            self.assertTrue(ss.get_toast_message('第一个条件不能为空'))
+            self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_customize_back').click()
+
+    @unittest.skip('skip test_ss_filter_by_color')
+    def test_ss_filter_by_color(self):
+        logging.info('==========test_ss_filter_cd1_none==========')
+        ss = SSView(self.driver)
+        ov = OpenView(self.driver)
+        ov.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
+        x1 = x - width - 18
+        y1 = y - height * 3 - 27
+        ss.tap(x1, y1)
+        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_color_type').click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, '//*[@text="字体颜色"]').click()
+        eles = self.driver.find_elements(By.XPATH,
+                                         '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout')
+        eles[random.randint(0, len(eles) - 1)].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
+        ss.tap(x1, y1, 2)
+        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_color_type').click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, '//*[@text="单元格颜色"]').click()
+        eles = self.driver.find_elements(By.XPATH,
+                                         '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout')
+        eles[random.randint(0, len(eles) - 1)].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
 
     @unittest.skip('skip test_sheet_operation')
     def test_sheet_operation(self):  # sheet相关功能
