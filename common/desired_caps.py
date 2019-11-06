@@ -17,8 +17,9 @@ def appium_desired():
         data = yaml.load(file, Loader=yaml.FullLoader)
         print(data)
     desired_caps = data['desired_caps']
-    auto_setup(__file__, devices=["Android:///%s" % data['desired_caps']['udid']],
-               project_root=os.path.dirname(os.getcwd()))
+    # airtest 输入法禁用 此输入法禁用后，无法使用poco().set_text()
+    yosemite = '?ime_method=None'
+    auto_setup(__file__, devices=["Android:///%s%s" % (data['desired_caps']['udid'], yosemite)])
     # desired_caps['platformName']=data['platformName']
     # desired_caps['platformVersion']=data['platformVersion']
     # desired_caps['deviceName']=data['deviceName']
