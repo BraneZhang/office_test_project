@@ -111,6 +111,7 @@ class WPView(GeneralView):
 
     def insert_example_shape(self):
         # 插入矩形
+
         self.move_frame()
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_shape')
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[3].click()
