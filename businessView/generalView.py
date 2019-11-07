@@ -424,7 +424,8 @@ class GeneralView(Common):
         ranges = '//android.support.v4.view.ViewPager/android.widget.ScrollView/android.widget.LinearLayout' \
                  '/android.widget.RelativeLayout'
         target = '//*[@text="%s"]' % chart
-        self.swipe_search2(target, ranges)
+        while not self.get_element_result(target):
+            self.swipe_options()
         self.driver.find_element(By.XPATH, target).click()
         ele_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
         eles = self.driver.find_elements(By.XPATH, ele_name)

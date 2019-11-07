@@ -16,22 +16,16 @@ from businessView.openView import OpenView
 from businessView.pgView import PGView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
+from data import data_info
 
-share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
-              'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
-wps = ['wp', 'ss', 'pg']
-ps = ['ss', 'pg']
-wp = ['wp', 'pg']
-ws = ['wp', 'ss']
-search_dict = {'wp': 'docx', 'ss': 'xlsx', 'pg': 'pptx'}
-switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全黑切出', '溶解', '向下擦除', '向左擦除', '向右擦除',
-               '向上擦除', '扇形展开', '从下抽出', '从左抽出', '从右抽出', '从上抽出', '从左下抽出', '从左上抽出',
-               '从右下抽出', '从右上抽出', '盒状收缩', '盒状展开', '1根轮辐', '2根轮辐', '3根轮辐', '4根轮辐', '8根轮辐',
-               '上下收缩', '上下展开', '左右收缩', '左右展开', '左下展开', '左上展开', '右下展开', '右上展开', '圆形',
-               '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
-               '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
-               '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
-auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
+share_list = data_info.share_list
+wps = data_info.wps
+ps = data_info.ps
+wp = data_info.wp
+ws = data_info.ws
+search_dict = data_info.search_dict
+switch_list = data_info.switch_list
+auto_sum = data_info.auto_sum
 
 
 @ddt
@@ -126,11 +120,11 @@ class TestFunc(StartEnd):
         time.sleep(3)
 
     @unittest.skip('skip test_insert_chart')
-    @data(*ps)
+    @data(*wps)
     def test_insert_chart(self, type):  # 插入图表，仅ss，pg
         logging.info('==========test_insert_chart==========')
-        chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '圆柱图', '圆锥图',
-                      '棱锥图']
+        chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
+                      '圆锥图', '棱锥图']
         cv = CreateView(self.driver)
         cv.create_file(type)
         gv = GeneralView(self.driver)
@@ -145,23 +139,16 @@ class TestFunc(StartEnd):
                 self.driver.press_keycode(random.randint(7, 16))
             gv.drag_coordinate(x, y + height * 2, x, y)
 
-        for i in range(3):
+        for i in range(12):
+            time.sleep(1)
             gv.group_button_click('插入')
-            if type == 'pg':
-                ele1 = '//*[@text="幻灯片"]'
-                ele2 = '//*[@text="图片"]'
-                gv.swipe_ele(ele2, ele1)
+            if type != 'ss':
+                gv.swipe_options()
             gv.insert_chart_insert(chart_list[i], random.randint(1, 9))
             gv.chart_template()
-        ele1 = '//*[@text="图表"]'
-        ele2 = '//*[@text="图表样式"]'
-        gv.swipe_ele(ele2, ele1)
-        gv.shape_layer('下移一层')
-        gv.shape_layer('置于底层')
-        gv.shape_layer('上移一层')
-        gv.shape_layer()
-
-        time.sleep(3)
+            if type == 'wp':
+                gv.tap(60, 250,2)
+        time.sleep(1)
 
     @unittest.skip('skip test_insert_shape')
     @data(*wps)
