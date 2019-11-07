@@ -25,7 +25,6 @@ wp = data_info.wp
 ws = data_info.ws
 search_dict = data_info.search_dict
 switch_list = data_info.switch_list
-auto_sum = data_info.auto_sum
 
 
 @ddt
@@ -65,27 +64,6 @@ class TestFunc(StartEnd):
         gv.export_pdf(file_name, 'local')
 
         self.assertTrue(gv.check_export_pdf())
-
-    @unittest.skip('skip test_formula')
-    @data(*auto_sum)
-    def test_formula(self, formula):
-        logging.info('==========test_formula==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-        time.sleep(1)
-
-        ss = SSView(self.driver)
-        x, y, width, height = ss.cell_location()  # cell B8
-        for i in range(5):
-            ss.tap(x + width * 0.5, y - height * (6.5 - i))
-            ss.cell_edit()
-            self.driver.press_keycode(random.randint(7, 16))
-
-        ss.tap(x + width * 1.5, y - height * 6.5)  # 求和
-        ss.auto_sum(formula)
-        ss.tap(x + width * 0.5, y - height * 6.5)
-        ss.drag_coordinate(x + width, y - height * 6, x + width, y - height * 2)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
     @unittest.skip('skip test_insert_chart1')
     @data(*ps)
@@ -147,7 +125,7 @@ class TestFunc(StartEnd):
             gv.insert_chart_insert(chart_list[i], random.randint(1, 9))
             gv.chart_template()
             if type == 'wp':
-                gv.tap(60, 250,2)
+                gv.tap(60, 250, 2)
         time.sleep(1)
 
     @unittest.skip('skip test_insert_shape')
