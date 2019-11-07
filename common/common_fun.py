@@ -344,12 +344,12 @@ class Common(BaseView):
         y1 = int(loc_list[1])
         x2 = int(loc_list[2])
         y2 = int(loc_list[3])
-        x3 = (x1 + x2) / 2
-        y3 = (y1 + y2) / 2
-        list_xy = [x1, x3, x2, y1, y3, y2]
+        x3 = int((x1 + x2) / 2)
+        y3 = int((y1 + y2) / 2)
+        list_xy = [x1 + 1, x3, x2 - 1, y1 + 1, y3, y2 - 1]
         return list_xy
 
-    def swipe_options(self, ele, option):
+    def swipe_options(self, ele='//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]', option='up'):
         logging.info('=====swipe_options======')
         list_xy = self.get_swipe_xy(ele)
         x1 = list_xy[0]
