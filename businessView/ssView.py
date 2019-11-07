@@ -221,8 +221,8 @@ class SSView(GeneralView):
         logging.info('==========cell_merge_split==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_merge_split').click()
 
-    def cell_num_style(self):
-        logging.info('==========cell_num_style==========')
+    def cell_num_format(self):
+        logging.info('==========cell_num_format==========')
         num_index = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_number_format"]' \
                     '/android.widget.FrameLayout[6]'
         self.driver.find_element(By.XPATH, num_index).click()
@@ -291,6 +291,7 @@ class SSView(GeneralView):
                                          '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
         for i in eles:
             i.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def unhide_sheet(self, index, index1):  # 取消隐藏
         logging.info('==========unhide_sheet==========')
