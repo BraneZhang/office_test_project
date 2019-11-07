@@ -349,9 +349,9 @@ class Common(BaseView):
         list_xy = [x1, x3, x2, y1, y3, y2]
         return list_xy
 
-    def swipe_options(self,ele,option):
+    def swipe_options(self, ele, option):
         logging.info('=====swipe_options======')
-        list_xy =self.get_swipe_xy(ele)
+        list_xy = self.get_swipe_xy(ele)
         x1 = list_xy[0]
         x2 = list_xy[1]
         x3 = list_xy[2]
@@ -359,7 +359,7 @@ class Common(BaseView):
         y2 = list_xy[4]
         y3 = list_xy[5]
         if option == 'up':
-            self.swipe(x2,y2,x2,y1)
+            self.swipe(x2, y2, x2, y1)
         elif option == 'down':
             self.swipe(x2, y2, x2, y3)
         elif option == 'left':
@@ -367,12 +367,15 @@ class Common(BaseView):
         else:
             self.swipe(x2, y2, x3, y2)
 
-    def template_object(self, filename):
+    def template_object(self, filename, target_pos=5, record_pos=None):
         pro_path = get_project_path()
         clickpic_path = os.path.join(pro_path, 'clickPicture_CN')
-        # 阈值threshold=0.8
+        # 图像识别阈值：threshold
+        # 图像识别新增参数:target_pos 图像点击位置
+        # 是否灰度：rgb
+        # 图片位置：record_pos  优先在录制时的位置附近查找，如果找不到符合条件的图片，再扩大寻找范围到整个画面
         t = Template(os.path.join(clickpic_path, filename), resolution=(1080, 1920), rgb=True, target_pos=target_pos,
-                     threshold=0.8)
+                     threshold=0.8, record_pos=record_pos)
         time.sleep(0.5)
         return t
 
