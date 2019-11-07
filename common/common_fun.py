@@ -336,7 +336,38 @@ class Common(BaseView):
             elif direction == 'right':
                 return s5[0], s5[1], s6[0], s6[1]
 
-    def template_object(self, filename, target_pos=5):
+    def get_swipe_xy(self, ele):
+        logging.info('=====get_swipe_xy======')
+        loc_str = self.find_element(By.XPATH, ele).get_attribute('bounds')
+        loc_list = loc_str.replace('[', '').replace(']', ',').split(',')
+        x1 = int(loc_list[0])
+        y1 = int(loc_list[1])
+        x2 = int(loc_list[2])
+        y2 = int(loc_list[3])
+        x3 = (x1 + x2) / 2
+        y3 = (y1 + y2) / 2
+        list_xy = [x1, x3, x2, y1, y3, y2]
+        return list_xy
+
+    def swipe_options(self,ele,option):
+        logging.info('=====swipe_options======')
+        list_xy =self.get_swipe_xy(ele)
+        x1 = list_xy[0]
+        x2 = list_xy[1]
+        x3 = list_xy[2]
+        y1 = list_xy[3]
+        y2 = list_xy[4]
+        y3 = list_xy[5]
+        if option == 'up':
+            self.swipe(x2,y2,x2,y1)
+        elif option == 'down':
+            self.swipe(x2, y2, x2, y3)
+        elif option == 'left':
+            self.swipe(x2, y2, x1, y2)
+        else:
+            self.swipe(x2, y2, x3, y2)
+
+    def template_object(self, filename):
         pro_path = get_project_path()
         clickpic_path = os.path.join(pro_path, 'clickPicture_CN')
         # 阈值threshold=0.8
