@@ -72,9 +72,12 @@ class TestSS(StartEnd):
         type = 'ss'
         cv.create_file('ss')
         ss = SSView(self.driver)
-        ss.cell_edit()
-        x, y, width, height = ss.cell_location()
-        ss.tap(x - width * 2, y - height * 4)
+
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+
         ss.cell_edit()
         for i in range(20):
             self.driver.press_keycode(45)
@@ -113,6 +116,25 @@ class TestSS(StartEnd):
         ss.cell_fit_height()
         ss.cell_fit_width()
         time.sleep(1)
+
+    @unittest.skip('skip test_ss_cells_select')
+    def test_ss_cells_select(self):
+        logging.info('==========test_ss_cells_select==========')
+        cv = CreateView(self.driver)
+        ss = SSView(self.driver)
+        cv.create_file('ss')
+
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+
+        ss.cell_edit()  # 进入编
+        x, y, width, height = ss.cell_location()  # A1
+        ss.tap(x + width * 1.5, y + height * 1.5)
+        time.sleep(1)
+        ss.drag_coordinate(x + width * 2, y + height * 2, x + width * 3, y + height * 3)
+        ss.tap(x - 10, y - 10)
 
     @unittest.skip('skip test_ss_data_table')
     def test_ss_data_table(self):  # 数据排序，工作表格式
@@ -188,92 +210,105 @@ class TestSS(StartEnd):
         logging.info('==========test_ss_formula_auto_sum==========')
         cv = CreateView(self.driver)
         cv.create_file('ss')
-
         ss = SSView(self.driver)
-        x, y, width, height = ss.cell_location()  # cell D6
+
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()  # cell A1
         for i in range(5):
-            ss.tap(x - width * 1.5, y - height * (3.5 - i))
+            ss.tap(x + width * 0.5, y + height * (0.5 + i))
             ss.cell_edit()
             self.driver.press_keycode(random.randint(7, 16))
 
         auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
         for i, value in enumerate(auto_sum):
-            ss.tap(x + width * 0.5, y - height * (3.5 - i))  # 求和
+            ss.tap(x + width * 2.5, y + height * (0.5 + i))  # 求和
             ss.auto_sum(auto_sum[i])
-            ss.tap(x - width * 1.5, y - height * 3.5)
-            ss.drag_coordinate(x - width, y - height * 3, x - width, y + height)
+            ss.tap(x + width * 0.5, y + height * 0.5)
+            ss.drag_coordinate(x + width, y + height, x + width, y + height * 5)
             self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_formula1')
-    def test_formula1(self):  # 其他类型公式
-        logging.info('==========test_formula1==========')
+    @unittest.skip('skip test_ss_formula_all')
+    def test_ss_formula_for_all(self):  # 其他类型公式
+        logging.info('==========test_ss_formula_all==========')
         cv = CreateView(self.driver)
         ss = SSView(self.driver)
         cv.create_file('ss')
-        time.sleep(1)
 
-        x, y, width, height = ss.cell_location()  # cell B8
-        for i in range(10):
-            ss.tap(x + width * 0.5, y - height * (6.5 - i))
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+
+        ss.cell_edit()
+        x, y, width, height = ss.cell_location()  # cell A1
+        for i in range(11):
+            ss.tap(x + width * 0.5, y + height * (0.5 + i))
             ss.cell_edit()
             self.driver.press_keycode(random.randint(7, 16))
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 0.5)
+        ss.tap(x + width * 2.5, y + height * 0.5)
         ss.formula_all('最近使用', 'MAX')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.tap(x + width * 0.5, y + height * 1.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 2.5, y + height * 1.5)
         ss.formula_all('数学和三角', 'ABS')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 1.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 2.5)
+        ss.tap(x + width * 2.5, y + height * 2.5)
         ss.formula_all('财务', 'DOLLARDE')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
-        time.sleep(0.5)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 5.5)
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.tap(x + width * 0.5, y + height * 3.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 3.5)
+        ss.tap(x + width * 2.5, y + height * 3.5)
         ss.formula_all('逻辑', 'AND')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
-        time.sleep(0.5)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 5.5)
+        ss.tap(x + width * 0.5, y + height * 3.5)
+        ss.tap(x + width * 0.5, y + height * 4.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 4.5)
+        ss.tap(x + width * 2.5, y + height * 4.5)
         ss.formula_all('文本', 'ASC')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 4.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 5.5)
+        ss.tap(x + width * 2.5, y + height * 5.5)
         ss.formula_all('日期和时间', 'NOW')
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 6.5)
+        ss.tap(x + width * 2.5, y + height * 6.5)
         ss.formula_all('查找与引用', 'COLUMN')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 6.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 7.5)
+        ss.tap(x + width * 2.5, y + height * 7.5)
         ss.formula_all('统计', 'AVERAGE')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.tap(x + width * 0.5, y + height * 1.5)
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.tap(x + width * 0.5, y + height * 3.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        # cv.tap(110 + 263 * 2.5, 295 + 55 * 8.5)
-        # ss.formula_all('工程', 'DEC2BIN')
-        # cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
-        # self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        ss.tap(x + width * 2.5, y + height * 8.5)
+        ss.formula_all('工程', 'HEX2BIN')
+        ss.tap(x + width * 0.5, y + height * 8.5)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 9.5)
+        ss.tap(x + width * 2.5, y + height * 9.5)
         ss.formula_all('信息', 'ISBLANK')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 9.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        cv.tap(110 + 263 * 2.5, 295 + 55 * 10.5)
+        ss.tap(x + width * 2.5, y + height * 10.5)
         ss.formula_all('所有公式', 'ABS')
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
+        ss.tap(x + width * 0.5, y + height * 10.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
     @unittest.skip('skip test_ss_merge_wrap')
@@ -320,6 +355,81 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.swipe_options(ele, 'up')
         ss.cell_num_format()
+
+    @unittest.skip('skip test_ss_cell_pop_menu')
+    def test_ss_cell_pop_menu(self):
+        logging.info('==========test_ss_cell_pop_menu==========')
+        cv = CreateView(self.driver)
+        type = 'ss'
+        cv.create_file(type)
+
+        ss = SSView(self.driver)
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+
+        ss.cell_edit()  # 进入编辑
+        x, y, width, height = ss.cell_location()  # 新建默认A1
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('edit')
+        self.driver.press_keycode(45)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('copy')
+        ss.tap(x + width * 0.5, y + height * 1.5)
+        ss.tap(x + width * 0.5, y + height * 1.5)
+        ss.pop_menu_click('paste')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('cut')
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.pop_menu_click('paste')
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.pop_menu_click('fill_data')
+        x1, y1 = ss.find_pic_position('fill_down')
+        ss.drag_coordinate(x1, y1, x1, y1 + height * 2)
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        ss.tap(x + width * 0.5, y + height * 2.5)
+        time.sleep(1)
+        x2, y2 = ss.find_pic_position('cut')
+        print(f'x2,y2:{x2, y2}')
+        ss.swipe(x2, y2, x2 - width, y2)
+        ss.pop_menu_click('clear_content')
+
+    @unittest.skip('skip test_ss_cell_pop_menu_text')
+    def test_ss_cell_pop_menu_text(self):
+        logging.info('==========test_ss_cell_pop_menu_text==========')
+        cv = CreateView(self.driver)
+        cv.create_file('ss')
+
+        ss = SSView(self.driver)
+        # 新建表格默认选中A1，目前不是，手动调整
+        ss.cell_edit()  # 进入编
+        x0, y0, width, height = ss.cell_location()
+        cv.tap(x0 - width * 3, y0 - height * 5)
+        ss.cell_edit()  # 进入编辑
+        x, y, width, height = ss.cell_location()
+        for i in range(10):
+            self.driver.press_keycode(random.randint(29, 54))
+        ss.long_press(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('copy')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('paste')
+        ss.drag_coordinate(x + width * 0.5, y + height * 0.5, x + width * 0.1, y + height * 0.5)
+        ss.pop_menu_click('cut')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('paste')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('selectAll')
+        ss.pop_menu_click('cut')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('paste')
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.pop_menu_click('newline')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
     @unittest.skip('skip test_pop_cell_row_col1')
     def test_pop_cell_row_col1(self):  # 单元格、行、列相关操作
