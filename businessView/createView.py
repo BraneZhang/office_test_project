@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 import logging
 import random
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+
+from businessView.generalView import GeneralView
 from businessView.loginView import LoginView
 from common.common_fun import Common
 
@@ -13,8 +16,13 @@ class CreateView(Common):
 
     def create_file(self, type):  # 新建文档
         logging.info('==========create_file_%s==========' % type)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
+        time.sleep(2)
+        self.tap(925,1669)
+        time.sleep(2)
+        type_dice = {'wp': 3, 'ss': 2, 'pg': 1}
+        self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dice[type]).click()
         null_file = '//*[@resource-id="com.yozo.office:id/createEmpty"]'
         if not self.exist(null_file):
             null_file = '//*[@resource-id="com.yozo.office:id/create_empty_offline_img"]'
