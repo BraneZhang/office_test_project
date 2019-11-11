@@ -13,12 +13,12 @@ class SSView(GeneralView):
 
     def filter_data(self, x, y, filter, cd1=None, cd2=None, cd_color=None):  # 点击绘图区域的筛选下拉，图片识别实现错误，使用坐标
         logging.info('======filter_data=====')
-        filter_list = ['升序', '降序', '自定义','清除筛选']
+        filter_list = ['升序', '降序', '自定义', '清除筛选']
         # self.group_button_click('查看')
         # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
         self.tap(x, y)  # 根据坐标来点击
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % filter).click()
-        if filter=='自定义':
+        if filter == '自定义':
             ele = '//*[@resource-id="com.yozo.office:id/listView_filter_select"]'
             if cd1 != None:
                 self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_condition1').click()
@@ -43,13 +43,12 @@ class SSView(GeneralView):
                 self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_color_type').click()
                 self.driver.find_element(By.XPATH, '//*[@text="%s"]' % cd_color).click()
                 eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/iv_filter_color_item')
-                color_pick = random.randint(1,len(eles))
+                color_pick = random.randint(1, len(eles))
                 self.driver.find_element(By.XPATH, '//*[@resource-id="com.yozo.office:id/recyclerview_ss_filter_color"]'
                                                    '/android.widget.RelativeLayout[%s]' % color_pick).click()
             self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
         if filter == '清除筛选':
             self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
-
 
     def cell_edit(self):  # 编辑单元格
         logging.info('======cell_edit=====')
@@ -329,18 +328,7 @@ class SSView(GeneralView):
         self.operate_sheet(index, 'rename')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_office_ss_sheet_rename_text').set_text(name)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_office_ss_sheet_rename_ok').click()
-
-    def check_rename_sheet(self, index, name):
-        base_ele = self.driver.find_element(By.XPATH,
-                                            '//*[@resource-id="com.yozo.office:id/ll_ss_sheet_item"and @index="%s"]' % index)
-        text_name = base_ele.find_element(By.ID, 'com.yozo.office:id/tv_ss_sheet_name').text
-        if text_name == name:
-            logging.info('rename success')
-            return True
-        else:
-            logging.error('rename fail')
-            self.getScreenShot('rename fail')
-            return False
+        return self.get_element_result('//*[@text="%s"]' % name)
 
 
 if __name__ == '__main__':
