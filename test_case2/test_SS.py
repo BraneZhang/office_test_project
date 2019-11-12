@@ -218,48 +218,36 @@ class TestSS(StartEnd):
     def test_ss_chart_pop(self):  # 图表相关操作
         logging.info('==========test_ss_chart_pop==========')
         cv = CreateView(self.driver)
-        type = 'ss'
-        cv.create_file(type)
+        cv.create_file('ss')
         ss = SSView(self.driver)
         gv = GeneralView(self.driver)
-        time.sleep(2)
-        x, y, width, height = ss.object_position('drag_point1', 'drag_point2')
-        ss.tap(x, y)
-        time.sleep(2)
-        ss.pop_menu_click('edit')
-        self.driver.press_keycode(12)
-        ss.tap(x, y + height)
-        time.sleep(1)
-
-        ss.tap(x, y + height)
-        time.sleep(2)
-        ss.pop_menu_click('edit')
-        self.driver.press_keycode(15)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
-        # ss.tap(x, y)
-        x, y = ss.find_pic_position('drag_point1')
-        ss.swipe(x, y, x, y - height)
-        time.sleep(1)
+        x, y, width, height = ss.cell_location()
+        for i in range(3):
+            ss.tap(x + width * 0.5, y + height * (0.5 + i))
+            ss.cell_edit()
+            self.driver.press_keycode(random.randint(7, 16))
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.swipe(x + width, y + height, x + width, y + height * 3)
         ss.group_button_click('插入')
         gv.insert_chart_insert('柱形图', 2)
+        gv.fold_expand()
+        time.sleep(1)
 
-        x, y, width, height = ss.object_position('chart_all1', 'chart_all4')
-        ss.tap(x, y)
-        time.sleep(2)
+        x1, y1 = ss.find_pic_position('chart_title')
+        ss.tap(x1, y1)
         ss.pop_menu_click('cut')
-        ss.tap(x, y)
-        time.sleep(2)
-        ss.tap(x, y)
+        ss.tap(x1, y1)
+        ss.tap(x1, y1)
         ss.pop_menu_click('paste')
-        ss.tap(x, y)
-        time.sleep(2)
+        x1, y1 = ss.find_pic_position('chart_title')
+        ss.tap(x1, y1)
         ss.pop_menu_click('copy')
-        ss.tap(x, y)
-        time.sleep(2)
+        ss.tap(x1, y1)
         ss.pop_menu_click('paste')
-        ss.swipe(x, y, x - 100, y + 100)
-        x, y = ss.find_pic_position('chart_all1')
-        ss.swipe(x, y, x - 100, y - 100)
+        x1, y1 = ss.find_pic_position('chart_title')
+        ss.swipe(x1, y1, x1 + 100, y1 + 100)
+        x1, y1 = ss.find_pic_position('chart_all1')
+        ss.swipe(x1, y1, x1 + 10, y1 + 10)
 
     @unittest.skip('skip test_ss_column_options')
     def test_ss_column_options(self):
@@ -311,7 +299,7 @@ class TestSS(StartEnd):
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
         for i in range(10):
-            ss.tap(x - width * 1.5, y - height * (4.5 - i))
+            ss.tap(x + width * 0.5, y + height * (0.5 + i))
             ss.cell_edit()
             self.driver.press_keycode(random.randint(7, 16))
         ss.group_button_click('查看')
@@ -656,12 +644,12 @@ class TestSS(StartEnd):
         ss = SSView(self.driver)
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
-        ss.tap(x - width * 2, y - height * 4)
+        ss.tap(x + width * 0.5, y + height * 0.5)
         ss.cell_edit()
         for i in range(20):
             self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
-        cv.drag_coordinate(x - width, y - height * 3, x, y)
+        cv.drag_coordinate(x + width, y + height, x + width, y + height * 3)
 
         ss.group_button_click('编辑')
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
@@ -670,9 +658,9 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.cell_merge_split()
         ss.cell_merge_split()
+        ss.tap(x + width * 0.5, y + height * 0.5)
         ss.cell_auto_wrap()
         ss.cell_auto_wrap()
-        time.sleep(1)
 
     @unittest.skip('skip test_num_style')
     def test_ss_num_format(self):
@@ -778,23 +766,21 @@ class TestSS(StartEnd):
         ele2 = self.driver.find_element(By.XPATH, '//*[@text="工作表3"]')
         ss.drag_element(ele1, ele2)
 
-    @unittest.skip('skip test_table_style')
-    def test_table_style(self):  # 表格样式
-        logging.info('==========test_table_style==========')
+    @unittest.skip('skip test_ss_table_style')
+    def test_ss_table_style(self):  # 表格样式
+        logging.info('==========test_ss_table_style==========')
         cv = CreateView(self.driver)
         cv.create_file('ss')
-        time.sleep(1)
-        cv.tap(110 + 263 * 1.5, 295 + 55 * 1.5)
-        cv.drag_coordinate(110 + 263 * 2, 295 + 55 * 2, 110 + 263 * 3, 295 + 55 * 4)
+
         ss = SSView(self.driver)
+        ss.cell_edit()  # 进入编辑
+        x, y, width, height = ss.cell_location()
+        ss.tap(x + width * 1.5, y + height * 1.5)
+        ss.drag_coordinate(x + width * 2, y + height * 2, x + width * 3, y + height * 4)
         ss.group_button_click('编辑')
-        ele1 = '//*[@text="编辑"]'
-        ele2 = '//*[@text="字体颜色"]'
-        ele3 = '//*[@text="单元格填充"]'
-        ele4 = '//*[@text="数字格式"]'
-        ele5 = '//*[@text="插入单元格"]'
-        ss.swipe_ele(ele2, ele1)
-        ss.swipe_ele(ele3, ele1)
-        ss.swipe_ele(ele4, ele1)
-        ss.swipe_ele(ele5, ele1)
+        ss.swipe_options()
+        ss.swipe_options()
+        ss.swipe_options()
+        ss.swipe_options()
+        ss.swipe_options()
         ss.table_style()

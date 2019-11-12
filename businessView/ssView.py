@@ -162,11 +162,11 @@ class SSView(GeneralView):
         self.driver.find_element(By.XPATH,
                                  '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_table_style"]/android.widget.FrameLayout[6]').click()
         eles = self.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
-        eleB = '//*[@text="表格样式"]'
-        eleA = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout[20]'
+        ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_item_table_style"]'
         for e in eles:
             e.click()
-        self.swipe_ele(eleA, eleB)
+        self.swipe_options(ele)
+        self.swipe_options(ele)
         eles = self.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout')
         for e in eles:
             e.click()
@@ -310,6 +310,8 @@ class SSView(GeneralView):
             self.driver.find_element(By.XPATH,
                                      '//*[@resource-id="com.yozo.office:id/ll_ss_sheet_item"and @index="%s"]' % index).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_sheet_%s' % operation).click()
+        if operation == 'unhide':
+            self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_ss_sheet_hide_name')[0].click()
 
     def hide_sheet(self):  # 隐藏工作表标签
         logging.info('==========hide_sheet==========')
