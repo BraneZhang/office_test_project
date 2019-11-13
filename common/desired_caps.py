@@ -17,9 +17,11 @@ def appium_desired():
         data = yaml.load(file, Loader=yaml.FullLoader)
         print(data)
     desired_caps = data['desired_caps']
-    # airtest 输入法禁用 此输入法禁用后，无法使用poco().set_text()
-    yosemite = '?ime_method=None'
-    auto_setup(__file__, devices=["Android:///%s%s" % (data['desired_caps']['udid'], yosemite)])
+    # 使用adb shell input 代替Yosemite输入  ?ime_method=ADBIME
+    # from airtest.core.api import *
+    # text("hello")
+    # 第二种写法：init_device("Android", ime_method="ADBIME")
+    auto_setup(__file__, devices=["Android:///%s?ime_method=ADBIME" % data['desired_caps']['udid']])
     # desired_caps['platformName']=data['platformName']
     # desired_caps['platformVersion']=data['platformVersion']
     # desired_caps['deviceName']=data['deviceName']
