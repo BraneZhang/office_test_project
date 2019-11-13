@@ -365,6 +365,16 @@ class TestWP(StartEnd):
         time.sleep(10)
 
     @unittest.skip('skip test_wp_text_select')
+    def test_wp_table_cell_extend_cols(self):
+        logging.info('==========test_wp_table_cell_extend_cols==========')
+        self.wp_insert_one_table()
+        wp = WPView(self.driver)
+        extend = loop_find(wp.template_object('table_select.png', target_pos=9))
+
+        swipe([extend[0], extend[1]], [extend[0], extend[1] + 200])
+        time.sleep(1)
+
+    @unittest.skip('skip test_wp_text_select')
     def test_wp_table_merge_split(self):
         logging.info('==========test_wp_table_merge_split==========')
         self.wp_insert_one_table()
@@ -398,7 +408,7 @@ class TestWP(StartEnd):
         self.wp_insert_one_table()
         wp = WPView(self.driver)
         free_col = wp.table_fill_color()
-        self.assertNotEquals(free_col, '000000', msg='自定义颜色选择失败')
+        self.assertNotEquals(free_col, '000000', msg='表格自定义颜色选择失败')
 
     @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_3_border_line(self):
@@ -442,7 +452,7 @@ class TestWP(StartEnd):
                        '/android.widget.FrameLayout[1]' % type).click()
         time.sleep(1)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_insert_testbox(self, type1='wp'):
         logging.info('==========test_wp_insert_testbox==========')
         self.insert_one_testbox(type1)
@@ -867,6 +877,43 @@ class TestWP(StartEnd):
         wp.get_element('//*[@text="%s"]' % chart_type).click()
         wp.chart_insert_list('%s' % chart_type)
 
+    def insert_chart_first_type(self, chart_type):
+        logging.info('==========insert_chart_first_type %s==========' % chart_type)
+        # 插入图表 chart_type 图表类型 默认为首个样式
+        cv = CreateView(self.driver)
+        cv.create_file('wp')
+        wp = WPView(self.driver)
+        wp.group_button_click('插入')
+        wp.option_insert_first_chart(chart_type)
+
+    def test_wp_chart_get_data(self, chart_type='柱形图'):
+        self.insert_chart_first_type(chart_type)
+        wp = WPView(self.driver)
+        wp.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_datasource"]').click()
+        self.assertTrue(wp.exist('//*[@resource-id="com.yozo.office:id/a0000_pg_chart_embedtable_table"]'),
+                        msg='%s data source not exist' % chart_type)
+
+    def test_wp_chart_fill_color(self, chart_type='柱形图'):
+        self.insert_chart_first_type(chart_type)
+        wp = WPView(self.driver)
+        free_col = wp.chart_fill_color()
+        self.assertNotEquals(free_col, '000000', msg='表格自定义颜色选择失败')
+
+    def test_wp_chart_type(self, chart_type='柱形图'):
+        self.insert_chart_first_type(chart_type)
+        wp = WPView(self.driver)
+        wp.chart_change_type_same(chart_type)
+
+    def test_wp_chart_random_style(self, chart_type='柱形图'):
+        self.insert_chart_first_type(chart_type)
+        wp = WPView(self.driver)
+        wp.chart_random_style()
+
+    def test_wp_chart_change_color(self, chart_type='柱形图'):
+        self.insert_chart_first_type(chart_type)
+        wp = WPView(self.driver)
+        wp.chart_change_color()
+
     @unittest.skip('skip test_wp_text_select')
     def test_wp_print_long_pic(self):
         logging.info('==========test_wp_print_long_pic==========')
@@ -879,3 +926,17 @@ class TestWP(StartEnd):
         wp.print_long_pic()
         self.assertTrue(wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_export_longpic_share_buttons"]'),
                         msg='未弹出分享栏')
+
+    @unittest.skip('skip test_wp_text_select')
+    def test_wp_swipe_up_down(self):
+        logging.info('==========test_wp_swipe_up_down==========')
+        ov = OpenView(self.driver)
+        ov.open_file('欢迎使用永中Office.docx')
+        wp = WPView(self.driver)
+        frame5 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
+        frame2 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=2)
+        wp.swipe(frame5[0], frame5[1], frame2[0], frame2[1])
+        wp.swipe(frame5[0], frame5[1], frame2[0], frame2[1])
+        wp.swipe(frame2[0], frame2[1], frame5[0], frame5[1])
+        wp.swipe(frame2[0], frame2[1], frame5[0], frame5[1])
