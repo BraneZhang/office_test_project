@@ -195,6 +195,60 @@ class WPView(GeneralView):
         self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok").click()
         return free_col
 
+    def option_insert_first_chart(self, chart_type):
+        s = self.swipe_option('up')
+        'com.yozo.office:id/yozo_ui_wp_option_id_insert_chart'
+        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_insert_chart"]'):
+            self.swipe(s[0], s[1], s[2], s[3])
+        self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_wp_option_id_insert_chart").click()
+        while not self.exist('//*[@text="%s"]' % chart_type):
+            self.swipe(s[0], s[1], s[2], s[3])
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
+        self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_option_item_view").click()
+
+    def chart_fill_color(self):  # 填充色
+        # 设置图表填充颜色，并返回自定义色值
+        logging.info('==========chart_fill_color==========')
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_background_color')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
+        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs0))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_others').click()
+        self.driver.find_element(By.ID, "com.yozo.office:id/color_picker_view").click()
+        free_col = self.driver.find_element(By.ID, "com.yozo.office:id/tv_hex").get_attribute('text')
+        self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok").click()
+        return free_col
+
+    def chart_change_type_same(self, chart_type):
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_type').click()
+        s = self.swipe_option('up')
+        while not self.exist('//*[@text="%s"]' % chart_type):
+            self.swipe(s[0], s[1], s[2], s[3])
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        for i in range(1, len(childs)):
+            parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo').click()
+
+    def chart_random_style(self):
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_style').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[random.randint(1, len(childs))].click()
+        time.sleep(1)
+
+    def chart_change_color(self):
+        s = self.swipe_option('up')
+        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme"]'):
+            self.swipe(s[0], s[1], s[2], s[3])
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
     def table_border_line(self):  # 边框线
         logging.info('==========table_border_line==========')
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_border')
