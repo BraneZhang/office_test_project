@@ -19,7 +19,7 @@ chart_type = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面
 @ddt
 class TestWP(StartEnd):
 
-    @unittest.skip('skip test_pop_menu_text_wp')
+    # @unittest.skip('skip test_pop_menu_text_wp')
     def test_pop_menu_text_wp(self):
         logging.info('==========test_pop_menu_text_wp==========')
         cv = CreateView(self.driver)
@@ -46,7 +46,7 @@ class TestWP(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_text_attr_wp')
+    # @unittest.skip('skip test_shape_text_attr_wp')
     def test_shape_text_attr_wp(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========test_shape_text_attr_wp==========')
         type = 'wp'
@@ -81,7 +81,7 @@ class TestWP(StartEnd):
         gv.text_indent(type, '左缩进')
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_bookmark')
+    # @unittest.skip('skip test_wp_bookmark')
     def test_wp_bookmark(self):
         logging.info('==========test_wp_bookmark==========')
         ov = OpenView(self.driver)
@@ -95,7 +95,7 @@ class TestWP(StartEnd):
         wp.group_button_click('查看')
         wp.list_bookmark('test')
 
-    @unittest.skip('skip test_wp_check_approve')
+    # @unittest.skip('skip test_wp_check_approve')
     def test_wp_check_approve(self):  # 修订
         logging.info('==========test_wp_check_approve==========')
         cv = CreateView(self.driver)
@@ -119,7 +119,7 @@ class TestWP(StartEnd):
         wp.revision_on_off('关闭')
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_font_attr')
+    # @unittest.skip('skip test_wp_font_attr')
     def test_wp_font_attr(self):
         logging.info('==========test_wp_font_attr===========')
         cv = CreateView(self.driver)
@@ -155,7 +155,7 @@ class TestWP(StartEnd):
         wp.text_columns(2)
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_insert_watermark')
+    # @unittest.skip('skip test_wp_insert_watermark')
     def test_wp_insert_watermark(self):
         logging.info('==========test_wp_insert_watermark==========')
         cv = CreateView(self.driver)
@@ -168,7 +168,7 @@ class TestWP(StartEnd):
         wp.insert_watermark('yozo', delete='delete')
         time.sleep(3)
 
-    @unittest.skip('skip test_wp_jump')
+    # @unittest.skip('skip test_wp_jump')
     def test_wp_jump(self):  # 跳转页
         logging.info('==========test_wp_bookmark==========')
         ov = OpenView(self.driver)
@@ -178,7 +178,7 @@ class TestWP(StartEnd):
         wp.page_jump(7)
         time.sleep(2)
 
-    @unittest.skip('skip test_wp_read_self_adaption')
+    # @unittest.skip('skip test_wp_read_self_adaption')
     def test_wp_read_self_adaption(self):  # wp阅读自适应
         logging.info('==========test_wp_read_self_adaption==========')
         ov = OpenView(self.driver)
@@ -189,7 +189,7 @@ class TestWP(StartEnd):
         self.assertFalse(wp.get_element_result('//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]'),
                          'read self adaption set fail!')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_text_select(self):  # 文本选取
         logging.info('==========test_wp_text_select==========')
         ov = OpenView(self.driver)
@@ -208,16 +208,16 @@ class TestWP(StartEnd):
         wp.group_button_click('插入')
         wp.insert_example_table()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_move(self):
         logging.info('==========test_wp_table_move==========')
         self.wp_insert_one_table()
         wp = WPView(self.driver)
         t = loop_find(wp.template_object('table_select.png'))
         wp.swipe(t[0], t[1], t[0], t[1] + 200, duration=2000)
-        time.sleep(10)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_pop_menu(self):
         logging.info('==========test_wp_table_pop_menu==========')
         self.wp_insert_one_table()
@@ -245,7 +245,7 @@ class TestWP(StartEnd):
         touch(wp.template_object('table_select.png'))
         touch(wp.template_object('cut.png'))
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_size(self):
         logging.info('==========test_wp_table_size==========')
         self.wp_insert_one_table()
@@ -259,7 +259,7 @@ class TestWP(StartEnd):
         swipe(wp.template_object('table_size.png'), wp.get_element_xy(ele, x_y=4))
         time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_right_cols(self):
         logging.info('==========test_wp_table_right_cols==========')
         self.wp_insert_one_table()
@@ -272,23 +272,20 @@ class TestWP(StartEnd):
         while not exists(wp.template_object('table_size.png')):
             wp.swipe(e9[0], e9[1], e7[0], e7[1])
         touch(wp.template_object('table_cols_rows.png'))
+        assert_exists(wp.template_object('insert_cols.png'), msg="点击插入列图标后，未检测到pop菜单中出现插入列选项")
         time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_left_rows(self):
         logging.info('==========test_wp_table_left_rows==========')
         self.wp_insert_one_table()
         wp = WPView(self.driver)
-        ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]'
-        e7 = wp.get_element_xy(ele, x_y=7)
-        e9 = wp.get_element_xy(ele, x_y=9)
         # 插入行
-        while not exists(wp.template_object('table_select.png')):
-            wp.swipe(e7[0], e7[1], e9[0], e9[1])
         touch(wp.template_object('table_cols_rows.png'))
+        assert_exists(wp.template_object('insert_rows.png'), msg="点击插入行图标后，未检测到pop菜单中出现插入行选项")
         time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_pop_cell(self):
         logging.info('==========test_wp_table_pop_cell==========')
         self.wp_insert_one_table()
@@ -312,7 +309,7 @@ class TestWP(StartEnd):
         touch(wp.template_object('table_select.png', target_pos=9))
         touch(wp.template_object('delete_cols.png'))
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_pop_A_cols(self):
         logging.info('==========test_wp_table_pop_A_cols==========')
         self.wp_insert_one_table()
@@ -336,9 +333,9 @@ class TestWP(StartEnd):
         touch(wp.template_object('delete_cols.png'))
         touch([table_all[0] + 200, table_all[1]])
         touch(wp.template_object('delete_table.png'))
-        time.sleep(10)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_pop_1_rows(self):
         logging.info('==========test_wp_table_pop_1_rows==========')
         self.wp_insert_one_table()
@@ -362,9 +359,9 @@ class TestWP(StartEnd):
         touch(wp.template_object('delete_rows.png'))
         touch([table_all[0], table_all[1] + 50])
         touch(wp.template_object('delete_table.png'))
-        time.sleep(10)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_cell_extend_cols(self):
         logging.info('==========test_wp_table_cell_extend_cols==========')
         self.wp_insert_one_table()
@@ -374,19 +371,19 @@ class TestWP(StartEnd):
         swipe([extend[0], extend[1]], [extend[0], extend[1] + 200])
         time.sleep(1)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_merge_split(self):
         logging.info('==========test_wp_table_merge_split==========')
         self.wp_insert_one_table()
-        select_all_xy = self.wp_table_select()
+
         wp = WPView(self.driver)
-        wp.tap(select_all_xy[0], select_all_xy[1])
+        touch(wp.template_object('table_select.png'))
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
         wp.table_merge_split()
-        time.sleep(10)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_insert(self):
         logging.info('==========test_wp_table_insert==========')
         cv = CreateView(self.driver)
@@ -395,14 +392,14 @@ class TestWP(StartEnd):
         wp.group_button_click('插入')
         wp.table_insert_list()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_1_type(self):
         logging.info('==========test_wp_table_attr_1_type==========')
         self.wp_insert_one_table()
         wp = WPView(self.driver)
         wp.table_type_list()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_2_fill_color(self):
         logging.info('==========test_wp_table_attr_2_fill_color==========')
         self.wp_insert_one_table()
@@ -410,14 +407,14 @@ class TestWP(StartEnd):
         free_col = wp.table_fill_color()
         self.assertNotEquals(free_col, '000000', msg='表格自定义颜色选择失败')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_3_border_line(self):
         logging.info('==========test_wp_table_attr_3_border_line==========')
         self.wp_insert_one_table()
         wp = WPView(self.driver)
         wp.table_border_line()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_4_insert_row_col(self):
         logging.info('==========test_wp_table_attr_4_insert_row_col==========')
         self.wp_insert_one_table()
@@ -430,7 +427,7 @@ class TestWP(StartEnd):
         wp.table_insert_row_col(direction='left')
         wp.table_insert_row_col(direction='light')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_table_attr_5_delete_table(self):
         logging.info('==========test_wp_table_attr_5_delete_table==========')
         self.wp_insert_one_table()
@@ -452,7 +449,7 @@ class TestWP(StartEnd):
                        '/android.widget.FrameLayout[1]' % type).click()
         time.sleep(1)
 
-    # @unittest.skip('skip test_wp_text_select')
+    # #@unittest.skip('skip test_wp_text_select')
     def test_wp_insert_testbox(self, type1='wp'):
         logging.info('==========test_wp_insert_testbox==========')
         self.insert_one_testbox(type1)
@@ -465,7 +462,7 @@ class TestWP(StartEnd):
         wp.group_button_click('插入')
         wp.insert_example_shape()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_shape_fixed_rotate(self, type1='wp'):  # 形状四种固定旋转角度
         logging.info('==========test_wp_shape_fixed_rotate==========')
         self.insert_one_shape()
@@ -475,7 +472,7 @@ class TestWP(StartEnd):
                            '/android.widget.FrameLayout[%s]' % (type1, i)).click()
             # print(i)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_shape_text_round(self):
         logging.info('==========test_wp_shape_text_round==========')
         # 仅wp存在文字环绕功能
@@ -490,7 +487,7 @@ class TestWP(StartEnd):
         wp.text_wrap('衬于文字下方')
         wp.text_wrap()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_shape_pop_menu_all(self):
         logging.info('==========test_wp_shape_pop_menu_all==========')
         self.insert_one_shape()
@@ -518,8 +515,7 @@ class TestWP(StartEnd):
         wp.insert_example_shape()
         touch(wp.template_object('rotate_free.png'))
         touch(wp.template_object('paste.png'))
-
-        time.sleep(10)
+        time.sleep(5)
 
     def insert_one_pic(self, type1):  # 将图片插入wp中
         logging.info('==========insert_one_pic==========')
@@ -529,25 +525,20 @@ class TestWP(StartEnd):
         wp.group_button_click('插入')
         wp.insert_pic()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_fixed_rotate(self, type1='wp'):  # 图片四种固定旋转角度
         logging.info('==========test_wp_pic_fixed_rotate==========')
-        # type1 = 'pg'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         for i in range(1, 5):
             wp.get_element(
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_width_to_height(self, type1='wp'):
         logging.info('==========test_wp_pic_width_to_height==========')
-        # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
         if type1 == 'wp':
@@ -558,9 +549,6 @@ class TestWP(StartEnd):
             ele1 = '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_broad"]'
             ele2 = '//*[@text="叠放次序"]'
             wp.swipe_ele(ele1, ele2)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
             '//*[@resource-id="%s"]'
@@ -568,21 +556,18 @@ class TestWP(StartEnd):
         # 属性调整大小
         wp.shape_option_5()
         # 手势拖拉大小控制点
-        x, y = loop_find(wp.template_object('drag_pic.png'))
-        wp.swipe(x, y, 500, 1000)
-        time.sleep(10)
+        x, y = loop_find(wp.template_object('rotate_free.png'))
+        wp.swipe(x, y+75, x, y+275)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_shadow(self, type1='wp'):
         logging.info('==========test_wp_pic_shadow==========')
         # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
-        cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
 
+        cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
             '//*[@resource-id="%s"]'
             '/android.widget.FrameLayout[5]' % cc).click()
@@ -590,9 +575,6 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_effect_type"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_effect" % type1
         for i in range(1, 7):
             wp.get_element(
@@ -604,17 +586,14 @@ class TestWP(StartEnd):
             wp.get_element(
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
-        time.sleep(10)
+        time.sleep(5)
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_outline_color(self, type1='wp'):
         logging.info('==========test_wp_pic_outline_color==========')
         # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
             '//*[@resource-id="%s"]'
@@ -623,13 +602,7 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_border_color"
-        # elif type1 == 'wp':
         cc = "com.yozo.office:id/yozo_ui_wp_option_id_picture_broad"
-        # elif type1 == 'ss':
-        #     cc = "com.yozo.office:id/yozo_ui_ss_option_id_picture_broad_color"
         s = wp.swipe_option('up')
         while not wp.exist('//*[@resource-id="%s"]' % cc):
             wp.swipe(s[0], s[1], s[2], s[3])
@@ -641,20 +614,12 @@ class TestWP(StartEnd):
         list(map(lambda i: wp.get_element(
             '//*[@resource-id="%s"]'
             '/android.widget.FrameLayout[%s]' % (cc, i)).click(), range(1, 43)))
-        # for i in range(1, 43):
-        #     wp.get_element(
-        #         '//*[@resource-id="%s"]'
-        #         '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_outline_border_type(self, type1='wp'):
         logging.info('==========test_wp_pic_outline_border_type==========')
-        # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
             '//*[@resource-id="%s"]'
@@ -663,13 +628,7 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_border_type"
-        # elif type1 == 'wp':
         cc = "com.yozo.office:id/yozo_ui_wp_option_id_picture_border_type"
-        # elif type1 == 'ss':
-        #     cc = "com.yozo.office:id/yozo_ui_ss_option_id_picture_border_type"
         s = wp.swipe_option('up')
         while not wp.exist('//*[@resource-id="%s"]' % cc):
             wp.swipe(s[0], s[1], s[2], s[3])
@@ -683,15 +642,12 @@ class TestWP(StartEnd):
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_outline_border_px(self, type1='wp'):
         logging.info('==========test_wp_pic_outline_border_px==========')
         # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
             '//*[@resource-id="%s"]'
@@ -700,13 +656,7 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_border_width"
-        # elif type1 == 'wp':
         cc = "com.yozo.office:id/yozo_ui_wp_option_id_picture_border_width"
-        # elif type1 == 'ss':
-        #     cc = "com.yozo.office:id/yozo_ui_ss_option_id_picture_border_width"
         s = wp.swipe_option('up')
         while not wp.exist('//*[@resource-id="%s"]' % cc):
             wp.swipe(s[0], s[1], s[2], s[3])
@@ -714,12 +664,11 @@ class TestWP(StartEnd):
             wp.get_element(
                 '//*[@resource-id="%s"]'
                 '/android.widget.FrameLayout[%s]' % (cc, i)).click()
-        # cc = 'com.yozo.office:id/yozo_ui_option_id_objec_border_width_select'
         for i in range(30):
             wp.get_element(
                 '//*[@resource-id="com.yozo.office:id/yozo_ui_number_picker_arrow_right"]').click()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_order(self, type1='wp'):
         logging.info('==========test_wp_pic_order==========')
         # type1 = 'wp'
@@ -730,9 +679,6 @@ class TestWP(StartEnd):
             while not wp.exist('//*[@text="文字环绕"]'):
                 wp.swipe(s[0], s[1], s[2], s[3])
             wp.text_wrap('四周型')
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
         cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         if type1 == 'wp':
             while not wp.exist('//*[@resource-id="%s"]' % cc):
@@ -744,15 +690,13 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-        # if type1 == 'pg':
-        #     pic_png = 'rotate_free.png'
-        # else:
-        pic_png = 'drag_pic.png'
-        touch(wp.template_object(pic_png))
+
+        pic_1 = loop_find(wp.template_object('rotate_free.png'))
+        touch(pic_1)
         touch(wp.template_object('copy.png'))
-        touch(wp.template_object(pic_png))
+        touch(pic_1)
         touch(wp.template_object('paste.png'))
-        touch(wp.template_object(pic_png))
+        touch([pic_1[0], pic_1[1] + 200])
         touch(wp.template_object('paste.png'))
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
@@ -767,7 +711,7 @@ class TestWP(StartEnd):
             wp.shape_layer('衬于文字下方')
             wp.shape_layer('浮于文字上方')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_text_round(self):
         logging.info('==========test_wp_pic_text_round==========')
         # 仅wp存在文字环绕功能
@@ -782,7 +726,7 @@ class TestWP(StartEnd):
         wp.text_wrap('衬于文字下方')
         wp.text_wrap()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_pop_menu_all(self, type1='wp'):
         logging.info('==========test_wp_pic_pop_menu_all==========')
         self.insert_one_pic(type1)
@@ -801,23 +745,25 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-
-        touch(wp.template_object('chart_all1.png'))
+        pic_1 = loop_find(wp.template_object('rotate_free.png'))
+        touch(pic_1)
         touch(wp.template_object('copy.png'))  # 复制
-        touch(wp.template_object('chart_all1.png'))
+        touch(pic_1)
         touch(wp.template_object('cut.png'))  # 剪切
         touch(wp.template_object('point.png'))
         touch(wp.template_object('paste.png'))  # 粘贴
-        touch(wp.template_object('rotate_free.png'))
-        swipe(wp.template_object('editText.png'), wp.template_object('copy.png'))
+        pic_2 = loop_find(wp.template_object('rotate_free.png'))
+        touch([pic_2[0], pic_2[1] + 200])
+        swipe(wp.template_object('rotate_90.png'), wp.template_object('copy.png'))
         touch(wp.template_object('rotate_90.png'))
-        touch(wp.template_object('rotate_free.png'))
+        touch([pic_2[0], pic_2[1] + 200])
         touch(wp.template_object('save_to_album.png'))  # 存至相册
-        touch(wp.template_object('rotate_free.png'))
+        touch([pic_2[0], pic_2[1] + 200])
         touch(wp.template_object('edit_pic.png'))  # 裁剪
+        touch([pic_2[0], pic_2[1] + 200])
         touch(wp.template_object('delete.png'))  # 删除
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_pic_free_rotate(self, type1='wp'):
         logging.info('==========test_wp_pic_free_rotate==========')
         self.insert_one_pic(type1)
@@ -836,16 +782,11 @@ class TestWP(StartEnd):
         wp.shape_option_5()
         if wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-        ele5 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
-        ele9 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
-                                 x_y=9)
-        while not exists(wp.template_object('rotate_free.png')):
-            wp.swipe(ele5[0], ele5[1], ele9[0], ele9[1])
         # 向右移动图片
         rotate_free = loop_find(wp.template_object('rotate_free.png'))
         wp.swipe(rotate_free[0], rotate_free[1] + 200, rotate_free[0] + 200, rotate_free[1] + 200)
         # 取消选中图片
-        wp.tap(ele9[0], ele9[1])
+        wp.tap(rotate_free[0], rotate_free[1])
         time.sleep(1)
         self.assertTrue(wp.exist('//*[@text="编辑"]'), msg='取消选中图片异常')
 
@@ -855,11 +796,11 @@ class TestWP(StartEnd):
         self.assertTrue(wp.exist('//*[@text="图片"]'), msg='选中图片异常')
         # 自由旋转
         rotate_free = loop_find(wp.template_object('rotate_free.png'))
-        wp.swipe(rotate_free[0], rotate_free[1], ele9[0], ele9[1])
+        wp.swipe(rotate_free[0], rotate_free[1], 0, 0)
         rotate_free2 = loop_find(wp.template_object('rotate_free.png'))
-        self.assertEqual(rotate_free, rotate_free2, msg='图片自由旋转失败')
+        self.assertNotEqual(rotate_free, rotate_free2, msg='图片自由旋转失败')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     @data(*chart_type)
     def test_wp_insert_chart_list(self, chart_type):
         logging.info('==========test_wp_insert_chart_list==========')
@@ -914,7 +855,7 @@ class TestWP(StartEnd):
         wp = WPView(self.driver)
         wp.chart_change_color()
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_print_long_pic(self):
         logging.info('==========test_wp_print_long_pic==========')
         ov = OpenView(self.driver)
@@ -927,7 +868,7 @@ class TestWP(StartEnd):
         self.assertTrue(wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_export_longpic_share_buttons"]'),
                         msg='未弹出分享栏')
 
-    @unittest.skip('skip test_wp_text_select')
+    # @unittest.skip('skip test_wp_text_select')
     def test_wp_swipe_up_down(self):
         logging.info('==========test_wp_swipe_up_down==========')
         ov = OpenView(self.driver)
