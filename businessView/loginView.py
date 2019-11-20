@@ -40,7 +40,7 @@ class LoginView(Common):
 
     def logout_action(self): #退出登录
         logging.info('==========logout_action==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_sure').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         logging.info('logout finished!')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()

@@ -105,8 +105,9 @@ class GeneralView(Common):
         if select == 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
         else:
-            eles = self.driver.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView'
+            eles = self.driver.find_elements(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                        '/android.widget.RelativeLayout')
+            print(len(eles))
             for i in del_list:
                 name = eles[i - 1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
                 name_list.append(name)
@@ -192,7 +193,7 @@ class GeneralView(Common):
 
     def file_more_info(self, index):  # 查看指定文件信息
         logging.info('=========file_more_info==========')
-        ele = self.driver.find_element(By.CLASS_NAME, 'android.support.v7.widget.RecyclerView')
+        ele = self.driver.find_element(By.CLASS_NAME, 'androidx.recyclerview.widget.RecyclerView')
         eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
         if index < 1:
             eles[0].find_element(By.ID, 'com.yozo.office:id/lay_more').click()

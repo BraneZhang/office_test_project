@@ -161,7 +161,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5, 6, ])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -933,7 +933,7 @@ class TestHomePage(StartEnd):
         gv.select_file_type('pdf')
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user').click()
-        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/fb_show_menu_main"]'))
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_main_title"]'))
 
     @unittest.skip('skip test_hp_alldoc_upload_file')
     def test_hp_alldoc_upload_file(self):  # 上传文件
@@ -1138,9 +1138,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
         folder_name = 'NewFolder'
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
-        text_name = self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').text
-        self.assertTrue(folder_name == text_name)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_chanle').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
         self.assertTrue(gv.get_element_result('//*[@text="自动上传"]'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
