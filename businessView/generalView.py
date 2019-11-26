@@ -428,7 +428,7 @@ class GeneralView(Common):
         while not self.get_element_result(target):
             self.swipe_options()
         self.driver.find_element(By.XPATH, target).click()
-        ele_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
+        ele_name = '//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout'
         eles = self.driver.find_elements(By.XPATH, ele_name)
         if index > len(eles):
             eles[-1].click()

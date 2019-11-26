@@ -420,7 +420,7 @@ class TestSS(StartEnd):
         time.sleep(1)
         self.driver.find_element(By.XPATH, '//*[@text="字体颜色"]').click()
         eles = self.driver.find_elements(By.XPATH,
-                                         '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout')
+                                         '//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout')
         eles[random.randint(0, len(eles) - 1)].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
         ss.tap(x1, y1, 2)
@@ -429,7 +429,7 @@ class TestSS(StartEnd):
         time.sleep(1)
         self.driver.find_element(By.XPATH, '//*[@text="单元格颜色"]').click()
         eles = self.driver.find_elements(By.XPATH,
-                                         '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout')
+                                         '//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout')
         eles[random.randint(0, len(eles) - 1)].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
 

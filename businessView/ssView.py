@@ -194,7 +194,7 @@ class SSView(GeneralView):
         clear_dict = {'清除内容': 0, '清除格式': 1, '清除所有': 2}
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_clear_cell').click()
         self.driver.find_element(By.XPATH,
-                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
+                                 '//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
                                  clear_dict[clear]).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
@@ -203,7 +203,7 @@ class SSView(GeneralView):
         insert_dict = {'右移': 0, '下移': 1, '插入整行': 2, '插入整列': 3}
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_insert_cell').click()
         self.driver.find_element(By.XPATH,
-                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
+                                 '//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
                                  insert_dict[insert]).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
@@ -212,7 +212,7 @@ class SSView(GeneralView):
         delete_dict = {'左移': 0, '上移': 1, '删除整行': 2, '删除整列': 3}
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_delete_cell').click()
         self.driver.find_element(By.XPATH,
-                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
+                                 '//androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
                                  delete_dict[delete]).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
