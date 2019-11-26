@@ -20,15 +20,19 @@ class PGView(GeneralView):
         #           '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
         #           '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
         #           '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
-        ranges = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
+        # ranges = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
         switch_ele = '//*[@text="%s"]' % switch
-        self.swipe_search2(switch_ele, ranges)
+        # self.swipe_search2(switch_ele, ranges)
+        while not self.get_element_result(switch_ele):
+            self.swipe_options()
         self.driver.find_element(By.XPATH, switch_ele).click()
         if not apply == 'one':
-            for i in range(3):
-                eles = self.driver.find_elements(By.XPATH, ranges)
-                self.swipe_ele1(eles[0],eles[-1])
-            self.driver.find_element(By.ID,'com.yozo.office:id/yozo_ui_pg_option_id_transition_apply_all').click()
+            self.swipe_options(option='down')
+            self.swipe_options(option='down')
+            self.swipe_options(option='down')
+            self.swipe_options(option='down')
+            self.swipe_options(option='down')
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_transition_apply_all').click()
 
     def pause_resume_play(self):  # 暂停、回复播放
         logging.info('==========pause_resume==========')
@@ -48,22 +52,25 @@ class PGView(GeneralView):
     def edit_template(self, template):  # 模板
         logging.info('==========edit_template==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_edit_templet').click()
-        range = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
-        eles = self.driver.find_elements(By.XPATH, range)
-        template_ele = '%s[@index="%s"]' % (range, template)
+        range = '//androidx.recyclerview.widget.RecyclerView'
+        template_ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_item_view"]'
+        eles = self.driver.find_elements(By.XPATH, template_ele)
         if int(template) > 8:
-            self.swipe_ele1(eles[-1], eles[0])
-        self.driver.find_element(By.XPATH, template_ele).click()
+            self.swipe_options(ele=range)
+            self.swipe_options(ele=range)
+            template -= len(eles)
+        eles[template].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def edit_format(self, format):  # 版式
         # format = ['标题与副标题', '标题', '标题与文本', '标题与两栏文本', '标题与竖排文本-上下', '标题与竖排文本-左右',
         #           '空白','标题与图片','标题、文本与图片','标题、图片与文本','标题、图片与竖排文本','标题、竖排文本与图片']
         logging.info('==========edit_format==========')
+        time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_edit_format').click()
-        range = '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout'
         format_ele = '//*[@text="%s"]' % format
-        self.swipe_search2(format_ele, range)
+        while not self.get_element_result(format_ele):
+            self.swipe_options()
         self.driver.find_element(By.XPATH, format_ele).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
@@ -81,11 +88,15 @@ class PGView(GeneralView):
     def search_slide(self, index):  # 查找幻灯片
         logging.info('==========search_slide==========')
         for i in range(10000):
-            if not self.get_element_result('//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (int(index) - 1)):
+            if not self.get_element_result(
+                    '//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (
+                            int(index) - 1)):
                 self.thumbnail_scroll()
             else:
                 break
-        self.driver.find_element(By.XPATH, '//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (int(index) - 1)).click()
+        self.driver.find_element(By.XPATH,
+                                 '//android.widget.HorizontalScrollView/android.widget.LinearLayout/android.view.View[@index="%s"]' % (
+                                             int(index) - 1)).click()
 
     def check_comment(self, index):
         logging.info('==========add_new==========')
@@ -163,7 +174,7 @@ class PGView(GeneralView):
         :return: None
         """
         x, y = self.get_size()
-        while total_pages-start_page > 1:
+        while total_pages - start_page > 1:
             time.sleep(1)
             self.tap(y * 0.75, x * 0.5)
             start_page += 1
@@ -177,7 +188,7 @@ if __name__ == '__main__':
     ss = []
     for i in wps:
         for j in waylist:
-            ss.append(i+'_'+j)
+            ss.append(i + '_' + j)
     print(ss)
     # for i in range(12):
     #     print(i)

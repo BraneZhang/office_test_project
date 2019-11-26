@@ -17,17 +17,15 @@ from common.myunit import StartEnd
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import selenium.webdriver.support.expected_conditions as ec
 
-switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全黑切出', '溶解', '向下擦除', '向左擦除', '向右擦除',
-               '向上擦除', '扇形展开', '从下抽出', '从左抽出', '从右抽出', '从上抽出', '从左下抽出', '从左上抽出',
-               '从右下抽出', '从右上抽出', '盒状收缩', '盒状展开', '1根轮辐', '2根轮辐', '3根轮辐', '4根轮辐', '8根轮辐',
-               '上下收缩', '上下展开', '左右收缩', '左右展开', '左下展开', '左上展开', '右下展开', '右上展开', '圆形',
-               '菱形', '加号', '新闻快报', '向下推出', '向左推出', '向右推出', '向上推出', '向下插入', '向左插入',
-               '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
-               '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
+from data import data_info
+
+switch_list = data_info.switch_list
+
 ss_file = '../screenshots/'
 
+
 @ddt
-class TestFunc(StartEnd):
+class TestPG(StartEnd):
 
     @unittest.skip('skip test_ppt_add_scroll_comment')
     def test_ppt_add_scroll_comment(self):  # ppt缩略图滚屏备注
@@ -58,42 +56,6 @@ class TestFunc(StartEnd):
         for i in format:
             pg.edit_format(i)
         time.sleep(3)
-
-    @unittest.skip('skip test_ppt_play')
-    def test_ppt_play(self):  # ppt播放
-        logging.info('==========test_ppt_play==========')
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.pptx')
-        pg = PGView(self.driver)
-        pg.group_button_click('播放')
-        pg.play_mode('first')
-        x, y = pg.get_size()
-
-        time.sleep(1)
-        pg.tap(y * 0.75, x * 0.5)
-        time.sleep(1)
-        pg.tap(y * 0.75, x * 0.5)
-        pg.quit_play()
-        # pg.screen_rotate('PORTRAIT')
-        # pg.group_button_click('播放')
-        pg.play_mode('current')
-        time.sleep(1)
-        pg.tap(y * 0.75, x * 0.5)
-        time.sleep(1)
-        pg.tap(y * 0.75, x * 0.5)
-        pg.quit_play()
-        # pg.screen_rotate('PORTRAIT')
-        # pg.group_button_click('播放')
-        pg.swipeRight()
-        pg.swipeRight()
-        pg.swipeRight()
-        pg.play_mode('autoplay')
-        time.sleep(2)
-        pg.pause_resume_play()
-        time.sleep(1)
-        pg.pause_resume_play()
-        time.sleep(20)
-        # pg.screen_rotate('PORTRAIT')
 
     @unittest.skip('skip test_ppt_slide')
     def test_ppt_slide(self):  # 幻灯片复制、剪切、粘贴
@@ -160,29 +122,26 @@ class TestFunc(StartEnd):
         time.sleep(3)
 
     @unittest.skip('skip test_shape_text_attr_pg')
-    def test_shape_text_attr_pg(self):  # 自选图形文本属性，仅WP和PG
-        logging.info('==========test_shape_text_attr_pg==========')
+    def test_ppt_shape_text_attr(self):  # 自选图形文本属性，仅WP和PG
+        logging.info('==========test_ppt_shape_text_attr==========')
         type = 'pg'
         cv = CreateView(self.driver)
         cv.create_file(type)
         gv = GeneralView(self.driver)
         gv.group_button_click('插入')
         gv.insert_shape(type, 1)
-        gv.group_button_click('编辑')
+        gv.fold_expand()
+        gv.pop_menu_click('rotate_free')
+        gv.pop_menu_click('editText')
+        gv.fold_expand()
         gv.font_name(type, 'AndroidClock')
         gv.font_size(15)
         gv.font_style(type, '倾斜')
         gv.font_color(type, 6, 29)
-        gv.swipe_ele('//*[@text="字体颜色"]', '//*[@text="编辑"]')
-        gv.fold_expand()
-        time.sleep(1)
-        x, y = gv.find_pic_position('drag_all')
-        gv.tap(x, y)  # 进入编辑
-        gv.pop_menu_click('editText')
         for i in range(20):
             self.driver.press_keycode(random.randint(29, 54))
         time.sleep(1)
-        gv.group_button_click('编辑')
+        gv.swipe_options()
         # gv.high_light_color(type,6,6)
         gv.bullets_numbers(type, 6, 10)
         gv.text_align(type, '分散对齐')
@@ -210,14 +169,14 @@ class TestFunc(StartEnd):
         logging.info('==========save picture to validate==========')
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, "android.view.View")
         pv = PGView(self.driver)
-        pv.screenshot_edit_ppt(ss_file+'first.png')
+        pv.screenshot_edit_ppt(ss_file + 'first.png')
         thumbnails_list[1].click()
         pv.screenshot_edit_ppt(ss_file + 'second.png')
 
         logging.info('==========insert new ppt==========')
         thumbnails_list[0].click()
-        pv.insert_new_ppt()
-        gv.fold_expand()
+        pv.add_new()
+        pv.screenshot_edit_ppt(ss_file + 'new_ppt.png')
 
         logging.info('==========validate insert success==========')
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
@@ -239,6 +198,7 @@ class TestFunc(StartEnd):
         logging.info('==========delete pngs==========')
         os.remove(ss_file + 'first.png')
         os.remove(ss_file + 'second.png')
+        os.remove(ss_file + 'new_ppt.png')
         os.remove(ss_file + 'new_first.png')
         os.remove(ss_file + 'new_second.png')
         os.remove(ss_file + 'new_third.png')
@@ -254,8 +214,10 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.wait_loading()
         gv.switch_write_read()
+        time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
-        index = random.randint(1, len(thumbnails_list)-4)
+        # print(f'thumbnails_list_len:{len(thumbnails_list)}')
+        index = random.randint(1, len(thumbnails_list) - 4)
         thumbnails_list[index].click()
 
         logging.info('==========play to the first page==========')
@@ -264,20 +226,20 @@ class TestFunc(StartEnd):
         pg.play_mode(play_type)
         if play_type == 'first':
             index = 0
-        pg.play_to_first(index+1)
-        time.sleep(1)
+        pg.play_to_first(index + 1)
 
         logging.info('==========validate toast==========')
-        try:
-            toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
-        except NoSuchElementException:
-            self.assertTrue(False, '未出现弹窗')
-        else:
-            self.assertEqual(toast.text, '已是简报首页', '验证弹窗信息为已是简报首页')
+        self.assertTrue(pg.get_toast_message('已是简报首页'))
+        # try:
+        #     toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
+        # except NoSuchElementException:
+        #     self.assertTrue(False, '未出现弹窗')
+        # else:
+        #     self.assertEqual(toast.text, '已是简报首页', '验证弹窗信息为已是简报首页')
 
     @unittest.skip('skip test_ppt_play_to_last')
     @data(*['current', 'first'])
-    def test_ppt_play_to_last(self, play_type='current'):
+    def test_ppt_play_to_last(self, play_type):
         logging.info('==========test_ppt_play_to_last==========')
         ov = OpenView(self.driver)
         ov.open_file('欢迎使用永中Office.pptx')
@@ -286,6 +248,7 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.wait_loading()
         gv.switch_write_read()
+        time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
         index = random.randint(1, len(thumbnails_list) - 4)
         thumbnails_list[index].click()
@@ -296,8 +259,7 @@ class TestFunc(StartEnd):
         pg.play_mode(play_type)
         if play_type == 'first':
             index = 0
-        pg.play_to_last(index-1, len(thumbnails_list))
-        time.sleep(1)
+        pg.play_to_last(index - 1, len(thumbnails_list))
 
         logging.info('==========validate toast==========')
         try:
@@ -317,6 +279,7 @@ class TestFunc(StartEnd):
         gv = GeneralView(self.driver)
         gv.wait_loading()
         gv.switch_write_read()
+        time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
         index = random.randint(1, len(thumbnails_list) - 4)
         thumbnails_list[index].click()

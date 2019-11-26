@@ -482,6 +482,7 @@ class TestSS(StartEnd):
         ss = SSView(self.driver)
         ov = OpenView(self.driver)
         ov.open_file('screen.xls')
+        time.sleep(1)
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
