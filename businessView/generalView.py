@@ -18,7 +18,7 @@ class GeneralView(Common):
     def opinion_feedback(self, fb='func', content=''):  # 意见反馈
         logging.info('=========suggestion_feedback==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
-        type = ['func', 'content', 'bug', 'other']
+        # type = ['func', 'content', 'bug', 'other']
         ele = self.driver.find_element(By.ID, 'com.yozo.office:id/%sRg' % fb)
         ele.click()
         checked = ele.get_attribute('checked')
@@ -26,7 +26,7 @@ class GeneralView(Common):
             return False
         self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').set_text(content)
         self.driver.find_element(By.ID, 'com.yozo.office:id/uploadTv').click()
-        upway = random.randint(0,2)
+        upway = random.randint(0, 2)
         if upway == 0:
             self.driver.find_element(By.ID, 'com.yozo.office:id/photo_sec').click()
             self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
@@ -35,9 +35,9 @@ class GeneralView(Common):
         else:
             self.driver.find_element(By.ID, 'com.yozo.office:id/file_sec').click()
             self.driver.find_element(By.ID, 'com.yozo.office:id/file_item').click()
-            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+            self.driver.find_element(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                '/android.widget.RelativeLayout[2]').click()
-            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+            self.driver.find_element(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                '/android.widget.RelativeLayout[2]').click()
         uped = self.driver.find_element(By.ID, 'com.yozo.office:id/uploadTv').text
         if uped != '已上传':
@@ -73,30 +73,20 @@ class GeneralView(Common):
         time.sleep(1)
 
     def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
-        logging.info('=========identify_file_index==========')
-        eles = self.driver.find_elements(By.XPATH, '//android.support.v7.widget.RecyclerView'
-                                                   '/android.widget.RelativeLayout')
-        suffix_list = ['docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf']
-        index = 0
-        for i, e in enumerate(eles):  # 尚有缺陷，将将用
-            name = e.find_element(By.ID, 'com.yozo.office:id/tv_title').text
-            if '.' in name:
-                suffix = name[name.rindex('.') + 1:]
-                if suffix in suffix_list:
-                    index = i
-                    break
-        if index == 0:
-            self.swipe_ele1(eles[-1], eles[0])
-            time.sleep(1)
-            self.identify_file_index()
-        else:
-            return index
+        suffix = ('docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf')
+        for i in range(100):
+            eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
+            last_one = eles[-1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+            if last_one.endswith(suffix):
+                return len(eles)
+            else:
+                self.swipe_options(ele='//*[@resource-id="com.yozo.office:id/list_lastfile"]')
 
     def download_file(self):  # 下载文件
         logging.info('=========download_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
         time.sleep(2)
-        return self.get_toast_message('文件下载成功')
+        return self.get_toast_message('文件下载成功,已保存至 /storage/emulated/0/yozoCloud 文件夹')
 
     def select_all(self, select='all', del_list=[]):  # 全选、多选
         logging.info('=========select_all==========')
@@ -107,7 +97,8 @@ class GeneralView(Common):
         else:
             eles = self.driver.find_elements(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                        '/android.widget.RelativeLayout')
-            print(len(eles))
+            # print(len(eles))
+            time.sleep(1)
             for i in del_list:
                 name = eles[i - 1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
                 name_list.append(name)
@@ -167,13 +158,13 @@ class GeneralView(Common):
 
     def share_file_index(self, way):  # 主页分享
         logging.info('=========file_more_info==========')
-        share_list = ['qq', 'wechat', 'email', 'more']
+        # share_list = ['qq', 'wechat', 'email', 'ding']
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_%s_share' % way).click()
-        if way == 'more':
-            range = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
-            target = '//*[@text="钉钉"]'
-            self.swipe_search2(target, range)
-            self.driver.find_element(By.XPATH, target).click()
+        # if way == 'more':
+        #     range = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
+        #     target = '//*[@text="钉钉"]'
+        #     self.swipe_search2(target, range)
+        #     self.driver.find_element(By.XPATH, target).click()
 
     def check_mark_satr(self, file):
         logging.info('=========check_mark_satr==========')

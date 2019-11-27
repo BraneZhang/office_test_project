@@ -19,6 +19,7 @@ from data import data_info
 csv_file = data_info.csv_file
 folder_list = data_info.folder_list
 index_share_list = data_info.index_share_list
+index_share_list1 = data_info.index_share_list1
 
 
 @ddt
@@ -31,7 +32,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
         gv.file_more_info(1)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_alldoc_delete_file')
@@ -62,7 +66,10 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(7)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_alldoc_download_delete_file')
@@ -276,7 +283,10 @@ class TestHomePage(StartEnd):
         for i in range(10):
             gv.swipeUp()
         gv.file_more_info(1)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_alldoc_mobile_delete_file')
@@ -480,7 +490,10 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('我的文档')
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         gv.file_more_info(2)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_alldoc_myfile_delete_file')
@@ -962,7 +975,10 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
         gv.file_more_info(2)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_alldoc_wechat_delete_file')
@@ -1213,7 +1229,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('cloud')
         time.sleep(3)
         index = gv.identify_file_index()
-        gv.file_more_info(index + 1)
+        gv.file_more_info(index)
         check = gv.download_file()
         self.assertTrue(check, 'download fail')
 
@@ -1255,7 +1271,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % name), 'rename fail')
 
     @unittest.skip('skip test_hp_cloud_share')
-    @data(*index_share_list)
+    @data(*index_share_list1)
     def test_hp_cloud_share(self, way):
         logging.info('==========test_hp_cloud_share==========')
         gv = GeneralView(self.driver)
@@ -1359,7 +1375,7 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
-        self.assertTrue(gv.get_element_result('//*[@text="全选"]'))
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
         num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
         self.assertTrue(num != 0)
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
@@ -1376,6 +1392,9 @@ class TestHomePage(StartEnd):
         num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
         self.assertTrue(num == 0)
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
         self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
         self.assertTrue(gv.get_toast_message('此操作只是将文件从最近列表中删除'))
 
@@ -1545,6 +1564,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_verifycode"]'))
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/btn_true"]'))
         self.driver.keyevent(4)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_wechat').click()
         self.driver.keyevent(4)
         self.driver.keyevent(4)
@@ -1560,11 +1580,11 @@ class TestHomePage(StartEnd):
         if not gv.get_element_result('//*[@text="退出登录"]'):
             l.login_from_my('13915575564', 'zhang199412')
             gv.jump_to_index('my')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_sure').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.assertTrue(gv.get_element_result('//*[@text="是否退出登录？"]'))
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_chanle').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
         self.assertTrue(gv.get_element_result('//*[@text="退出登录"]'))
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_sure').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
 
@@ -1591,6 +1611,10 @@ class TestHomePage(StartEnd):
         gv = GeneralView(self.driver)
         l = LoginView(self.driver)
         gv.jump_to_index('my')
+        if gv.get_element_result('//*[@text="退出登录"]'):
+            l.logout_action()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
+            gv.jump_to_index('my')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_register').click()
         self.assertTrue(gv.get_element_result('//*[@text="注册"]'))
@@ -1607,7 +1631,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="《隐私协议》"]'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
-        self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
+        self.assertTrue(gv.get_element_result('//*[@text="关于YOZO"]'))
 
     @unittest.skip('skip test_hp_my2_sys_setting')
     def test_hp_my2_sys_setting(self):  # 系统设置
@@ -1699,7 +1723,10 @@ class TestHomePage(StartEnd):
         gv = GeneralView(self.driver)
         gv.jump_to_index('star')
         gv.file_more_info(1)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
+        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
     @unittest.skip('skip test_hp_star_delete_file')

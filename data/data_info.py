@@ -19,6 +19,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
 csv_file = '../data/account.csv'
 folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
 index_share_list = ['qq', 'wechat', 'email', 'more']
+index_share_list1 = ['qq', 'wechat', 'email', 'ding']
 auto_sum = ['求和', '平均值', '计数', '最大值', '最小值']
 date_filter = ['等于', '不等于', '在以下日期之后', '在以下日期之后或与之相同', '在以下日期之前',
                '在以下日期之钱或与之相同', '开始于', '非开始于', '结束于', '非结束于', '包含', '不包含']
