@@ -65,9 +65,9 @@ class TestFunc(StartEnd):
 
         self.assertTrue(gv.check_export_pdf())
 
-    @unittest.skip('skip test_insert_chart1')
-    @data(*ps)
-    def test_insert_chart1(self, type):
+    # @unittest.skip('skip test_insert_chart1')
+    # @data(*ps)
+    def test_insert_chart1(self, type='ss'):
         logging.info('==========test_insert_chart1==========')
         cv = CreateView(self.driver)
         cv.create_file(type)
@@ -90,9 +90,10 @@ class TestFunc(StartEnd):
             gv.swipe_ele(ele2, ele1)
         gv.insert_chart_insert('柱形图', random.randint(1, 9))
         gv.chart_color(random.randint(1, 8))
-        gv.chart_element(type, '大标题', 1, 1, 1)
-        gv.chart_element_XY('x', 'x', 0, 1, 1, 1, 1, 1)
-        gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
+        gv.chart_element(type,('大标题',1),2,1)
+        gv.chart_element_XY('x','xAxis',0,0,0)
+        gv.chart_element_XY('y','yAxis',1,1,1,(1,1))
+        # gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
         gv.change_row_column()
         time.sleep(3)
@@ -612,7 +613,8 @@ class TestFunc(StartEnd):
         """
         logging.info('==========test_close_file==========')
         ov = OpenView(self.driver)
-        ov.open_random_file(search_dict[file_type])
+        isOpen = ov.open_random_file(search_dict[file_type])
+        self.assertTrue(isOpen,'open fail')
         ov.close_file()
         self.assertTrue(ov.check_close_file())
 

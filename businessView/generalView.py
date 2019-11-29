@@ -85,7 +85,6 @@ class GeneralView(Common):
     def download_file(self):  # 下载文件
         logging.info('=========download_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
-        time.sleep(2)
         return self.get_toast_message('文件下载成功,已保存至 /storage/emulated/0/yozoCloud 文件夹')
 
     def select_all(self, select='all', del_list=[]):  # 全选、多选
@@ -208,7 +207,7 @@ class GeneralView(Common):
 
     def select_file_type(self, type):  # 文档类型
         logging.info('==========select_file_type==========')
-        type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
+        # type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
         logging.info('select %s files', type)
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filetype_%s' % type).click()
         time.sleep(3)
@@ -274,112 +273,120 @@ class GeneralView(Common):
         self.swipe_ele(ele2, ele1)
         self.driver.find_element(By.XPATH, '//*[@text="切换行列"]').click()
 
-    def chart_element_XY(self, xy='x', title='', label=1, grid=0, sub_grid=0, axis=1, line=0, sub_line=0):
-        logging.info('==========chart_element_XY==========')
-        self.driver.find_element(By.XPATH, '//*[@text="%s轴"]' % str.upper(xy)).click()
-        title_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title_check"]' \
+    def chart_element_axis_title(self,title=None):
+        logging.info('==========chart_element_axis_title==========')
+        title_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title_check"]' \
                        '/android.widget.Switch'
-        if title != '':
-            if self.get_element(title_switch).text != '开启':
-                self.find_element(By.XPATH, title_switch).click()
+        if title != None:
+            self.button_on_off(title_button, 1)
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_axis_title').click()
-            time.sleep(1)
+            time.sleep(0.5)
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_title').set_text(title)
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
             self.fold_expand()
+        else:
+            self.button_on_off(title_button, 0)
 
-        if label != 1:
-            label_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_label"]' \
-                           '/android.widget.Switch' % (xy)
-            if self.get_element(label_switch).text == '开启':
-                self.driver.find_element(By.ID,
-                                         'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_label'
-                                         % (xy)).click()
+    def chart_element_axis_label(self,axis=None,label_state=0):
+        logging.info('==========chart_element_axis_label==========')
+        label_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_label"]' \
+                           '/android.widget.Switch' % axis
+        state = 1 if label_state != 0 else 0
+        self.button_on_off(label_button, state)
 
-        if grid != 0:
-            grid_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_grid"]' \
-                          '/android.widget.Switch' % (xy)
-            if self.get_element(grid_switch).text == '关闭':
-                self.driver.find_element(By.ID,
-                                         'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_grid'
-                                         % (xy)).click()
+    def chart_element_axis_grid(self,axis=None,grid_state=0):
+        logging.info('==========chart_element_axis_grid==========')
+        grid_button =  '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_grid"]' \
+                          '/android.widget.Switch' % axis
+        state = 1 if grid_state != 0 else 0
+        self.button_on_off(grid_button, state)
 
-        sub_grid_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid"]' \
-                          '/android.widget.Switch' % (xy)
-        if sub_grid != 0:
-            if self.get_element(sub_grid_switch).text == '关闭':
-                self.driver.find_element(By.ID,
-                                         'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid'
-                                         % (xy)).click()
-        self.swipe_ele(sub_grid_switch, title_switch)
-        time.sleep(1)
-        if axis != 0:
-            line_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_line"]' \
-                          '/android.widget.Switch' % (xy)
-            if self.get_element(line_switch).text == '关闭':
-                self.driver.find_element(By.ID,
-                                         'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_line' % (
-                                             xy)).click()
-            if line != 0:
-                line_checked = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_majortick"]' \
-                               '/android.widget.CheckBox' % (xy)
-                if self.get_element(line_checked).get_attribute('checked') == 'false':
-                    self.driver.find_element(By.ID,
-                                             'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_majortick' % (
-                                                 xy)).click()
-            if sub_line != 0:
-                sub_line_checked = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_minortick"]' \
-                                   '/android.widget.CheckBox' % (xy)
-                if self.get_element(sub_line_checked).get_attribute('checked') == 'false':
-                    self.driver.find_element(By.ID,
-                                             'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_minortick'
-                                             % (xy)).click()
+    def chart_element_axis_subgrid(self,axis=None,subgrid_state=0):
+        logging.info('==========chart_element_axis_subgrid==========')
+        subgrid_button =  '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_subgrid"]' \
+                          '/android.widget.Switch' % axis
+        state = 1 if subgrid_state != 0 else 0
+        self.button_on_off(subgrid_button, state)
+
+    def chart_element_axis_baseline(self,axis=None,line=None): #主次刻度线
+        logging.info('==========chart_element_axis_baseline==========')
+        line_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_line"]' \
+                          '/android.widget.Switch' % axis
+        line1_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_majortick"]' % axis
+        line2_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_%saxis_minortick"]' % axis
+        if line != None:
+            self.button_on_off(line_button, 1)
+            state1 = 1 if line[0]!=0 else 0
+            self.button_on_off(line1_button, state1)
+            state2 = 1 if line[1] != 0 else 0
+            self.button_on_off(line2_button, state2)
+        else:
+            self.button_on_off(line_button, 0)
+
+
+    def chart_element_XY(self, axis=None, title=None, label=0, grid=0, sub_grid=0, line=None):
+        logging.info('==========chart_element_XY==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s轴"]' % str.upper(axis)).click()
+        self.chart_element_axis_title(title)
+        self.chart_element_axis_label(axis,label)
+        self.chart_element_axis_grid(axis,grid)
+        self.chart_element_axis_subgrid(axis,sub_grid)
+        self.swipe_options()
+        self.swipe_options()
+        self.chart_element_axis_baseline(axis,line)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
-    def chart_element(self, types, title='', index=1, display=0, label=0):  # 图表元素
-        logging.info('==========chart_element==========')
-        self.driver.find_element(By.XPATH, '//*[@text="图表元素"]').click()
-        if title != '':
-            title_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title_check"]' \
-                           '/android.widget.Switch' % types
-            if self.get_element(title_switch).text != '开启':
-                self.find_element(By.XPATH, title_switch).click()
-            locate_ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title_location_list"]' \
-                         '/android.widget.FrameLayout[%s]' % (types, index)
-            self.find_element(By.XPATH, locate_ele).click()
-            self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title' % types).click()
-            time.sleep(1)
-            self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_title').set_text(title)
+    def chart_element_title(self, file_type, title):  # 图表标题
+        logging.info('==========chart_element_title==========')
+        title_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title_check"]' \
+                       '/android.widget.Switch' % file_type
+        if title != None:
+            self.button_on_off(title_button, 1)
+            self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title' % file_type).click()
+            time.sleep(0.5)
+            self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_chart_elem_title').set_text(title[0])
             self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
             self.fold_expand()
+            locate_ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_title_location_list"]' \
+                         '/android.widget.FrameLayout[%s]' % (file_type, title[1])
+            self.find_element(By.XPATH, locate_ele).click()
+        else:
+            self.button_on_off(title_button, 0)
 
-        if display != 0:
-            display_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_legend_check"]' \
-                             '/android.widget.Switch' % types
-            if self.get_element(display_switch).text != '开启':
-                self.find_element(By.ID,
-                                  'com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_legend_check' % types).click()
-            # align_list = {'底部': '1', '顶部': '2', '靠左': '3', '靠右': '4', '右上角': '5'}
+    def chart_element_legend(self,file_type,position=None): #图表图例
+        logging.info('==========chart_element_legend==========')
+        # align_list = {'底部': '1', '顶部': '2', '靠左': '3', '靠右': '4', '右上角': '5'}
+        legend_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_legend_check"]' \
+                             '/android.widget.Switch' % file_type
+        if position != None:
+            self.button_on_off(legend_button, 1)
             self.find_element(By.XPATH,
                               '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_legend_list"]'
-                              '/android.widget.FrameLayout[%s]' % (types, display)).click()
-        ele1 = '//*[@text="显示图表标题"]'
-        ele2 = '//*[@text="显示图例"]'
-        self.swipe_ele(ele2, ele1)
-        if label != 0:
-            label_switch = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_label_check"]' \
-                           '/android.widget.Switch' % types
-            if self.get_element(label_switch).text != '开启':
-                self.find_element(By.ID,
-                                  'com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_label_check' % types).click()
+                              '/android.widget.FrameLayout[%s]' % (file_type, position)).click()
+        else:
+            self.button_on_off(legend_button, 0)
+
+    def chart_element_label(self,file_type,label_state=0): #数据标签
+        logging.info('==========chart_element_label==========')
+        label_button = '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_chart_elem_label_check"]' \
+                       '/android.widget.Switch' % file_type
+        state = 1 if label_state != 0 else 0
+        self.button_on_off(label_button, state)
+
+    def chart_element(self, file_type, title=None,position=None,label=0):  # 图表元素
+        logging.info('==========chart_element==========')
+        self.driver.find_element(By.XPATH, '//*[@text="图表元素"]').click()
+        self.chart_element_title(file_type, title)
+        self.chart_element_legend(file_type,position)
+        self.swipe_options()
+        self.chart_element_label(file_type,label)
+        self.swipe_options()
 
     def chart_color(self, index):  # 图表颜色
         logging.info('==========chart_color==========')
-        ele1 = '//*[@text="数据源"]'
-        ele2 = '//*[@text="图表类型"]'
-        self.swipe_ele(ele2, ele1)
+        self.swipe_options()
         self.driver.find_element(By.XPATH, '//*[@text="更改颜色"]').click()
-        eles_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
+        eles_name = '//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout'
         eles = self.driver.find_elements(By.XPATH, eles_name)
         if index > len(eles):
             eles[-1].click()
@@ -390,7 +397,7 @@ class GeneralView(Common):
     def chart_template(self):  # 图表样式
         logging.info('==========chart_template==========')
         self.driver.find_element(By.XPATH, '//*[@text="图表样式"]').click()
-        eles_name = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout'
+        eles_name = '//androidx.recyclerview.widget.RecyclerView/android.widget.FrameLayout'
         time.sleep(1)
         eles = self.driver.find_elements(By.XPATH, eles_name)
         target_ele = eles_name + '[%s]' % random.randint(1, len(eles))

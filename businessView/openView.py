@@ -69,4 +69,12 @@ class OpenView(Common):
         num = random.randint(0, len(results_list)-1)
         result = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[num]
         result.click()
+        try:
+            WebDriverWait(self.driver, 30).until(
+                lambda driver: self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close'))
+            time.sleep(1)
+            return True
+        except NoSuchElementException:
+            return False
+
 

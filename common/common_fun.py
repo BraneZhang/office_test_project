@@ -380,6 +380,12 @@ class Common(BaseView):
         time.sleep(0.5)
         return t
 
+    def button_on_off(self, button_ele, state=0):  # 开关按钮
+        button_state = self.driver.find_element(By.XPATH, button_ele).get_attribute('checked')
+        state_dict = {'true': 1, 'false': 0}
+        if state != state_dict[button_state]:
+            self.driver.find_element(By.XPATH, button_ele).click()
+
 
 if __name__ == '__main__':
     # driver=appium_desired()

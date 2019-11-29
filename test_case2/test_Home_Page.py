@@ -168,7 +168,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, ])
+        name_list = gv.select_all('multi', [1, 3, 5 ])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -399,7 +399,7 @@ class TestHomePage(StartEnd):
         for i in range(10):
             gv.swipeUp()
         gv.file_more_info(1)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -593,7 +593,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('我的文档')
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -765,7 +765,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('QQ')
         self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -884,7 +884,7 @@ class TestHomePage(StartEnd):
         gv.select_file_type('all')
         gv.sort_files('name', 'up')
         gv.file_more_info(1)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.search_action(i))
             self.driver.keyevent(4)
@@ -1077,7 +1077,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5, 6, 7])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -1089,7 +1089,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
-        gv.file_more_info(7)
+        gv.file_more_info(2)
         gv.share_file_index(way)
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -1129,7 +1129,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
-        gv.file_more_info(7)
+        gv.file_more_info(2)
         check = gv.upload_file()
         if check == None:
             gv.jump_to_index('alldoc')
@@ -1721,6 +1721,11 @@ class TestHomePage(StartEnd):
     def test_hp_star_copy_file(self):  # “打开”复制文件
         logging.info('==========test_hp_star_copy_file==========')
         gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('ss')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.driver.keyevent(4)
         gv.jump_to_index('star')
         gv.file_more_info(1)
         location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
@@ -1728,14 +1733,15 @@ class TestHomePage(StartEnd):
         check = gv.copy_file()
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
+        gv.file_more_info(1)
+        file = gv.mark_star()
 
     @unittest.skip('skip test_hp_star_delete_file')
     def test_hp_star_delete_file(self):
         logging.info('==========test_hp_star_delete_file==========')
         gv = GeneralView(self.driver)
         gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.sort_files('name', 'up')
+        gv.select_file_type('wp')
         gv.file_more_info(1)
         file = gv.mark_star()
         self.assertTrue(gv.check_mark_satr(file))
@@ -1787,6 +1793,8 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
+        gv.file_more_info(1)
+        gv.mark_star()
 
     @unittest.skip('skip test_hp_star_rename_file')
     def test_hp_star_rename_file(self):
@@ -1803,6 +1811,8 @@ class TestHomePage(StartEnd):
         newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
+        gv.file_more_info(1)
+        gv.mark_star()
 
     @unittest.skip('skip test_hp_star_search_file')
     def test_hp_star_search_file(self):  # 搜索功能
@@ -1814,7 +1824,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_star_select_all')
-    def test_hp_star_select_all(self):  # “最近”全选操作
+    def test_hp_star_select_all(self):  # “标星”全选操作
         logging.info('==========test_hp_star_select_all==========')
         gv = GeneralView(self.driver)
         gv.jump_to_index('alldoc')
@@ -1832,6 +1842,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(num != 0)
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
+        gv.file_more_info(1)
+        gv.mark_star()
 
     @unittest.skip('skip test_hp_star_select_all1')
     def test_hp_star_select_all1(self):
@@ -1847,14 +1859,19 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         name_list = gv.select_all('multi', [1])
         for i in name_list:
-            self.assertFalse(gv.search_action(i))
-            self.driver.keyevent(4)
+            self.assertFalse(gv.get_element_result(i))
 
     @unittest.skip('skip test_hp_star_share')
     @data(*index_share_list)
     def test_hp_star_share(self, way):
         logging.info('==========test_hp_star_share==========')
         gv = GeneralView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('ss')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        self.driver.keyevent(4)
         gv.jump_to_index('star')
         gv.file_more_info(1)
         gv.share_file_index(way)
@@ -1872,9 +1889,10 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+        gv.mark_star()
 
     @unittest.skip('skip test_hp_star_show_no_file')
-    def test_hp_star_show_no_file(self):
+    def test_hp_star_1_show_no_file(self):
         logging.info('==========test_hp_star_show_no_file==========')
         gv = GeneralView(self.driver)
         gv.jump_to_index('star')
@@ -1885,19 +1903,16 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_star_upload_file==========')
         gv = GeneralView(self.driver)
         l = LoginView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        gv.mark_star()
+        self.driver.keyevent(4)
         gv.jump_to_index('star')
         gv.file_more_info(1)
         check = gv.upload_file()
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.select_file_type('all')
-            gv.file_more_info(1)
-            gv.mark_star()
-            self.driver.keyevent(4)
-            gv.jump_to_index('star')
-            gv.file_more_info(1)
-            check = gv.upload_file()
         self.assertTrue(check, 'upload fail')
-        self.driver.keyevent(4)
+        gv.file_more_info(1)
+        gv.mark_star()
         gv.jump_to_index('my')
         l.logout_action()
