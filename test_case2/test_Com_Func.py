@@ -28,7 +28,8 @@ switch_list = data_info.switch_list
 
 
 @ddt
-class TestFunc(StartEnd):
+class TestCommon(StartEnd):
+
     @unittest.skip('skip test_create_file')
     @data(*wps)
     def test_create_file(self, type):  # 新建文档
@@ -41,9 +42,9 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_expand_fold')
     @data(*wps)
-    def test_expand_fold(self, type):  # 编辑栏收起展开
+    def test_expand_fold(self, file_type):  # 编辑栏收起展开
         logging.info('==========test_expand_fold==========')
-        suffix = search_dict[type]
+        suffix = search_dict[file_type]
         ov = OpenView(self.driver)
         ov.open_file('欢迎使用永中Office.%s' % suffix)
         gv = GeneralView(self.driver)
@@ -65,8 +66,8 @@ class TestFunc(StartEnd):
 
         self.assertTrue(gv.check_export_pdf())
 
-    # @unittest.skip('skip test_insert_chart1')
-    # @data(*ps)
+    @unittest.skip('skip test_insert_chart1')
+    @data(*ps)
     def test_insert_chart1(self, type='ss'):
         logging.info('==========test_insert_chart1==========')
         cv = CreateView(self.driver)
@@ -100,12 +101,12 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_insert_chart')
     @data(*wps)
-    def test_insert_chart(self, type):  # 插入图表，仅ss，pg
+    def test_insert_chart(self, file_type):  # 插入图表
         logging.info('==========test_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
                       '圆锥图', '棱锥图']
         cv = CreateView(self.driver)
-        cv.create_file(type)
+        cv.create_file(file_type)
         gv = GeneralView(self.driver)
         ss = SSView(self.driver)
 
@@ -147,21 +148,21 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_pop_menu_shape1_ws')
     @data(*wps)
-    def test_pop_menu_shape1(self, type):
+    def test_pop_menu_shape1(self, file_type):
         logging.info('==========test_pop_menu_shape1_ws==========')
         # type = 'pg'
         cv = CreateView(self.driver)
-        cv.create_file(type)
+        cv.create_file(file_type)
         gv = GeneralView(self.driver)
 
-        if type == 'pg':
+        if file_type == 'pg':
             pg = PGView(self.driver)
             gv.group_button_click('编辑')
             pg.edit_format('空白')
 
         time.sleep(1)
         gv.group_button_click('插入')
-        gv.insert_shape(type)
+        gv.insert_shape(file_type)
 
         gv.fold_expand()
         x1, y1 = gv.find_pic_position('drag_all')
@@ -187,54 +188,65 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
-    def test_pop_menu_shape(self, type):
+    def test_pop_menu_shape(self, file_type='pg'): #pg未好
         logging.info('==========test_pop_menu_shape==========')
         cv = CreateView(self.driver)
         # type = 'pg'
-        cv.create_file(type)
+        cv.create_file(file_type)
         gv = GeneralView(self.driver)
         gv.group_button_click('插入')
-        gv.insert_shape(type)
+        gv.insert_shape(file_type)
         time.sleep(1)
-        if type == 'pg':
+        if file_type == 'pg':
             gv.tap(550, 450)
-            gv.pop_menu_click('editText')
         else:
-            gv.tap(700, 700, 2)
-            gv.tap(700, 700, 3)
+            gv.tap(700, 700)
+        gv.pop_menu_click('editText')
 
-        for i in range(50):
+        for i in range(20):
             self.driver.press_keycode(random.randint(29, 54))
 
-        if type == 'pg':
-            gv.drag_coordinate(550, 830, 500, 800)
+        if file_type == 'pg':
+            gv.tap(525, 500)
+            gv.long_press(525, 500)
+            gv.pop_menu_click('selectAll')
+            # gv.drag_coordinate(550, 830, 500, 800)
             gv.pop_menu_click('copy')
-            gv.tap(550, 830)
-            time.sleep(1)
-            gv.long_press(550, 830)
+            # gv.tap(550, 830)
+            # time.sleep(1)
+            gv.long_press(525, 500)
             gv.pop_menu_click('paste')
-            gv.drag_coordinate(550, 830, 500, 800)
+            gv.long_press(525, 500)
+            # gv.pop_menu_click('selectAll')
+            # gv.drag_coordinate(550, 830, 500, 800)
             gv.pop_menu_click('cut')
-            gv.tap(550, 830)
-            time.sleep(1)
-            gv.long_press(550, 830)
+            # gv.tap(550, 830)
+            # time.sleep(1)
+            gv.long_press(525, 500)
             gv.pop_menu_click('paste')
-            gv.drag_coordinate(550, 830, 500, 800)
+            # gv.drag_coordinate(550, 830, 500, 800)
+            gv.long_press(525, 500)
+            # gv.pop_menu_click('selectAll')
             gv.pop_menu_click('delete')
         else:
-            gv.drag_coordinate(700, 700, 550, 550)
+            gv.long_press(700, 700)
+            gv.pop_menu_click('selectAll')
+            # gv.drag_coordinate(700, 700, 550, 550)
             gv.pop_menu_click('copy')
             gv.tap(700, 700)
-            time.sleep(1)
             gv.long_press(700, 700)
             gv.pop_menu_click('paste')
-            gv.drag_coordinate(700, 700, 550, 550)
+            gv.long_press(700, 700)
+            gv.pop_menu_click('selectAll')
+            # gv.drag_coordinate(700, 700, 550, 550)
             gv.pop_menu_click('cut')
-            gv.tap(700, 700)
-            time.sleep(1)
+            # gv.tap(700, 700)
+            # time.sleep(1)
             gv.long_press(700, 700)
             gv.pop_menu_click('paste')
-            gv.drag_coordinate(700, 700, 550, 550)
+            # gv.drag_coordinate(700, 700, 550, 550)
+            gv.long_press(700, 700)
+            gv.pop_menu_click('selectAll')
             gv.pop_menu_click('delete')
 
     @unittest.skip('skip test_read_mode')
@@ -289,16 +301,16 @@ class TestFunc(StartEnd):
 
     @unittest.skip('skip test_search_replace')
     @data(*wps)
-    def test_search_replace(self, type):  # 查找替换
+    def test_search_replace(self, file_type):  # 查找替换
         logging.info('==========test_search_replace==========')
-        suffix = search_dict[type]
+        suffix = search_dict[file_type]
         ov = OpenView(self.driver)
         ov.open_file('欢迎使用永中Office.%s' % suffix)
         gv = GeneralView(self.driver)
         gv.switch_write_read()
-        if type in ws:
+        if file_type in ws:
             gv.group_button_click('查看')
-        gv.search_content(type, '的')
+        gv.search_content(file_type, '的')
         gv.replace_content('得')
         time.sleep(3)
         gv.replace_content('得', 'all')
@@ -335,32 +347,35 @@ class TestFunc(StartEnd):
 
         if type == 'pg':
             gv.tap(250, 250)
-            gv.tap(550, 850)
+            gv.tap(525, 500)
         elif type == 'ss':
             gv.tap(x1, y1)
             gv.tap(x, y)
+            gv.fold_expand()
         else:
             gv.tap(250, 450)
-            time.sleep(1)
             gv.fold_expand()
             gv.tap(x, y)
-            time.sleep(1)
-        gv.fold_expand()
+            # time.sleep(1)
+        # gv.fold_expand()
 
         gv.shape_option(type, 5, width=5, height=5)
         gv.shape_option(type, 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
-        ele1 = '//*[@text="形状"]'
-        ele2 = '//*[@text="轮廓"]'
-        ele3 = '//*[@text="效果"]'
-        if type == 'pg':
-            ele0 = '//*[@text="插入"]'
-            gv.swipe_ele(ele0, ele1)
-        gv.swipe_ele(ele2, ele1)
-        gv.swipe_ele(ele3, ele1)
+        # ele1 = '//*[@text="形状"]'
+        # ele2 = '//*[@text="轮廓"]'
+        # ele3 = '//*[@text="效果"]'
+        # if type == 'pg':
+        #     ele0 = '//*[@text="插入"]'
+        #     gv.swipe_ele(ele0, ele1)
+        # gv.swipe_ele(ele2, ele1)
+        # gv.swipe_ele(ele3, ele1)
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.swipe_options()
         gv.shape_content_align(type, '右对齐', '下对齐')
         gv.shape_content_align(type)
         gv.shape_content_align(type, '水平居中', '垂直居中')
-        time.sleep(3)
 
     @unittest.skip('skip test_shape_attr2')
     @data(*wps)
