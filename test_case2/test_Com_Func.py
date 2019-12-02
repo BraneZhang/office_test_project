@@ -468,13 +468,11 @@ class TestCommon(StartEnd):
     @data(*share_list)
     def test_share_file_edit(self, way):
         logging.info('==========test_share_file_edit==========')
-        index = way.index('_')
-        suffix = search_dict[way[0:index]]
-        type = way[0:index]
-        share_way = way[index + 1:]
+        type = way.split('_')[0]
+        share_way = way.split('_')[1]
+        suffix = search_dict[type]
         gv = GeneralView(self.driver)
         ov = OpenView(self.driver)
-        cv = CreateView(self.driver)
 
         ov.open_file('欢迎使用永中Office.%s' % suffix)
         gv.switch_write_read()
@@ -656,6 +654,10 @@ class TestCommon(StartEnd):
         logging.info('==========share new File==========')
         gv = GeneralView(self.driver)
         gv.share_file(file_type, share_type)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_share_editFile')
     @data(*share_list)
@@ -665,7 +667,7 @@ class TestCommon(StartEnd):
         :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
         :return: None
         """
-        logging.info('==========test_share_newFile==========')
+        logging.info('==========test_share_editFile==========')
         file_type = share_info.split('_')[0]
         share_type = share_info.split('_')[1]
 
@@ -685,6 +687,10 @@ class TestCommon(StartEnd):
         logging.info('==========share new File==========')
         gv = GeneralView(self.driver)
         gv.share_file(file_type, share_type)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
 
     @unittest.skip('skip test_file_info')
     @data(*wps)
@@ -694,7 +700,7 @@ class TestCommon(StartEnd):
         :param file_type: 文档类型：'wp', 'ss', 'pg'
         :return: None
         """
-        logging.info('==========test_share_newFile==========')
+        logging.info('==========test_file_info==========')
         ov = OpenView(self.driver)
         ov.open_random_file(search_dict[file_type])
 

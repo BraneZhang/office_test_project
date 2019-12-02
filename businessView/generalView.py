@@ -159,11 +159,12 @@ class GeneralView(Common):
         logging.info('=========file_more_info==========')
         # share_list = ['qq', 'wechat', 'email', 'ding']
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_%s_share' % way).click()
-        # if way == 'more':
-        #     range = '//android.support.v7.widget.RecyclerView/android.widget.LinearLayout'
-        #     target = '//*[@text="钉钉"]'
-        #     self.swipe_search2(target, range)
-        #     self.driver.find_element(By.XPATH, target).click()
+        if way == 'more':
+            range = '//androidx.recyclerview.widget.RecyclerView'
+            target = '//*[@text="钉钉"]'
+            while not self.get_element_result(target):
+                self.swipe_options(range)
+            self.driver.find_element(By.XPATH, target).click()
 
     def check_mark_satr(self, file):
         logging.info('=========check_mark_satr==========')
@@ -694,7 +695,7 @@ class GeneralView(Common):
         self.driver.find_element(By.XPATH,
                                  '//*[@resource-id="com.yozo.office:id/yozo_ui_%s_option_id_sign_pen_color"]'
                                  '/android.widget.FrameLayout[6]' % type).click()
-        self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+        self.driver.find_element(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                            '/android.widget.FrameLayout[%s]' % index).click()
         time.sleep(0.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()

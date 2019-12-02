@@ -1271,7 +1271,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % name), 'rename fail')
 
     @unittest.skip('skip test_hp_cloud_share')
-    @data(*index_share_list1)
+    @data(*index_share_list)
     def test_hp_cloud_share(self, way):
         logging.info('==========test_hp_cloud_share==========')
         gv = GeneralView(self.driver)
@@ -1567,6 +1567,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_wechat').click()
         self.driver.keyevent(4)
+        time.sleep(0.5)
         self.driver.keyevent(4)
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_register').click()
         self.assertTrue(gv.get_element_result('//*[@text="短信登录"]'))
