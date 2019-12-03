@@ -58,6 +58,11 @@ class GeneralView(Common):
 
     def insert_pic(self):  # 插入图片，基于vivoX9手机,选取图片只能点选坐标
         logging.info('=========insert_pic==========')
+        # 移动视图，调整插入对象的位置
+        ele5 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
+        ele9 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=9)
+        self.swipe(ele5[0], ele5[1], ele9[0], ele9[1])
         self.driver.find_element(By.XPATH, '//*[@text="图片"]').click()
         self.driver.find_element(By.XPATH, '//android.widget.ListView/android.widget.RelativeLayout[1]').click()
         self.tap(145, 369)
