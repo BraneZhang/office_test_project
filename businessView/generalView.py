@@ -811,7 +811,7 @@ class GeneralView(Common):
                       '/android.widget.FrameLayout[%s]' % (type, index)
         self.driver.find_element(By.XPATH, color_index).click()
         if index >= 6:
-            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+            self.driver.find_element(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                '/android.widget.FrameLayout[%s]' % s_index).click()
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
