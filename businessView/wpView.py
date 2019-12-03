@@ -117,10 +117,7 @@ class WPView(GeneralView):
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[3].click()
 
     def table_merge_split(self):
-        print(self.driver.find_element(By.ID,
-                                       "com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview").get_attribute(
-            'text'))
-
+        print(self.driver.find_element(By.ID,"com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview").get_attribute('text'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_split_cell_textview').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancle').click()
@@ -170,10 +167,9 @@ class WPView(GeneralView):
         childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
         list(map(lambda i: i.click(), childs0))
         table_list0 = (40 - len(childs0)) / 5
-        ele_b = '//*[@text="表格样式"]'
-        ele_a = '//android.support.v7.widget.RecyclerView/android.widget.FrameLayout[20]'
+        s = self.swipe_option('up')
         if int(table_list0) != 0:
-            self.swipe_ele(ele_a, ele_b)
+            self.swipe(s[0], s[1], s[2], s[3])
             # for i in range(-(int(table_list0) * 5), 0):
             #     parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click()
             list(map(lambda i: parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click(),
@@ -277,9 +273,7 @@ class WPView(GeneralView):
     def table_insert_row_col(self, direction=''):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_insert_table').click()
         row_col = ['up', 'down', 'left', 'light']
-        self.driver.find_element(By.XPATH,
-                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
-                                 row_col.index(direction)).click()
+        self.driver.find_elements(By.ID,'com.yozo.office:id/label_text_view')[row_col.index(direction)].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def table_delete_row_col_all(self, del0=''):
@@ -288,9 +282,7 @@ class WPView(GeneralView):
         self.swipe_ele(ele_a, ele_b)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_delete_table').click()
         del_ = ['row', 'col', 'all']
-        self.driver.find_element(By.XPATH,
-                                 '//android.support.v7.widget.RecyclerView/android.widget.RelativeLayout[@index="%s"]' %
-                                 del_.index(del0)).click()
+        self.driver.find_elements(By.ID,'com.yozo.office:id/label_text_view')[del_.index(del0)].click()
         if del0 != 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
