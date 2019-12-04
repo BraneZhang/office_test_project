@@ -21,7 +21,7 @@ def appium_desired():
     # from airtest.core.api import *
     # text("hello")
     # 第二种写法：init_device("Android", ime_method="ADBIME")
-    auto_setup(__file__, devices=["Android:///%s?ime_method=ADBIME" % data['desired_caps']['udid']])
+    auto_setup(__file__, devices=["Android:///"+"%s?ime_method=ADBIME" % data['desired_caps']['udid']])
     # desired_caps['platformName']=data['platformName']
     # desired_caps['platformVersion']=data['platformVersion']
     # desired_caps['deviceName']=data['deviceName']
