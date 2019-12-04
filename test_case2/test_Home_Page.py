@@ -1557,6 +1557,7 @@ class TestHomePage(StartEnd):
         gv = GeneralView(self.driver)
         l = LoginView(self.driver)
         gv.jump_to_index('my')
+        time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_findpwd').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/et_account"]'))
@@ -1681,6 +1682,7 @@ class TestHomePage(StartEnd):
         data = login.get_csv_data(csv_file, 4)
 
         login.login_from_my(data[0], data[1])
+        time.sleep(1)
         gv.jump_to_index('my')
         self.assertTrue(login.check_login_status(), msg='login fail')
 
