@@ -415,7 +415,7 @@ class TestSS(StartEnd):
         x1 = x - width - 18
         y1 = y - height * 3 - 27
         ss.tap(x1, y1)
-        self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_ss_filter_customize').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filter_color_type').click()
         time.sleep(1)
         self.driver.find_element(By.XPATH, '//*[@text="字体颜色"]').click()
@@ -722,7 +722,7 @@ class TestSS(StartEnd):
         ss.swipe(x3, y3, x3 - width, y3)
         ss.pop_menu_click('hide_cancel')
 
-    @unittest.skip('skip test_ss_show_file_info')
+    # @unittest.skip('skip test_ss_show_file_info')
     def test_ss_show_file_info(self):
         logging.info('==========test_ss_show_file_info==========')
         ov = OpenView(self.driver)

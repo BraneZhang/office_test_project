@@ -387,6 +387,23 @@ class Common(BaseView):
             self.driver.find_element(By.XPATH, button_ele).click()
 
 
+    def cover_file(self, is_cover):
+        """
+        是否覆盖文档
+        :param is_cover: True or False
+        :return: None
+        """
+        logging.info('==========cover_file==========')
+        try:
+            self.driver.find_element(By.ID, 'android:id/message')
+        except NoSuchElementException:
+            pass
+        else:
+            if is_cover:
+                self.driver.find_element(By.ID, 'android:id/button1').click()
+            else:
+                self.driver.find_element(By.ID, 'android:id/button2').click()
+
 if __name__ == '__main__':
     # driver=appium_desired()
     # com=Common(driver)
