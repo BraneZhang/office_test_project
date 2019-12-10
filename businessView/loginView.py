@@ -29,13 +29,13 @@ class LoginView(Common):
         logging.info('==========check_login_status==========')
         time.sleep(1)
         try:
-            self.driver.find_element(By.XPATH, '//*[@text="退出登录"]')
+            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_username')
         except NoSuchElementException:
-            logging.error('login fail')
+            logging.error('login off!')
             self.getScreenShot('login fail')
             return False
         else:
-            logging.info('login success!')
+            logging.info('login on!')
             return True
 
     def logout_action(self): #退出登录
@@ -45,3 +45,4 @@ class LoginView(Common):
         logging.info('logout finished!')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         time.sleep(1)
+

@@ -145,7 +145,7 @@ class GeneralView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
         return self.get_toast_message('操作成功')
 
-    def upload_file(self):  # 上传文件
+    def upload_file(self,filename):  # 上传文件
         logging.info('=========upload_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
         if self.get_toast_message('请先登录账号'):
@@ -155,9 +155,10 @@ class GeneralView(Common):
             l = LoginView(self.driver)
             l.login_from_my('13915575564', 'zhang199412')
             return
-        filename = 'upload ' + self.getTime('%Y-%m-%d %H_%M_%S')
+        # filename = 'upload ' + self.getTime('%Y-%m-%d %H_%M_%S')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_file_name').set_text(filename)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()
+        self.cover_file(True)
         return self.get_toast_message('上传成功')
 
     def share_file_index(self, way):  # 主页分享

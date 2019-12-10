@@ -39,11 +39,12 @@ class OpenView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()  # 点击搜索功能
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(file_name)  # 输入搜索内容
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()  # 点击搜索按钮
-        while not self.exist('//android.widget.TextView[@text="%s"]' % file_name):
-            time.sleep(2)
+        WebDriverWait(self.driver,120).until_not(lambda driver:self.driver.find_element(By.XPATH,'//*[@text="文件搜索.."]').is_displayed())
+        if self.get_element_result('//*[@text="没有找到相关文档"]'):
+            return False
         self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % file_name).click()  # 打开对应文件
-        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_group_button"]'):
-            time.sleep(2)
+        WebDriverWait(self.driver,120).until_not(lambda driver:self.driver.find_element(By.XPATH,'//*[contains(@text, "正在打开")]').is_displayed())
+        return True
 
     def check_open_status(self, file_name):
         logging.info('======test_open_status_%s=====' % file_name)

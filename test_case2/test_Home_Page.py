@@ -9,6 +9,7 @@ import unittest
 from appium.webdriver.connectiontype import ConnectionType
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from businessView.generalView import GeneralView
 from businessView.loginView import LoginView
@@ -168,7 +169,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(2)
-        name_list = gv.select_all('multi', [1, 3, 5 ])
+        name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
@@ -221,13 +222,13 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(7)
-        check = gv.upload_file()
+        check = gv.upload_file('Download上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.open_local_folder('Download')
             self.assertTrue(gv.check_open_folder('Download'), 'open fail')
             gv.file_more_info(7)
-            check = gv.upload_file()
+            check = gv.upload_file('Download上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -458,7 +459,7 @@ class TestHomePage(StartEnd):
         for i in range(10):
             gv.swipeUp()
         gv.file_more_info(7)
-        check = gv.upload_file()
+        check = gv.upload_file('手机上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.open_local_folder('手机')
@@ -466,7 +467,7 @@ class TestHomePage(StartEnd):
             for i in range(10):
                 gv.swipeUp()
             gv.file_more_info(7)
-            check = gv.upload_file()
+            check = gv.upload_file('手机上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -646,13 +647,13 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('我的文档')
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         gv.file_more_info(7)
-        check = gv.upload_file()
+        check = gv.upload_file('我的文档上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.open_local_folder('我的文档')
             self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
             gv.file_more_info(7)
-            check = gv.upload_file()
+            check = gv.upload_file('我的文档上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -818,13 +819,13 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('QQ')
         self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
         gv.file_more_info(7)
-        check = gv.upload_file()
+        check = gv.upload_file('QQ上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.open_local_folder('QQ')
             self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
             gv.file_more_info(7)
-            check = gv.upload_file()
+            check = gv.upload_file('QQ上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -956,12 +957,12 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
         gv.file_more_info(1)
-        check = gv.upload_file()
+        check = gv.upload_file('打开上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.select_file_type('all')
             gv.file_more_info(1)
-            check = gv.upload_file()
+            check = gv.upload_file('打开上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -1130,13 +1131,13 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
         gv.file_more_info(2)
-        check = gv.upload_file()
+        check = gv.upload_file('微信上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.open_local_folder('微信')
             self.assertTrue(gv.check_open_folder('微信'), 'open fail')
             gv.file_more_info(7)
-            check = gv.upload_file()
+            check = gv.upload_file('微信上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -1232,6 +1233,157 @@ class TestHomePage(StartEnd):
         gv.file_more_info(index)
         check = gv.download_file()
         self.assertTrue(check, 'download fail')
+
+    @unittest.skip('skip test_hp_cloud_copy')
+    def test_hp_cloud_copy(self):  # 云文档中移动
+        logging.info('==========test_hp_cloud_copy==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========copy action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+
+        self.assertTrue(gv.get_toast_message('操作成功'))
+
+    @unittest.skip('skip test_hp_cloud_select_all')
+    def test_hp_cloud_select_all(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========select_all operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
+        num = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num) != 0)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
+        num1 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num1) == 0)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[5].click()
+        num2 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num2) == 1)
+
+    @unittest.skip('skip test_hp_cloud_select_all_delete')
+    def test_hp_cloud_select_all_delete(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_delete==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========delete operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        name1 = eles[6].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        name2 = eles[7].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        names_del = [name1, name2]
+        eles[6].click()
+        eles[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        eles1 = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
+        names = list(map(lambda x: x.text, eles1))
+        a = set(names_del) <= set(names)  # 前一个集合是否是后一个集合的子集
+        self.assertFalse(a)
+
+    @unittest.skip('skip test_hp_cloud_select_all_copy')
+    def test_hp_cloud_select_all_copy(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_copy==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========copy operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
+        time.sleep(2)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+
+        self.assertTrue(gv.get_toast_message('操作成功'))
+
+    @unittest.skip('skip test_hp_cloud_select_all_move')
+    def test_hp_cloud_select_all_move(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_move==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========copy operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="移动"]').click()
+        time.sleep(2)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+
+        self.assertTrue(gv.get_toast_message('操作成功'))
+
+    @unittest.skip('skip test_hp_cloud_select_all_download')
+    def test_hp_cloud_select_all_download(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_download==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========copy operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        is_displayed = WebDriverWait(self.driver,120).until(lambda driver:self.driver.find_element(By.XPATH,'//*[@text="下载成功"]')).is_displayed()
+        # gv.get_element_result('//*[@text="下载成功"]')
+        self.assertTrue(is_displayed)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+
+
+    @unittest.skip('skip test_hp_cloud_move')
+    def test_hp_cloud_move(self):  # 云文档中复制
+        logging.info('==========test_hp_cloud_move==========')
+        gv = GeneralView(self.driver)
+        l = LoginView(self.driver)
+        gv.jump_to_index('my')
+        if not l.check_login_status():
+            l.login_from_my('13915575564', 'zhang199412')
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========move action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="移动"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+
+        self.assertTrue(gv.get_toast_message('操作成功'))
 
     @unittest.skip('skip test_hp_cloud_file_info')
     def test_hp_cloud_file_info(self):  # 云文件相关信息
@@ -1464,12 +1616,12 @@ class TestHomePage(StartEnd):
         gv = GeneralView(self.driver)
         l = LoginView(self.driver)
         gv.file_more_info(1)
-        check = gv.upload_file()
+        check = gv.upload_file('最近上传')
         if check == None:
             gv.jump_to_index('alldoc')
             gv.select_file_type('all')
             gv.file_more_info(1)
-            check = gv.upload_file()
+            check = gv.upload_file('最近上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -1913,7 +2065,7 @@ class TestHomePage(StartEnd):
         self.driver.keyevent(4)
         gv.jump_to_index('star')
         gv.file_more_info(1)
-        check = gv.upload_file()
+        check = gv.upload_file('标星上传')
         self.assertTrue(check, 'upload fail')
         gv.file_more_info(1)
         gv.mark_star()
