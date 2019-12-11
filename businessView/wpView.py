@@ -1,11 +1,14 @@
 import logging
 import random
 import time
-from businessView.generalView import GeneralView
+
+from businessView.generalFunctionView import GeneralFunctionView
 from selenium.webdriver.common.by import By
 
+from businessView.homePageView import HomePageView
 
-class WPView(GeneralView):
+
+class WPView(HomePageView, GeneralFunctionView):
     self_adaption_icon = (By.ID, 'com.yozo.office:id/yozo_ui_quick_option_wp_read_full_screen')
     toolbar_button = (By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode')  # 编辑签批切换
     option_group_button = (By.ID, 'com.yozo.office:id/yozo_ui_option_group_button')  # 菜单项
@@ -117,7 +120,9 @@ class WPView(GeneralView):
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[3].click()
 
     def table_merge_split(self):
-        print(self.driver.find_element(By.ID,"com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview").get_attribute('text'))
+        print(self.driver.find_element(By.ID,
+                                       "com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview").get_attribute(
+            'text'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_merge_cell_textview').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_split_cell_textview').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancle').click()
@@ -273,7 +278,7 @@ class WPView(GeneralView):
     def table_insert_row_col(self, direction=''):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_insert_table').click()
         row_col = ['up', 'down', 'left', 'light']
-        self.driver.find_elements(By.ID,'com.yozo.office:id/label_text_view')[row_col.index(direction)].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/label_text_view')[row_col.index(direction)].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def table_delete_row_col_all(self, del0=''):
@@ -282,7 +287,7 @@ class WPView(GeneralView):
         self.swipe_ele(ele_a, ele_b)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_table_option_id_delete_table').click()
         del_ = ['row', 'col', 'all']
-        self.driver.find_elements(By.ID,'com.yozo.office:id/label_text_view')[del_.index(del0)].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/label_text_view')[del_.index(del0)].click()
         if del0 != 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 

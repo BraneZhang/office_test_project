@@ -6,10 +6,11 @@ import time
 
 from selenium.webdriver.common.by import By
 
-from businessView.generalView import GeneralView
+from businessView.generalFunctionView import GeneralFunctionView
+from businessView.homePageView import HomePageView
 
 
-class SSView(GeneralView):
+class SSView(HomePageView, GeneralFunctionView):
 
     def filter_data(self, x, y, filter, cd1=None, cd2=None, cd_color=None):  # 点击绘图区域的筛选下拉，图片识别实现错误，使用坐标
         logging.info('======filter_data=====')

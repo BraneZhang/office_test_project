@@ -8,9 +8,6 @@ import unittest
 
 from selenium.webdriver.common.by import By
 
-from businessView.createView import CreateView
-from businessView.generalView import GeneralView
-from businessView.openView import OpenView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
 from data import data_info
@@ -25,10 +22,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_border')
     def test_ss_cell_border(self):  # 遍历边框所有功能
         logging.info('==========test_ss_cell_border==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.group_button_click('编辑')
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
         ss.swipe_options(ele, 'up')
@@ -38,21 +34,19 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_edit')
     def test_ss_cell_edit(self):
         logging.info('==========test_ss_cell_edit==========')
-        cv = CreateView(self.driver)
         ss = SSView(self.driver)
-        cv.create_file('ss')
+        ss.create_file('ss')
         ss.cell_edit()
 
-        gv = GeneralView(self.driver)
-        gv.group_button_click('编辑')
+        ss.group_button_click('编辑')
         type = 'ss'
-        gv.font_name(type)
-        gv.font_size(23)
-        gv.font_style(type, '加粗')
-        gv.font_style(type, '倾斜')
-        gv.font_style(type, '删除线')
-        gv.font_style(type, '下划线')
-        gv.font_color(type)
+        ss.font_name(type)
+        ss.font_size(23)
+        ss.font_style(type, '加粗')
+        ss.font_style(type, '倾斜')
+        ss.font_style(type, '删除线')
+        ss.font_style(type, '下划线')
+        ss.font_color(type)
 
         for i in range(5):
             self.driver.press_keycode(45)
@@ -61,17 +55,15 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_options')
     def test_ss_cell_options(self):  # 插入删除行宽列高清除
         logging.info('==========test_ss_cell_options==========')
-        cv = CreateView(self.driver)
-        type = 'ss'
-        cv.create_file('ss')
         ss = SSView(self.driver)
+        type = 'ss'
+        ss.create_file('ss')
         ss.cell_edit()
         for i in range(20):
             self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
         ss.group_button_click('编辑')
-        gv = GeneralView(self.driver)
-        gv.font_style(type, '删除线')
+        ss.font_style(type, '删除线')
 
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
         ss.swipe_options(ele, 'up')
@@ -89,11 +81,11 @@ class TestSS(StartEnd):
         ss.cell_delete('左移')
 
         ss.cell_clear('清除格式')
-        gv.undo_option()
+        ss.undo_option()
         ss.cell_clear('清除内容')
-        gv.undo_option()
+        ss.undo_option()
         ss.cell_clear('清除所有')
-        gv.undo_option()
+        ss.undo_option()
 
         ss.swipe_options(ele, 'up')
         ss.cell_set_size(5, 5)
@@ -107,11 +99,10 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_pop_menu')
     def test_ss_cell_pop_menu(self):
         logging.info('==========test_ss_cell_pop_menu==========')
-        cv = CreateView(self.driver)
-        type = 'ss'
-        cv.create_file(type)
-
         ss = SSView(self.driver)
+        type = 'ss'
+        ss.create_file(type)
+
         ss.cell_edit()  # 进入编辑
         x, y, width, height = ss.cell_location()  # 新建默认A1
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
@@ -145,10 +136,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_pop_menu_text')
     def test_ss_cell_pop_menu_text(self):
         logging.info('==========test_ss_cell_pop_menu_text==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.cell_edit()  # 进入编辑
         x, y, width, height = ss.cell_location()
         for i in range(10):
@@ -173,9 +163,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_select')
     def test_ss_cell_select(self):
         logging.info('==========test_ss_cell_select==========')
-        cv = CreateView(self.driver)
+        
         ss = SSView(self.driver)
-        cv.create_file('ss')
+        ss.create_file('ss')
         ss.cell_edit()
         self.driver.press_keycode(45)
         self.driver.press_keycode(45)
@@ -183,17 +173,16 @@ class TestSS(StartEnd):
         self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-        gv = GeneralView(self.driver)
-        gv.group_button_click('编辑')
+        ss.group_button_click('编辑')
         type = 'ss'
 
-        gv.font_name(type)
-        gv.font_size(23)
-        gv.font_style(type, '加粗')
-        gv.font_style(type, '倾斜')
-        gv.font_style(type, '删除线')
-        gv.font_style(type, '下划线')
-        gv.font_color(type)
+        ss.font_name(type)
+        ss.font_size(23)
+        ss.font_style(type, '加粗')
+        ss.font_style(type, '倾斜')
+        ss.font_style(type, '删除线')
+        ss.font_style(type, '下划线')
+        ss.font_color(type)
 
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
         ss.swipe_options(ele, 'up')
@@ -203,10 +192,8 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cells_select')
     def test_ss_cells_select(self):
         logging.info('==========test_ss_cells_select==========')
-        cv = CreateView(self.driver)
         ss = SSView(self.driver)
-        cv.create_file('ss')
-
+        ss.create_file('ss')
         ss.cell_edit()  # 进入编
         x, y, width, height = ss.cell_location()  # A1
         ss.tap(x + width * 1.5, y + height * 1.5)
@@ -217,10 +204,8 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_chart_pop')
     def test_ss_chart_pop(self):  # 图表相关操作
         logging.info('==========test_ss_chart_pop==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
         ss = SSView(self.driver)
-        gv = GeneralView(self.driver)
+        ss.create_file('ss')
         x, y, width, height = ss.cell_location()
         for i in range(3):
             ss.tap(x + width * 0.5, y + height * (0.5 + i))
@@ -229,8 +214,8 @@ class TestSS(StartEnd):
         ss.tap(x + width * 0.5, y + height * 0.5)
         ss.swipe(x + width, y + height, x + width, y + height * 3)
         ss.group_button_click('插入')
-        gv.insert_chart_insert('柱形图', 2)
-        gv.fold_expand()
+        ss.insert_chart_insert('柱形图', 2)
+        ss.fold_expand()
         time.sleep(1)
 
         x1, y1 = ss.find_pic_position('chart_title')
@@ -252,10 +237,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_column_options')
     def test_ss_column_options(self):
         logging.info('==========test_ss_column_options==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.cell_edit()  # 进入编辑
         x, y, width, height = ss.cell_location()
         for i in range(10):
@@ -293,9 +277,8 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_data_table')
     def test_ss_data_table(self):  # 数据排序，工作表格式
         logging.info('==========test_ss_data_table==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
         ss = SSView(self.driver)
+        ss.create_file('ss')
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
         for i in range(10):
@@ -324,20 +307,20 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_edit_area_fling')
     def test_ss_edit_area_fling(self):
         logging.info('==========test_ss_edit_area_fling==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
 
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ss_frame_table_container"]'
-        cv.swipe_options(ele=ele, option='up')
-        cv.swipe_options(ele=ele, option='down')
-        cv.swipe_options(ele=ele, option='left')
-        cv.swipe_options(ele=ele, option='right')
+        ss.swipe_options(ele=ele, option='up')
+        ss.swipe_options(ele=ele, option='down')
+        ss.swipe_options(ele=ele, option='left')
+        ss.swipe_options(ele=ele, option='right')
 
     @unittest.skip('skip test_ss_worksheet_hide_show')
     def test_ss_edit_bar_expand_fold(self):
         logging.info('==========test_ss_edit_bar_expand_fold==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_formula_drop_down').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_formula_drop_down').click()
@@ -345,24 +328,22 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_filter1')
     def test_ss_filter1(self):
         logging.info('==========test_ss_filter1==========')
-        gv = GeneralView(self.driver)
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
-        gv.switch_write_read()
-        gv.group_button_click('查看')
+        ss.open_file('screen.xls')
+        ss.switch_write_read()
+        ss.group_button_click('查看')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
         tip = self.driver.find_element(By.ID, 'com.yozo.office:id/text_content')
         self.assertTrue(tip != None)
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_right').click()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
-        gv.tap(x + width / 2, y - height / 2)
-        gv.group_button_click('查看')
+        ss.tap(x + width / 2, y - height / 2)
+        ss.group_button_click('查看')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
         state = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_checkbox_switch').text
         self.assertTrue(state == '开启')
-        gv.tap(x - width - 10, y - height * 3 - 10)
+        ss.tap(x - width - 10, y - height * 3 - 10)
         self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_complete'))
         self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/tv_ss_filter_cancel'))
         self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_asc'))
@@ -374,8 +355,7 @@ class TestSS(StartEnd):
     def test_ss_filter2(self):
         logging.info('==========test_ss_filter2==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -404,8 +384,7 @@ class TestSS(StartEnd):
     def test_ss_filter_by_color(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -437,8 +416,7 @@ class TestSS(StartEnd):
     def test_ss_filter_by_date(self):
         logging.info('==========test_ss_filter_by_date==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -464,8 +442,7 @@ class TestSS(StartEnd):
     def test_ss_filter_by_num(self):
         logging.info('==========test_ss_filter_by_num==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -480,8 +457,7 @@ class TestSS(StartEnd):
     def test_ss_filter_by_num_shortcut(self):
         logging.info('==========test_ss_filter_by_num_shortcut==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         time.sleep(1)
         ss.switch_write_read()
         ss.cell_edit()
@@ -506,8 +482,7 @@ class TestSS(StartEnd):
     def test_ss_filter_by_text(self):
         logging.info('==========test_ss_filter_by_text==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -522,8 +497,7 @@ class TestSS(StartEnd):
     def test_ss_filter_cd1_none(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
-        ov = OpenView(self.driver)
-        ov.open_file('screen.xls')
+        ss.open_file('screen.xls')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -544,9 +518,8 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_formula_auto_sum')
     def test_ss_formula_auto_sum(self):
         logging.info('==========test_ss_formula_auto_sum==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
         ss = SSView(self.driver)
+        ss.create_file('ss')
 
         ss.cell_edit()
         x, y, width, height = ss.cell_location()  # cell A1
@@ -566,9 +539,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_formula_all')
     def test_ss_formula_for_all(self):  # 其他类型公式
         logging.info('==========test_ss_formula_all==========')
-        cv = CreateView(self.driver)
+        
         ss = SSView(self.driver)
-        cv.create_file('ss')
+        ss.create_file('ss')
 
         ss.cell_edit()
         x, y, width, height = ss.cell_location()  # cell A1
@@ -640,9 +613,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_merge_wrap')
     def test_ss_merge_wrap(self):
         logging.info('==========test_ss_merge_wrap==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
+        
         ss = SSView(self.driver)
+        ss.create_file('ss')
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
         ss.tap(x + width * 0.5, y + height * 0.5)
@@ -650,7 +623,7 @@ class TestSS(StartEnd):
         for i in range(20):
             self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
-        cv.drag_coordinate(x + width, y + height, x + width, y + height * 3)
+        ss.drag_coordinate(x + width, y + height, x + width, y + height * 3)
 
         ss.group_button_click('编辑')
         ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'
@@ -666,9 +639,8 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_num_style')
     def test_ss_num_format(self):
         logging.info('==========test_num_style==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
         ss = SSView(self.driver)
+        ss.create_file('ss')
         ss.cell_edit()
         self.driver.press_keycode(15)
         self.driver.press_keycode(7)
@@ -685,10 +657,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_row_options')
     def test_ss_row_options(self):
         logging.info('==========test_ss_row_options==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.cell_edit()  # 进入编辑
         x, y, width, height = ss.cell_location()
         self.driver.press_keycode(36)
@@ -722,20 +693,19 @@ class TestSS(StartEnd):
         ss.swipe(x3, y3, x3 - width, y3)
         ss.pop_menu_click('hide_cancel')
 
-    # @unittest.skip('skip test_ss_show_file_info')
+    @unittest.skip('skip test_ss_show_file_info')
     def test_ss_show_file_info(self):
         logging.info('==========test_ss_show_file_info==========')
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.xlsx')
-        gv = GeneralView(self.driver)
-        gv.file_info()
-        self.assertTrue(gv.check_file_info())
+        ss = SSView(self.driver)
+        ss.open_file('欢迎使用永中Office.xlsx')
+        ss.file_info()
+        self.assertTrue(ss.check_file_info())
 
     @unittest.skip('skip test_ss_worksheet_hide_show')
     def test_ss_worksheet_hide_show(self):
         logging.info('==========test_ss_worksheet_hide_show==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_quick_option_ss_sheet_tabbar').click()
         self.assertTrue(self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_sheet_iv_more'))
@@ -745,10 +715,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_worksheet_options')
     def test_ss_worksheet_options(self):
         logging.info('==========test_ss_worksheet_options==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.show_sheet()
         ss.add_sheet()
         result = ss.rename_sheet(3, 'rename_test')
@@ -770,10 +739,9 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_table_style')
     def test_ss_table_style(self):  # 表格样式
         logging.info('==========test_ss_table_style==========')
-        cv = CreateView(self.driver)
-        cv.create_file('ss')
-
         ss = SSView(self.driver)
+        ss.create_file('ss')
+
         ss.cell_edit()  # 进入编辑
         x, y, width, height = ss.cell_location()
         ss.tap(x + width * 1.5, y + height * 1.5)

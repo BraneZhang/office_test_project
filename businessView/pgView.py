@@ -6,10 +6,11 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
-from businessView.generalView import GeneralView
+from businessView.generalFunctionView import GeneralFunctionView
+from businessView.homePageView import HomePageView
 
 
-class PGView(GeneralView):
+class PGView(HomePageView, GeneralFunctionView):
 
     def switch_mode(self, switch, apply='one'):  # 切换
         logging.info('==========switch_mode==========')

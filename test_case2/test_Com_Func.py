@@ -10,9 +10,8 @@ import unittest
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
-from businessView.createView import CreateView
-from businessView.generalView import GeneralView
-from businessView.openView import OpenView
+from businessView.generalFunctionView import GeneralFunctionView
+from businessView.homePageView import HomePageView
 from businessView.pgView import PGView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
@@ -32,35 +31,36 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_create_file')
     @data(*wps)
-    def test_create_file(self, type):  # 新建文档
+    def test_create_file(self, file_type):  # 新建文档
         logging.info('==========test_create_file==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
+        hp = HomePageView(self.driver)
+        hp.create_file(file_type)
         file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
         create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
-        self.assertTrue(file_name == create_dict[type])
+        self.assertTrue(file_name == create_dict[file_type])
 
     @unittest.skip('skip test_expand_fold')
     @data(*wps)
     def test_expand_fold(self, file_type):  # 编辑栏收起展开
         logging.info('==========test_expand_fold==========')
         suffix = search_dict[file_type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        gv = GeneralView(self.driver)
+        # ov = OpenView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         gv.switch_write_read()
         gv.fold_expand()
         gv.fold_expand()
 
     @unittest.skip('skip test_export_pdf')
     @data(*wp)
-    def test_export_pdf(self, type):  # 导出pdf
+    def test_export_pdf(self, file_type):  # 导出pdf
         logging.info('==========test_export_pdf==========')
-        suffix = search_dict[type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
+        suffix = search_dict[file_type]
+        hp = HomePageView(self.driver)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
 
-        gv = GeneralView(self.driver)
+        gv = GeneralFunctionView(self.driver)
         file_name = 'export_pdf ' + gv.getTime('%Y-%m-%d %H_%M_%S')
         gv.export_pdf(file_name, 'local')
 
@@ -68,30 +68,30 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_insert_chart1')
     @data(*ps)
-    def test_insert_chart1(self, type='ss'):
+    def test_insert_chart1(self, file_type):
         logging.info('==========test_insert_chart1==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        hp.create_file(file_type)
+        gv = GeneralFunctionView(self.driver)
         ss = SSView(self.driver)
 
         time.sleep(1)
-        if type == 'ss':
+        if file_type == 'ss':
             x, y, width, height = ss.cell_location()
             for i in range(3):
-                cv.tap(x + width * 0.5, y + height * (i + 0.5))
+                hp.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()  # 双击进入编辑
                 self.driver.press_keycode(random.randint(7, 16))
             gv.drag_coordinate(x, y + height * 2, x, y)
 
         gv.group_button_click('插入')
-        if type == 'pg':
+        if file_type == 'pg':
             ele1 = '//*[@text="幻灯片"]'
             ele2 = '//*[@text="图片"]'
             gv.swipe_ele(ele2, ele1)
         gv.insert_chart_insert('柱形图', random.randint(1, 9))
         gv.chart_color(random.randint(1, 8))
-        gv.chart_element(type,('大标题',1),2,1)
+        gv.chart_element(file_type,('大标题',1),2,1)
         gv.chart_element_XY('x','xAxis',0,0,0)
         gv.chart_element_XY('y','yAxis',1,1,1,(1,1))
         # gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
@@ -105,16 +105,16 @@ class TestCommon(StartEnd):
         logging.info('==========test_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
                       '圆锥图', '棱锥图']
-        cv = CreateView(self.driver)
-        cv.create_file(file_type)
-        gv = GeneralView(self.driver)
-        ss = SSView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(file_type)
 
         time.sleep(1)
         if type == 'ss':
+            ss = SSView(self.driver)
             x, y, width, height = ss.cell_location()
             for i in range(3):
-                cv.tap(x + width * 0.5, y + height * (i + 0.5))
+                hp.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()  # 双击进入编辑
                 self.driver.press_keycode(random.randint(7, 16))
             gv.drag_coordinate(x, y + height * 2, x, y)
@@ -132,28 +132,25 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_insert_shape')
     @data(*wps)
-    def test_insert_shape(self, type):
+    def test_insert_shape(self, file_type):
         logging.info('==========test_insert_shape==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(file_type)
 
-        gv = GeneralView(self.driver)
-        ss = SSView(self.driver)
-        # ss.insert_chart()
         gv.group_button_click('插入')
-        gv.insert_shape(type)
+        gv.insert_shape(file_type)
         for i in range(5):
-            gv.shape_insert(type, 6, random.randint(1, 42))
+            gv.shape_insert(file_type, 6, random.randint(1, 42))
         time.sleep(3)
 
     @unittest.skip('skip test_pop_menu_shape1_ws')
     @data(*wps)
     def test_pop_menu_shape1(self, file_type):
         logging.info('==========test_pop_menu_shape1_ws==========')
-        # type = 'pg'
-        cv = CreateView(self.driver)
-        cv.create_file(file_type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(file_type)
 
         if file_type == 'pg':
             pg = PGView(self.driver)
@@ -188,12 +185,12 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
-    def test_pop_menu_shape(self, file_type='pg'): #pg未好
+    def test_pop_menu_shape(self, file_type): #pg未好
         logging.info('==========test_pop_menu_shape==========')
-        cv = CreateView(self.driver)
-        # type = 'pg'
-        cv.create_file(file_type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+
+        hp.create_file(file_type)
         gv.group_button_click('插入')
         gv.insert_shape(file_type)
         time.sleep(1)
@@ -251,40 +248,40 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_read_mode')
     @data(*wps)
-    def test_read_mode(self, type):  # 阅读模式
+    def test_read_mode(self, file_type):  # 阅读模式
         logging.info('==========test_read_mode==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
 
-        gv = GeneralView(self.driver)
+        hp.create_file(file_type)
         gv.switch_write_read()
         self.assertTrue(gv.check_write_read())
 
     @unittest.skip('skip test_rotate')
     @data(*wps)
-    def test_rotate(self, type):
+    def test_rotate(self, file_type):
         logging.info('==========test_rotate==========')
-        suffix = search_dict[type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        suffix = search_dict[file_type]
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         # gv.screen_rotate('landscape')
         self.assertTrue(gv.check_rotate())
         gv.screen_rotate('portrait')
 
     @unittest.skip('skip test_scroll_screen')
     @data(*wps)
-    def test_scroll_screen(self, type):  # 滚屏
+    def test_scroll_screen(self, file_type):  # 滚屏
         logging.info('==========test_scroll_screen==========')
-        suffix = search_dict[type]
-        ov = OpenView(self.driver)
+        suffix = search_dict[file_type]
+        ov = HomePageView(self.driver)
         ov.open_file('欢迎使用永中Office.%s' % suffix)
-        if type == 'pg':
+        if file_type == 'pg':
             time.sleep(3)
             ov.swipeLeft()
             ov.swipeLeft()
             ov.swipeRight()
-        elif type == 'ss':
+        elif file_type == 'ss':
             time.sleep(3)
             ov.swipeLeft()
             ov.swipeLeft()
@@ -303,10 +300,10 @@ class TestCommon(StartEnd):
     @data(*wps)
     def test_search_replace(self, file_type):  # 查找替换
         logging.info('==========test_search_replace==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
         suffix = search_dict[file_type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        gv = GeneralView(self.driver)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         gv.switch_write_read()
         if file_type in ws:
             gv.group_button_click('查看')
@@ -317,25 +314,25 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_shape_attr1')
     @data(*wps)
-    def test_shape_attr1(self, type):  # 文本框字符属性
+    def test_shape_attr1(self, file_type):  # 文本框字符属性
         logging.info('==========test_shape_attr1==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(file_type)
         x1, y1 = 0, 0
-        if type == 'ss':
+        if file_type == 'ss':
             ss = SSView(self.driver)
             x1, y1, w, h = ss.cell_location()
             self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
         gv.group_button_click('插入')
-        gv.insert_shape(type)
+        gv.insert_shape(file_type)
         time.sleep(1)
         x, y = gv.find_pic_position('drag_all')
         gv.tap(x, y)  # 进入编辑
         gv.pop_menu_click('editText')
 
-        if type == 'ss':
+        if file_type == 'ss':
             gv.fold_expand()
             gv.fold_expand()
             x, y = gv.find_pic_position('drag_all')
@@ -345,10 +342,10 @@ class TestCommon(StartEnd):
         for i in range(50):
             self.driver.press_keycode(random.randint(7, 16))
 
-        if type == 'pg':
+        if file_type == 'pg':
             gv.tap(250, 250)
             gv.tap(525, 500)
-        elif type == 'ss':
+        elif file_type == 'ss':
             gv.tap(x1, y1)
             gv.tap(x, y)
             gv.fold_expand()
@@ -359,8 +356,8 @@ class TestCommon(StartEnd):
             # time.sleep(1)
         # gv.fold_expand()
 
-        gv.shape_option(type, 5, width=5, height=5)
-        gv.shape_option(type, 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
+        gv.shape_option(file_type, 5, width=5, height=5)
+        gv.shape_option(file_type, 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
         # ele1 = '//*[@text="形状"]'
         # ele2 = '//*[@text="轮廓"]'
         # ele3 = '//*[@text="效果"]'
@@ -373,41 +370,41 @@ class TestCommon(StartEnd):
         gv.swipe_options()
         gv.swipe_options()
         gv.swipe_options()
-        gv.shape_content_align(type, '右对齐', '下对齐')
-        gv.shape_content_align(type)
-        gv.shape_content_align(type, '水平居中', '垂直居中')
+        gv.shape_content_align(file_type, '右对齐', '下对齐')
+        gv.shape_content_align(file_type)
+        gv.shape_content_align(file_type, '水平居中', '垂直居中')
 
     @unittest.skip('skip test_shape_attr2')
     @data(*wps)
-    def test_shape_attr2(self, type):
-        logging.info('==========test_shape_att2r==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        gv = GeneralView(self.driver)
+    def test_shape_attr2(self, file_type):
+        logging.info('==========test_shape_attr2==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(file_type)
         gv.group_button_click('插入')
-        gv.insert_shape(type, 6, 10)
-        gv.shape_option(type, 2)
-        gv.shape_fill_color(type, 6, 24)
+        gv.insert_shape(file_type, 6, 10)
+        gv.shape_option(file_type, 2)
+        gv.shape_fill_color(file_type, 6, 24)
         gv.shape_fill_color_transparency(5)
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
-        if type == 'pg':
+        if file_type == 'pg':
             ele0 = '//*[@text="插入"]'
             gv.swipe_ele(ele0, ele1)
         gv.swipe_ele(ele2, ele1)
-        gv.shape_border_color(type, 6, 5)
-        gv.shape_border_type(type, 6, 3)
-        gv.shape_border_width(type, 6, 5)
-        gv.shape_effect_type(type, 6, 4, 5)
+        gv.shape_border_color(file_type, 6, 5)
+        gv.shape_border_type(file_type, 6, 3)
+        gv.shape_border_width(file_type, 6, 5)
+        gv.shape_effect_type(file_type, 6, 4, 5)
         time.sleep(1)
 
     @unittest.skip('skip test_shape_attr')
     @data(*wps)
     def test_shape_attr(self, type):
         logging.info('==========test_shape_attr==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(type)
         gv.group_button_click('插入')
         gv.insert_shape(type, 6, 30)
         gv.shape_insert(type, 6, 31)
@@ -430,12 +427,12 @@ class TestCommon(StartEnd):
     @data(*share_list)
     def test_share_file(self, way):  # 分享文件
         logging.info('==========test_share_file==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+
         index = way.index('_')
         suffix = search_dict[way[0:index]]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-
-        gv = GeneralView(self.driver)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         gv.share_file(way[0:index], way[index + 1:])
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -446,19 +443,20 @@ class TestCommon(StartEnd):
     @data(*share_list)
     def test_share_file_create(self, way):
         logging.info('==========test_share_file_create==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+
         index = way.index('_')
         type = way[0:index]
         share_way = way[index + 1:]
-        gv = GeneralView(self.driver)
-        cv = CreateView(self.driver)
-        cv.create_file(type)
+        hp.create_file(type)
         file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
         create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
         self.assertTrue(file_name == create_dict[type])
         gv.share_file(type, share_way)
         self.driver.find_element(By.ID, 'android:id/button1').click()
         save_name = gv.getTime("%Y%m%d%H%M%S")
-        cv.save_step('local', save_name, 1)
+        hp.save_step('local', save_name, 1)
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
         os.system('adb shell am force-stop com.vivo.email')
@@ -468,13 +466,13 @@ class TestCommon(StartEnd):
     @data(*share_list)
     def test_share_file_edit(self, way):
         logging.info('==========test_share_file_edit==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+
         type = way.split('_')[0]
         share_way = way.split('_')[1]
         suffix = search_dict[type]
-        gv = GeneralView(self.driver)
-        ov = OpenView(self.driver)
-
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         gv.switch_write_read()
         gv.group_button_click('插入')
         gv.insert_shape(type)
@@ -489,9 +487,9 @@ class TestCommon(StartEnd):
     @data(*wps)
     def test_signature(self, type):  # 签批
         logging.info('==========test_signature==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        gv = GeneralView(self.driver)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(type)
         gv.group_button_click('签批')
         gv.use_finger(type)
         gv.use_finger(type)
@@ -512,9 +510,9 @@ class TestCommon(StartEnd):
     @data(*wps)
     def test_undo_redo(self, type):  # 撤销、重做
         logging.info('==========test_undo_redo==========')
-        cv = CreateView(self.driver)
-        gv = GeneralView(self.driver)
-        cv.create_file(type)
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.create_file(type)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo')  # 判断页面是否已切过来
 
         gv.group_button_click('插入')
@@ -560,59 +558,59 @@ class TestCommon(StartEnd):
     @data(*wps)
     def test_zoom_pinch(self, type):
         logging.info('==========test_zoom_pinch==========')
+        hp = HomePageView(self.driver)
         suffix = search_dict[type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        ov.zoom()
-        ov.pinch()
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        hp.zoom()
+        hp.pinch()
 
     @unittest.skip('skip test_save_as_existFile')
     @data(*wps)
     def test_zz_save_as_existFile(self, type):  # 已有文件另存为
         logging.info('==========test_save_as_existFile==========')
+        hp = HomePageView(self.driver)
+
         suffix = search_dict[type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        cv = CreateView(self.driver)
-        file_name = 'save_as_exist ' + cv.getTime('%H_%M_%S')
-        cv.save_as_file(file_name, 'local', 1)
-        self.assertTrue(cv.check_save_file())
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = 'save_as_exist ' + hp.getTime('%H_%M_%S')
+        hp.save_as_file(file_name, 'local', 1)
+        self.assertTrue(hp.check_save_file())
 
     @unittest.skip('skip test_save_as_newFile')
     @data(*wps)
     def test_zz_save_as_newFile(self, type):  # 新建脚本另存为
         logging.info('==========test_save_as_newFile==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        file_name = 'save_as_new ' + cv.getTime('%H_%M_%S')
-        cv.save_as_file(file_name, 'local', 1)
-        self.assertTrue(cv.check_save_file())
+        hp = HomePageView(self.driver)
+        hp.create_file(type)
+        file_name = 'save_as_new ' + hp.getTime('%H_%M_%S')
+        hp.save_as_file(file_name, 'local', 1)
+        self.assertTrue(hp.check_save_file())
 
     @unittest.skip('skip test_save_existFile')
     @data(*wps)
     def test_zz_save_existFile(self, type):  # 已有文件改动保存
         logging.info('==========test_save_existFile==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+
         suffix = search_dict[type]
-        ov = OpenView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
-        cv = CreateView(self.driver)
-        gv = GeneralView(self.driver)
+        hp.open_file('欢迎使用永中Office.%s' % suffix)
         gv.switch_write_read()
         gv.group_button_click('签批')
         gv.pen_type(type, '荧光笔')
         self.driver.swipe(300, 400, 800, 500)
-        cv.save_file()
-        self.assertTrue(cv.check_save_file())
+        hp.save_file()
+        self.assertTrue(hp.check_save_file())
 
     @unittest.skip('skip test_save_newFile')
     @data(*wps)
     def test_zz_save_newFile(self, type):  # 新建脚本保存
         logging.info('==========test_save_newFile==========')
-        cv = CreateView(self.driver)
-        cv.create_file(type)
-        file_name = 'save_new ' + cv.getTime('%Y-%m-%d %H-%M-%S')
-        cv.save_new_file(file_name, 'local', 2)
-        self.assertTrue(cv.check_save_file())
+        hp = HomePageView(self.driver)
+        hp.create_file(type)
+        file_name = 'save_new ' + hp.getTime('%Y-%m-%d %H-%M-%S')
+        hp.save_new_file(file_name, 'local', 2)
+        self.assertTrue(hp.check_save_file())
 
     logging.info('==========2019-11-05 add==========')
 
@@ -625,11 +623,11 @@ class TestCommon(StartEnd):
         :return: None
         """
         logging.info('==========test_close_file==========')
-        ov = OpenView(self.driver)
-        isOpen = ov.open_random_file(search_dict[file_type])
+        hp = HomePageView(self.driver)
+        isOpen = hp.open_random_file(search_dict[file_type])
         self.assertTrue(isOpen,'open fail')
-        ov.close_file()
-        self.assertTrue(ov.check_close_file())
+        hp.close_file()
+        self.assertTrue(hp.check_close_file())
 
     @unittest.skip('skip test_share_newFile')
     @data(*share_list)
@@ -640,19 +638,19 @@ class TestCommon(StartEnd):
         :return: None
         """
         logging.info('==========test_share_newFile==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
         file_type = share_info.split('_')[0]
         share_type = share_info.split('_')[1]
 
         logging.info('==========create and save new File==========')
-        cv = CreateView(self.driver)
-        cv.create_file(file_type)
-        cv.save_new_file('%s%s分享' % (file_type, share_type), 'local')
+        hp.create_file(file_type)
+        hp.save_new_file('%s%s分享' % (file_type, share_type), 'local')
         time.sleep(1)
-        cv.cover_file(True)
-        self.assertTrue(cv.get_toast_message('保存成功'))
+        hp.cover_file(True)
+        self.assertTrue(hp.get_toast_message('保存成功'))
 
         logging.info('==========share new File==========')
-        gv = GeneralView(self.driver)
         gv.share_file(file_type, share_type)
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -668,24 +666,22 @@ class TestCommon(StartEnd):
         :return: None
         """
         logging.info('==========test_share_editFile==========')
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
         file_type = share_info.split('_')[0]
         share_type = share_info.split('_')[1]
 
         logging.info('==========edit and save File==========')
-        ov = OpenView(self.driver)
-        ov.open_random_file(search_dict[file_type])
+        hp.open_random_file(search_dict[file_type])
 
-        gv = GeneralView(self.driver)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()
         gv.group_button_click('插入')
         gv.insert_shape(file_type, 1)
 
-        cv = CreateView(self.driver)
-        cv.save_file()
-        self.assertTrue(cv.get_toast_message('保存成功'))
+        hp.save_file()
+        self.assertTrue(hp.get_toast_message('保存成功'))
 
         logging.info('==========share new File==========')
-        gv = GeneralView(self.driver)
         gv.share_file(file_type, share_type)
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -701,10 +697,10 @@ class TestCommon(StartEnd):
         :return: None
         """
         logging.info('==========test_file_info==========')
-        ov = OpenView(self.driver)
-        ov.open_random_file(search_dict[file_type])
+        hp = HomePageView(self.driver)
+        gv = GeneralFunctionView(self.driver)
+        hp.open_random_file(search_dict[file_type])
 
         logging.info('==========show file info==========')
-        gv = GeneralView(self.driver)
         gv.wait_loading()
         gv.file_info()
