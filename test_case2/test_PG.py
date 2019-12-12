@@ -31,7 +31,11 @@ class TestPG(StartEnd):
     def test_ppt_add_scroll_comment(self):  # ppt缩略图滚屏备注
         logging.info('==========test_ppt_add_scroll_comment==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         pg.switch_write_read()
         pg.add_new()
         pg.add_comment(5, 'test2')
@@ -155,8 +159,11 @@ class TestPG(StartEnd):
     def test_ppt_insert_new(self):
         logging.info('==========test_ppt_insert_new==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
-        pg.wait_loading()
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result,'查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         pg.switch_write_read()
         time.sleep(1)
 
@@ -201,14 +208,16 @@ class TestPG(StartEnd):
     def test_ppt_play_to_first(self, play_type):
         logging.info('==========test_ppt_play_to_first==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
 
         logging.info('==========modify played pages==========')
-        pg.wait_loading()
         pg.switch_write_read()
         time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
-        # print(f'thumbnails_list_len:{len(thumbnails_list)}')
         index = random.randint(1, len(thumbnails_list) - 4)
         thumbnails_list[index].click()
 
@@ -233,10 +242,13 @@ class TestPG(StartEnd):
     def test_ppt_play_to_last(self, play_type):
         logging.info('==========test_ppt_play_to_last==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
 
         logging.info('==========modify played pages==========')
-        pg.wait_loading()
         pg.switch_write_read()
         time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
@@ -263,10 +275,13 @@ class TestPG(StartEnd):
     def test_ppt_autoplay_to_last(self):
         logging.info('==========test_ppt_autoplay_to_last==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
 
         logging.info('==========modify played pages==========')
-        pg.wait_loading()
         pg.switch_write_read()
         time.sleep(1)
         thumbnails_list = self.driver.find_elements(By.CLASS_NAME, 'android.view.View')
@@ -293,9 +308,13 @@ class TestPG(StartEnd):
     def test_ppt_play_switch(self, switch):  # 幻灯片切换
         logging.info('==========test_ppt_play_switch==========')
         pg = PGView(self.driver)
-        pg.open_file('欢迎使用永中Office.pptx')
-        pg.switch_write_read()
+        file_name = '欢迎使用永中Office.pptx'
+        search_result = pg.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = pg.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
 
+        pg.switch_write_read()
         pg.group_button_click('切换')
         pg.switch_mode(switch, 'all')
         pg.group_button_click('播放')

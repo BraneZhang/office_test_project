@@ -386,7 +386,6 @@ class Common(BaseView):
         if state != state_dict[button_state]:
             self.driver.find_element(By.XPATH, button_ele).click()
 
-
     def cover_file(self, is_cover):
         """
         是否覆盖文档
@@ -403,6 +402,43 @@ class Common(BaseView):
                 self.driver.find_element(By.ID, 'android:id/button1').click()
             else:
                 self.driver.find_element(By.ID, 'android:id/button2').click()
+
+    def check_option(self, is_do):
+        """
+        确认操作
+        :param is_cover: True or False
+        :return: None
+        """
+        logging.info('==========cover_file==========')
+        try:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/msgTv')
+        except NoSuchElementException:
+            pass
+        else:
+            if is_do:
+                self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+            else:
+                self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+
+    def get_element_index(self, ele):
+        """
+        获取元素的index
+        :param ele: 元素条件
+        :return:  元素index
+        """
+        logging.info('==========cover_file==========')
+        eles = None
+        try:
+            # index = self.driver.find_element(By.XPATH, ele).get_attribute('index')
+            eles = self.driver.find_element(By.XPATH, ele)
+        except NoSuchElementException:
+            logging.error('cannot find element')
+            return -1
+        else:
+            index = eles.get_attribute('index')
+            # index = self.driver.find_element(By.XPATH, ele).get_attribute('index')
+            return int(index)
+
 
 if __name__ == '__main__':
     # driver=appium_desired()

@@ -44,10 +44,14 @@ class TestCommon(StartEnd):
     def test_expand_fold(self, file_type):  # 编辑栏收起展开
         logging.info('==========test_expand_fold==========')
         suffix = search_dict[file_type]
-        # ov = OpenView(self.driver)
         hp = HomePageView(self.driver)
         gv = GeneralFunctionView(self.driver)
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         gv.switch_write_read()
         gv.fold_expand()
         gv.fold_expand()
@@ -58,10 +62,14 @@ class TestCommon(StartEnd):
         logging.info('==========test_export_pdf==========')
         suffix = search_dict[file_type]
         hp = HomePageView(self.driver)
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
 
         gv = GeneralFunctionView(self.driver)
-        file_name = 'export_pdf ' + gv.getTime('%Y-%m-%d %H_%M_%S')
+        file_name = '导出PDF '
         gv.export_pdf(file_name, 'local')
 
         self.assertTrue(gv.check_export_pdf())
@@ -91,9 +99,9 @@ class TestCommon(StartEnd):
             gv.swipe_ele(ele2, ele1)
         gv.insert_chart_insert('柱形图', random.randint(1, 9))
         gv.chart_color(random.randint(1, 8))
-        gv.chart_element(file_type,('大标题',1),2,1)
-        gv.chart_element_XY('x','xAxis',0,0,0)
-        gv.chart_element_XY('y','yAxis',1,1,1,(1,1))
+        gv.chart_element(file_type, ('大标题', 1), 2, 1)
+        gv.chart_element_XY('x', 'xAxis', 0, 0, 0)
+        gv.chart_element_XY('y', 'yAxis', 1, 1, 1, (1, 1))
         # gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
         gv.change_row_column()
@@ -185,7 +193,7 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_pop_menu_shape')
     @data(*wps)
-    def test_pop_menu_shape(self, file_type): #pg未好
+    def test_pop_menu_shape(self, file_type):  # pg未好
         logging.info('==========test_pop_menu_shape==========')
         hp = HomePageView(self.driver)
         gv = GeneralFunctionView(self.driver)
@@ -262,38 +270,45 @@ class TestCommon(StartEnd):
     def test_rotate(self, file_type):
         logging.info('==========test_rotate==========')
         hp = HomePageView(self.driver)
-        gv = GeneralFunctionView(self.driver)
         suffix = search_dict[file_type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         # gv.screen_rotate('landscape')
-        self.assertTrue(gv.check_rotate())
-        gv.screen_rotate('portrait')
+        self.assertTrue(hp.check_rotate())
+        hp.screen_rotate('portrait')
 
     @unittest.skip('skip test_scroll_screen')
     @data(*wps)
     def test_scroll_screen(self, file_type):  # 滚屏
         logging.info('==========test_scroll_screen==========')
         suffix = search_dict[file_type]
-        ov = HomePageView(self.driver)
-        ov.open_file('欢迎使用永中Office.%s' % suffix)
+        hp = HomePageView(self.driver)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         if file_type == 'pg':
             time.sleep(3)
-            ov.swipeLeft()
-            ov.swipeLeft()
-            ov.swipeRight()
+            hp.swipeLeft()
+            hp.swipeLeft()
+            hp.swipeRight()
         elif file_type == 'ss':
             time.sleep(3)
-            ov.swipeLeft()
-            ov.swipeLeft()
-            ov.swipeRight()
-            ov.swipeUp()
-            ov.swipeUp()
-            ov.swipeDown()
+            hp.swipeLeft()
+            hp.swipeLeft()
+            hp.swipeRight()
+            hp.swipeUp()
+            hp.swipeUp()
+            hp.swipeDown()
         else:
             time.sleep(3)
-            ov.swipeUp()
-            ov.swipeUp()
-            ov.swipeDown()
+            hp.swipeUp()
+            hp.swipeUp()
+            hp.swipeDown()
         time.sleep(3)
 
     @unittest.skip('skip test_search_replace')
@@ -303,7 +318,11 @@ class TestCommon(StartEnd):
         hp = HomePageView(self.driver)
         gv = GeneralFunctionView(self.driver)
         suffix = search_dict[file_type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         gv.switch_write_read()
         if file_type in ws:
             gv.group_button_click('查看')
@@ -432,7 +451,11 @@ class TestCommon(StartEnd):
 
         index = way.index('_')
         suffix = search_dict[way[0:index]]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         gv.share_file(way[0:index], way[index + 1:])
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -472,7 +495,11 @@ class TestCommon(StartEnd):
         type = way.split('_')[0]
         share_way = way.split('_')[1]
         suffix = search_dict[type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         gv.switch_write_read()
         gv.group_button_click('插入')
         gv.insert_shape(type)
@@ -560,7 +587,11 @@ class TestCommon(StartEnd):
         logging.info('==========test_zoom_pinch==========')
         hp = HomePageView(self.driver)
         suffix = search_dict[type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         hp.zoom()
         hp.pinch()
 
@@ -571,8 +602,12 @@ class TestCommon(StartEnd):
         hp = HomePageView(self.driver)
 
         suffix = search_dict[type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
-        file_name = 'save_as_exist ' + hp.getTime('%H_%M_%S')
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        file_name = '已有文档另存'
         hp.save_as_file(file_name, 'local', 1)
         self.assertTrue(hp.check_save_file())
 
@@ -594,7 +629,11 @@ class TestCommon(StartEnd):
         gv = GeneralFunctionView(self.driver)
 
         suffix = search_dict[type]
-        hp.open_file('欢迎使用永中Office.%s' % suffix)
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         gv.switch_write_read()
         gv.group_button_click('签批')
         gv.pen_type(type, '荧光笔')
@@ -625,7 +664,7 @@ class TestCommon(StartEnd):
         logging.info('==========test_close_file==========')
         hp = HomePageView(self.driver)
         isOpen = hp.open_random_file(search_dict[file_type])
-        self.assertTrue(isOpen,'open fail')
+        self.assertTrue(isOpen, 'open fail')
         hp.close_file()
         self.assertTrue(hp.check_close_file())
 
