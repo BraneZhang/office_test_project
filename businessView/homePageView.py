@@ -4,14 +4,52 @@ import logging
 import random
 import time
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+import selenium.webdriver.support.expected_conditions as EC
+import selenium.webdriver.support.ui as ui
 
 from common.common_fun import Common
 
 
 class HomePageView(Common):
+
+    def templates_delete(self, check=True):
+        logging.info('==========templates_option==========')
+        self.driver.find_element(By.XPATH, '//*[@text="批量管理"]').click()
+        index1 = self.get_element_index('//*[@text="文字处理"]')
+        index2 = self.get_element_index('//*[@text="简报制作"]')
+        index3 = self.get_element_index('//*[@text="电子表格"]')
+        indexs = [index1, index2, index3]
+        names = []
+        sup_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/rv').click()
+        # sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % index1)
+        if not -1 in indexs:
+            for e in indexs:
+                name = sup_ele.find_element(By.XPATH,
+                                            '//android.view.ViewGroup[@index="%s"]/android.widget.TextView' % (
+                                                        e + 1)).text
+                sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % (e + 1)).click()
+                names += name
+            # map(lambda e: sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % (e + 1)).click(), indexs)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
+        self.check_option(check)
+        results = list(map(lambda e: self.get_element_result('//*[@text="%s"]' % e), names))
+        if False in results:
+            return False
+        else:
+            return True
+
+    def templates_preview(self, view_type):
+        logging.info('==========templates_preview==========')
+        view_dict = {'收藏': 'Left', '下载': 'Right'}
+        self.login_on_needed()
+        self.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/mouldSec').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv%s' % view_dict[view_type]).click()
+        eles = self.driver.find_elements(By.XPATH, '//androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup')
+        return True if len(eles) > 0 else False
 
     def screen_rotate(self, rotate):  # 旋转屏幕
         logging.info('==========screen_rotate==========')
@@ -104,22 +142,22 @@ class HomePageView(Common):
         else:
             return False
 
-    def search_action(self, keyword):
-        logging.info('==========search_action==========')
+    def search_file(self, keyword):
+        logging.info('==========search_file==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
         logging.info('input keyword %s' % keyword)
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
-        logging.info('searching...')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
-        time.sleep(3)
-        return self.get_element_result('//android.widget.TextView[@text="%s"]' % keyword)
-
-    def check_search_action(self, keyword):
-        logging.info('==========check_search_action==========')
-        name = keyword[:keyword.rindex('.') + 1]
-        suffix = keyword[keyword.rindex('.') + 1:]
-        key = name + suffix
-        return self.get_element_result('//android.widget.TextView[@text="%s"]' % key)
+        logging.info('searching...')
+        result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
+        if not result:
+            logging.error('searching timeout!')
+            return False
+        if not self.get_element_result('//android.widget.TextView[@text="%s"]' % keyword):
+            logging.error('no file!')
+            return False
+        else:
+            return True
 
     def jump_to_index(self, file_type='last'):  # 5个主页界面
         logging.info('===========jump_to_%s==========' % file_type)
@@ -316,6 +354,7 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/file_type_item%s' % item).click()
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()  # save
+        self.cover_file(True)
 
     def check_save_file(self):
         logging.info('==========check_create_file==========')
@@ -360,8 +399,8 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         time.sleep(1)
 
-    def log_on_needed(self):  # 需要登录
-        logging.info('==========log_on_needed==========')
+    def login_on_needed(self):  # 需要登录
+        logging.info('==========login_on_needed==========')
         self.jump_to_index('my')
         if not self.check_login_status():
             self.login_from_my('13915575564', 'zhang199412')
@@ -383,34 +422,21 @@ class HomePageView(Common):
         except NoSuchElementException:
             logging.info('==========the file closed==========')
             flag = True
-
         return flag
 
     def open_file(self, file_name):
         logging.info('======open_file_%s=====' % file_name)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()  # 点击搜索功能
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(file_name)  # 输入搜索内容
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()  # 点击搜索按钮
-        WebDriverWait(self.driver, 120).until_not(
-            lambda driver: self.driver.find_element(By.XPATH, '//*[@text="文件搜索.."]').is_displayed())
-        if self.get_element_result('//*[@text="没有找到相关文档"]'):
-            return False
         self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % file_name).click()  # 打开对应文件
-        WebDriverWait(self.driver, 120).until_not(
-            lambda driver: self.driver.find_element(By.XPATH, '//*[contains(@text, "正在打开")]').is_displayed())
-        return True
-
-    def check_open_status(self, file_name):
-        logging.info('======test_open_status_%s=====' % file_name)
-        try:
-            # 查找指定元素判断是否加载成功
-            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_title_text_view")
-            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_toolbar_button_close")
-            self.find_element(By.ID, "com.yozo.office:id/yozo_ui_option_group_button")
-            # self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
-            # self.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
-        except NoSuchElementException:
-            logging.error(file_name + 'open fail!')
+        loading_result = self.is_not_visible('//*[contains(@text, "正在打开")]')
+        if not loading_result:
+            logging.error('loading timeout')
+            return False
+        show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
+                     '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
+                     '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
+        show_result = self.is_visible_elements(*show_eles)
+        if not show_result:
+            logging.error('open failed')
             self.getScreenShot(file_name + ' open fail')
             return False
         else:
@@ -451,22 +477,26 @@ class HomePageView(Common):
             logging.info('user logo click Success!')
             return True
 
-    def search_action(self, keyword):
-        logging.info('==========search_action==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
-        logging.info('input keyword %s' % keyword)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
-        logging.info('searching...')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
-
-    def check_search_action(self, keyword):
-        logging.info('==========check_search_action==========')
+    # 一直等待某元素可见，默认超时10秒
+    def is_visible(self, locator, timeout=60):
         try:
-            self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % keyword.lower())
-        except NoSuchElementException:
-            logging.error('search Fail!')
-            self.getScreenShot('search fail %s' % keyword)
+            ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, locator)))
+            return True
+        except TimeoutException:
+            return False
+
+    # 一直等待某个元素消失，默认超时10秒
+    def is_not_visible(self, locator, timeout=60):
+        try:
+            ui.WebDriverWait(self.driver, timeout).until_not(EC.visibility_of_element_located((By.XPATH, locator)))
+            return True
+        except TimeoutException:
+            return False
+
+    def is_visible_elements(self, *eles):
+        results = list(map(lambda e: self.is_visible(e, 3), eles))
+        if False in results:
+            logging.error('element loading timeout')
             return False
         else:
-            logging.info('search Success!')
             return True

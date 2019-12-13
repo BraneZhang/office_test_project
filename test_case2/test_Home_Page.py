@@ -19,14 +19,27 @@ csv_file = data_info.csv_file
 folder_list = data_info.folder_list
 index_share_list = data_info.index_share_list
 index_share_list1 = data_info.index_share_list1
-
+way_list = data_info.way_list
 
 @ddt
 class TestHomePage(StartEnd):
 
-    def test_hp_my2_templates_preview(self, way='收藏'):
+    # @unittest.skip('skip test_hp_my2_templates_preview')
+    # @data(*way_list)
+    def test_hp_my2_templates_preview(self, way='下载'):
         logging.info('==========test_hp_my2_templates_preview==========')
-        pass
+        hp = HomePageView(self.driver)
+        self.assertTrue(hp.templates_preview(way),'模板为空')
+        self.driver.find_element(By.ID,'com.yozo.office:id/back').click()
+        self.assertTrue(hp.get_element_result('//*[@text="我的模板"]'))
+
+    def test_hp_my2_templates_options(self,way='下载'):
+        logging.info('==========test_hp_my2_templates_options==========')
+        hp = HomePageView(self.driver)
+        self.assertTrue(hp.templates_preview(way), '模板为空')
+        self.assertTrue(hp.templates_delete(), '删除成功')
+
+
 
     @unittest.skip('skip test_hp_alldoc_copy_file')
     def test_hp_alldoc_copy_file(self):  # “打开”复制文件
@@ -59,7 +72,7 @@ class TestHomePage(StartEnd):
         # name = file_path[index_e:]
         # gv.delete_file()
         # self.driver.keyevent(4)
-        # self.assertFalse(gv.search_action(name))
+        # self.assertFalse(gv.search_file(name))
 
     @unittest.skip('skip test_hp_alldoc_download_copy_file')
     def test_hp_alldoc_download_copy_file(self):
@@ -136,7 +149,7 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    @unittest.skip('skip test_hp_alldoc_download_search_file')
+    # @unittest.skip('skip test_hp_alldoc_download_search_file')
     def test_hp_alldoc_download_search_file(self):  # 搜索功能
         logging.info('==========test_hp_alldoc_download_search_file==========')
         gv = HomePageView(self.driver)
@@ -144,7 +157,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_download_select_all')
@@ -370,7 +383,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_mobile_select_all')
@@ -567,7 +580,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('我的文档')
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_myfile_select_all')
@@ -738,7 +751,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('QQ')
         self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_qq_select_all')
@@ -857,7 +870,7 @@ class TestHomePage(StartEnd):
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_select_all')
@@ -885,7 +898,7 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
-            self.assertFalse(gv.search_action(i))
+            self.assertFalse(gv.search_file(i))
             self.driver.keyevent(4)
 
     @unittest.skip('skip test_hp_alldoc_share')
@@ -1048,7 +1061,7 @@ class TestHomePage(StartEnd):
         gv.open_local_folder('微信')
         self.assertTrue(gv.check_open_folder('微信'), 'open fail')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_alldoc_wechat_select_all')
@@ -1564,13 +1577,16 @@ class TestHomePage(StartEnd):
     @unittest.skip('skip test_hp_last_show_open_file')
     def test_hp_last_show_open_file(self):  # “最近”中显示已打开的文件
         logging.info('==========test_hp_last_show_open_file==========')
-        ov = HomePageView(self.driver)
+        hp = HomePageView(self.driver)
         file_name = '欢迎使用永中Office.xlsx'
-        ov.open_file(file_name)
-        ov.close_file()
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        hp.close_file()
         self.driver.press_keycode(4)
         file_ele = '//*[@text="%s"]' % file_name
-        self.assertTrue(ov.get_element_result(file_ele))
+        self.assertTrue(hp.get_element_result(file_ele))
 
     @unittest.skip('skip test_hp_last_unlogin_show')
     def test_hp_last_unlogin_show(self):  # 未登录时显示3个内置文件（初次安装）
@@ -1941,7 +1957,7 @@ class TestHomePage(StartEnd):
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
         search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_action(search_file)
+        result = gv.search_file(search_file)
         self.assertTrue(result)
 
     @unittest.skip('skip test_hp_star_select_all')

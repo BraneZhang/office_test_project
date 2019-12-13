@@ -329,7 +329,11 @@ class TestSS(StartEnd):
     def test_ss_filter1(self):
         logging.info('==========test_ss_filter1==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.group_button_click('查看')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
@@ -355,7 +359,11 @@ class TestSS(StartEnd):
     def test_ss_filter2(self):
         logging.info('==========test_ss_filter2==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -384,7 +392,11 @@ class TestSS(StartEnd):
     def test_ss_filter_by_color(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -416,7 +428,11 @@ class TestSS(StartEnd):
     def test_ss_filter_by_date(self):
         logging.info('==========test_ss_filter_by_date==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -442,7 +458,11 @@ class TestSS(StartEnd):
     def test_ss_filter_by_num(self):
         logging.info('==========test_ss_filter_by_num==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -457,7 +477,11 @@ class TestSS(StartEnd):
     def test_ss_filter_by_num_shortcut(self):
         logging.info('==========test_ss_filter_by_num_shortcut==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         time.sleep(1)
         ss.switch_write_read()
         ss.cell_edit()
@@ -482,7 +506,11 @@ class TestSS(StartEnd):
     def test_ss_filter_by_text(self):
         logging.info('==========test_ss_filter_by_text==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -497,7 +525,11 @@ class TestSS(StartEnd):
     def test_ss_filter_cd1_none(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
-        ss.open_file('screen.xls')
+        file_name = 'screen.xls'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.switch_write_read()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
@@ -697,7 +729,11 @@ class TestSS(StartEnd):
     def test_ss_show_file_info(self):
         logging.info('==========test_ss_show_file_info==========')
         ss = SSView(self.driver)
-        ss.open_file('欢迎使用永中Office.xlsx')
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         ss.file_info()
         self.assertTrue(ss.check_file_info())
 

@@ -690,6 +690,7 @@ class GeneralFunctionView(Common):
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_file_type').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()  # save
+        self.cover_file(True)
 
     def check_export_pdf(self):
         logging.info('==========check_export_pdf==========')
