@@ -10,7 +10,12 @@ from businessView.wpView import WPView
 from common.myunit import StartEnd
 from airtest.core.api import *
 
+# from common.start import get_desired_caps
+
 chart_type = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图', '圆锥图', '棱锥图']
+
+
+# auto_setup(__file__, devices=["Android:///" + "%s?ime_method=ADBIME" % get_desired_caps()['desired_caps']['udid']])
 
 
 @ddt
@@ -42,7 +47,7 @@ class TestWP(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_text_attr_wp')
+    # @unittest.skip('skip test_shape_text_attr_wp')
     def test_wp_shape_text_attr(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
@@ -452,6 +457,57 @@ class TestWP(StartEnd):
                            '/android.widget.FrameLayout[%s]' % (type1, i)).click()
             # print(i)
 
+    @unittest.skip('skip test_wp_shape_attr_preset')
+    def test_wp_shape_attr_preset(self):  # 形状35种预设样式
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        wp.shape_preset()
+
+    @unittest.skip('skip test_wp_shape_fill_color')
+    def test_wp_shape_fill_color(self):  # 形状填充色
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        wp.shape_fill_color_common()
+        wp.shape_fill_color_all()
+        wp.shape_fill_color_tran_seekbar()
+        wp.shape_fill_color_other()
+        wp.shape_fill_color_gradation()
+
+    # @unittest.skip('skip test_wp_shape_outline')
+    def test_wp_shape_outline(self):  # 形状轮廓
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        s = wp.swipe_option('up')
+        # # 形状轮廓 线条颜色
+        while not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_color"]'):
+            wp.swipe(s[0], s[1], s[2], s[3])
+        wp.shape_border_color_common()
+        wp.shape_fill_color_all()
+        wp.shape_fill_color_other()
+        if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            wp.fold_expand()
+        if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_group_button"]'):
+            wp.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_option_back_button"]').click()
+        # 形状轮廓 线条类型
+        while not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_type"]'):
+            wp.swipe(s[0], s[1], s[2], s[3])
+        wp.shape_border_type_common()
+        wp.shape_border_type_all()
+        if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            wp.fold_expand()
+        if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_group_button"]'):
+            wp.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_option_back_button"]').click()
+        # 形状轮廓 线条像素
+        while not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_width"]'):
+            wp.swipe(s[0], s[1], s[2], s[3])
+        wp.shape_border_width_common()
+        wp.shape_border_width_all()
+
+
+
     @unittest.skip('skip test_wp_shape_text_round')
     def test_wp_shape_text_round(self):
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
@@ -497,6 +553,27 @@ class TestWP(StartEnd):
         touch(wp.template_object('paste.png'))
 
         time.sleep(10)
+
+    @unittest.skip('skip test_wp_shape_gesture_exit')
+    def test_wp_shape_gesture_exit(self):
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        x, y = loop_find(wp.template_object('rotate_free.png'))
+        # 点击左侧，取消选中形状
+        touch([20, y + 300])
+        sleep(2)
+        # 选中形状
+        touch([x, y + 100])
+        sleep(2)
+        # 手动调整控制点
+        wp.swipe(x, y + 100, x, y + 300)
+        # 向左旋转
+        x, y = loop_find(wp.template_object('rotate_free.png'))
+        wp.swipe(x, y, 10, 10)
+        # 移动形状
+        wp.swipe(x, y + 200, 20, y + 200)
+        sleep(5)
 
     def insert_one_pic(self, type1):  # 将图片插入wp中
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
@@ -806,20 +883,20 @@ class TestWP(StartEnd):
         while not exists(wp.template_object('rotate_free.png')):
             wp.swipe(ele5[0], ele5[1], ele9[0], ele9[1])
         # 向右移动图片
-        rotate_free = loop_find(wp.template_object('rotate_free.png'))
-        wp.swipe(rotate_free[0], rotate_free[1] + 200, rotate_free[0] + 200, rotate_free[1] + 200)
+        x, y = loop_find(wp.template_object('rotate_free.png'))
+        wp.swipe(x, y + 200, x + 200, y + 200)
         # 取消选中图片
         wp.tap(ele9[0], ele9[1])
         time.sleep(1)
         self.assertTrue(wp.exist('//*[@text="编辑"]'), msg='取消选中图片异常')
 
         # 选中图片
-        wp.tap(rotate_free[0] + 200, rotate_free[1] + 200)
+        wp.tap(x + 200, y + 200)
         time.sleep(1)
         self.assertTrue(wp.exist('//*[@text="图片"]'), msg='选中图片异常')
         # 自由旋转
-        rotate_free = loop_find(wp.template_object('rotate_free.png'))
-        wp.swipe(rotate_free[0], rotate_free[1], ele9[0], ele9[1])
+        x, y = loop_find(wp.template_object('rotate_free.png'))
+        wp.swipe(x, y, ele9[0], ele9[1])
 
     @unittest.skip('skip test_wp_insert_chart_list')
     @data(*chart_type)
@@ -905,3 +982,7 @@ class TestWP(StartEnd):
         wp.swipe(frame5[0], frame5[1], frame2[0], frame2[1])
         wp.swipe(frame2[0], frame2[1], frame5[0], frame5[1])
         wp.swipe(frame2[0], frame2[1], frame5[0], frame5[1])
+
+
+if __name__ == '__main__':
+    unittest.main()

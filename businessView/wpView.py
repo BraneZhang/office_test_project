@@ -117,7 +117,74 @@ class WPView(HomePageView, GeneralFunctionView):
 
         self.move_frame()
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_shape')
-        parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[3].click()
+        parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[2].click()
+
+    def shape_preset(self):
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_preset_style').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_object_preset_style')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_fill_color_common(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_fill_color')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_border_color_common(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_color')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_border_type_common(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_type')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_border_width_common(self):
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_width')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_fill_color_all(self):  # 所有单色填充
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_fill_color_tran_seekbar(self):  # 填充色透明度
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_seekbar').click()
+
+    def shape_fill_color_other(self):  # 其他填充色
+        a, b, c, d = self.swipe_option("up")
+        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_others"]'):
+            self.swipe(a, b, c, d)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_others').click()
+        x4, y4 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/color_picker_view"]', x_y=4)
+        x5, y5 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/color_picker_view"]', x_y=5)
+        self.tap(x4, y4)
+        self.tap(x5, y5)
+        if self.exist('//*[@resource-id="com.yozo.office:id/sb_alpha"]'):
+            self.driver.find_element(By.ID, 'com.yozo.office:id/sb_alpha').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok').click()
+
+    def shape_fill_color_gradation(self):  # 渐变填充色
+        if not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            self.fold_expand()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_gradient').click()
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_object_gradient_fill')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_border_type_all(self):  # 所有线条样式
+        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_shape_border_type')
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
+
+    def shape_border_width_all(self):  # 所有线条像素
+        assert self.exist('//*[@text="5pt"]') is True, '结果异常'
+        while len(
+                self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_recycler_view').find_elements(
+                    By.CLASS_NAME, 'android.widget.TextView')) != 2:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_arrow_right').click()
 
     def table_merge_split(self):
         print(self.driver.find_element(By.ID,
