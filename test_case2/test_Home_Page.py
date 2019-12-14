@@ -20,26 +20,123 @@ folder_list = data_info.folder_list
 index_share_list = data_info.index_share_list
 index_share_list1 = data_info.index_share_list1
 way_list = data_info.way_list
+wps = data_info.wps
+search_template_dict = data_info.search_template_dict
+templates_dict = data_info.templates_dict
+screenshot_file = '../screenshots/'
+
 
 @ddt
 class TestHomePage(StartEnd):
 
-    # @unittest.skip('skip test_hp_my2_templates_preview')
-    # @data(*way_list)
-    def test_hp_my2_templates_preview(self, way='下载'):
+    @unittest.skip('skip test_hp_template_category')
+    @data(*wps)
+    def test_hp_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
+        logging.info('==========test_hp_template_category==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('last')
+        hp.create_file_preoption(file_type)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tpImg1').click()
+        result = hp.is_visible('//*[@resource-id="com.yozo.office:id/tpImg"]')
+        self.assertTrue(result, '模板预览失败')
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/tpImg').click()
+        # time.sleep(1)
+        # self.driver.save_screenshot(screenshot_file + 'origin.png')
+        # hp.zoom_in() #放大失败
+        # self.driver.save_screenshot(screenshot_file + 'zoom_in.png')
+        # result1 = hp.compare_pic('origin.png', 'zoom_in.png')
+        # self.assertNotEqual(result1, 0.0, '放大失败')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/applyTv').click()
+        self.assertTrue(hp.is_not_visible('//*[@text="请稍等..."]'))
+        self.assertTrue(hp.is_not_visible('//*[contains(@text,"正在打开")]'))
+        self.assertTrue(hp.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]'))
+
+    @unittest.skip('skip test_hp_template_category')
+    @data(*wps)
+    def test_hp_my2_template_category(self, file_type='pg'):  # 模板类别
+        logging.info('==========test_hp_template_category==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('last')
+        hp.create_file_preoption(file_type)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/category1').click()
+        time.sleep(1)
+        template_type = templates_dict[file_type]
+        for i in template_type:
+            ele = self.driver.find_element(By.XPATH, '//*[@text="%s"]' % i)
+            ele.click()
+            status = ele.get_attribute('selected')
+            self.assertTrue(status == 'true')
+            time.sleep(1)
+            eles = self.driver.find_elements(By.XPATH,
+                                             '//androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup')
+            self.assertTrue(len(eles) != 0)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        fresh_before = self.driver.find_element(By.ID, 'com.yozo.office:id/tpTitle1').text
+        self.driver.find_element(By.ID, 'com.yozo.office:id/changeTv').click()
+        fresh_after = self.driver.find_element(By.ID, 'com.yozo.office:id/tpTitle1').text
+        self.assertFalse(fresh_before == fresh_after)
+
+    @unittest.skip('skip test_template_search')
+    @data(*wps)
+    def test_hp_my2_template_search(self, file_type='wp'):
+        logging.info('==========test_hp_create_blank_file==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('last')
+        hp.create_file_preoption(file_type)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/searchTv').click()
+        keywords = search_template_dict[file_type]
+
+        logging.info('======模板名或分类搜索======')
+        for i in keywords:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et').set_text(i)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/searchv').click()
+            self.assertFalse(hp.get_toast_message('没有找到相关模板'), '模板名或分类搜索失败')
+
+        logging.info('======历史记录显示======')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et').clear()
+        results = list(map(lambda e: hp.get_element_result('//*[@text="%s"]' % e), keywords))
+        print(False in results)
+        self.assertFalse(False in results)
+
+        logging.info('======历史记录选取======')
+        record_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/flowHistory')
+        record_ele.find_elements(By.XPATH, '//android.widget.TextView')[0].click()
+        select_record = record_ele.find_elements(By.XPATH, '//android.widget.TextView')[0].text
+        edit_content = self.driver.find_element(By.ID, 'com.yozo.office:id/et').text
+        self.assertTrue(select_record == edit_content, '历史记录选取错误')
+
+        logging.info('======历史记录删除======')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et').clear()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/trash').click()
+        clear_result = record_ele.find_elements(By.XPATH, '//android.widget.TextView')
+        print(len(clear_result))
+        self.assertTrue(len(clear_result) == 0, '历史记录删除失败')
+
+    @unittest.skip('skip test_hp_create_blank_file')
+    @data(*wps)
+    def test_hp_create_blank_file(self, file_type='wp'):
+        logging.info('==========test_hp_create_blank_file==========')
+        hp = HomePageView(self.driver)
+        hp.create_file(file_type)
+        self.assertTrue(hp.get_element_result('//*[contains(@text, "新建空白")]'))
+
+    @unittest.skip('skip test_hp_my2_templates_preview')
+    @data(*way_list)
+    def test_hp_my2_templates_options(self, way='收藏'):
         logging.info('==========test_hp_my2_templates_preview==========')
         hp = HomePageView(self.driver)
-        self.assertTrue(hp.templates_preview(way),'模板为空')
-        self.driver.find_element(By.ID,'com.yozo.office:id/back').click()
-        self.assertTrue(hp.get_element_result('//*[@text="我的模板"]'))
-
-    def test_hp_my2_templates_options(self,way='下载'):
-        logging.info('==========test_hp_my2_templates_options==========')
-        hp = HomePageView(self.driver)
+        for i in ['ss', 'wp', 'pg']:
+            result = hp.templates_access(i, *[way])
+            self.assertTrue(result, '%s%s失败' % (i, way))
         self.assertTrue(hp.templates_preview(way), '模板为空')
         self.assertTrue(hp.templates_delete(), '删除成功')
-
-
+        self.driver.find_element(By.XPATH, '//*[@text="完成"]').click()
+        self.assertTrue(hp.get_element_result('//*[@text="批量管理"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        self.assertTrue(hp.get_element_result('//*[@text="我的模板"]'))
 
     @unittest.skip('skip test_hp_alldoc_copy_file')
     def test_hp_alldoc_copy_file(self):  # “打开”复制文件
@@ -149,7 +246,7 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_download_search_file')
+    @unittest.skip('skip test_hp_alldoc_download_search_file')
     def test_hp_alldoc_download_search_file(self):  # 搜索功能
         logging.info('==========test_hp_alldoc_download_search_file==========')
         gv = HomePageView(self.driver)
@@ -232,17 +329,12 @@ class TestHomePage(StartEnd):
     def test_hp_alldoc_download_upload_file(self):  # 上传文件
         logging.info('==========test_hp_alldoc_download_upload_file==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
         self.assertTrue(gv.check_open_folder('Download'), 'open fail')
         gv.file_more_info(7)
         check = gv.upload_file('Download上传')
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.open_local_folder('Download')
-            self.assertTrue(gv.check_open_folder('Download'), 'open fail')
-            gv.file_more_info(7)
-            check = gv.upload_file('Download上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -655,17 +747,12 @@ class TestHomePage(StartEnd):
     def test_hp_alldoc_myfile_upload_file(self):  # 上传文件
         logging.info('==========test_hp_alldoc_myfile_upload_file==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
         self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
         gv.file_more_info(7)
         check = gv.upload_file('我的文档上传')
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.open_local_folder('我的文档')
-            self.assertTrue(gv.check_open_folder('我的文档'), 'open fail')
-            gv.file_more_info(7)
-            check = gv.upload_file('我的文档上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -826,17 +913,12 @@ class TestHomePage(StartEnd):
     def test_hp_alldoc_qq_upload_file(self):  # 上传文件
         logging.info('==========test_hp_alldoc_qq_upload_file==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
         self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
         gv.file_more_info(7)
         check = gv.upload_file('QQ上传')
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.open_local_folder('QQ')
-            self.assertTrue(gv.check_open_folder('QQ'), 'open fail')
-            gv.file_more_info(7)
-            check = gv.upload_file('QQ上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -1156,9 +1238,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_11_create_folder(self):  # "云文档"新建文件夹
         logging.info('==========test_hp_cloud_create_folder==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
         folder_name = 'NewFolder'
@@ -1174,9 +1254,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_12_rename_folder(self):  # "云文档"新建文件夹
         logging.info('==========test_hp_cloud_rename_folder==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(2)
         folder_rename = 'RenameFolder'
@@ -1188,8 +1266,7 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_cloud_13_deletd_folder==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(2)
         gv.delete_file()
@@ -1200,9 +1277,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_1_show_folder(self):  # "云文档"中显示“自动上传”文件夹
         logging.info('==========test_hp_cloud_show_folder==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
         name = ele.find_element(By.XPATH, '//*[@text="自动上传"]').text
@@ -1212,9 +1287,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_delete_file(self):
         logging.info('==========test_hp_cloud_delete_file==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-           gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
         suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
@@ -1227,9 +1300,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_download(self):  # "云文档"中下载
         logging.info('==========test_hp_cloud_download==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-           gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         time.sleep(3)
         index = gv.identify_file_index()
@@ -1241,9 +1312,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_copy(self):  # 云文档中移动
         logging.info('==========test_hp_cloud_copy==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1258,9 +1327,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_select_all(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1280,9 +1347,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_select_all_delete(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all_delete==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1305,9 +1370,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_select_all_copy(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all_copy==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1326,9 +1389,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_select_all_move(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all_move==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1347,9 +1408,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_select_all_download(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all_download==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1368,9 +1427,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_move(self):  # 云文档中复制
         logging.info('==========test_hp_cloud_move==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.check_login_status():
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
 
@@ -1385,9 +1442,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_file_info(self):  # 云文件相关信息
         logging.info('==========test_hp_cloud_file_info==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
         filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
@@ -1405,9 +1460,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_rename_file(self):
         logging.info('==========test_hp_cloud_rename_file==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
         suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
@@ -1418,12 +1471,10 @@ class TestHomePage(StartEnd):
 
     @unittest.skip('skip test_hp_cloud_share')
     @data(*index_share_list)
-    def test_hp_cloud_share(self, way):
+    def test_hp_cloud_share(self, way='more'):
         logging.info('==========test_hp_cloud_share==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(7)
         gv.share_file_index(way)
@@ -1436,9 +1487,7 @@ class TestHomePage(StartEnd):
     def test_hp_cloud_sort_file(self):  # “打开”文档按条件排序
         logging.info('==========test_hp_cloud_sort_file==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('cloud')
         way_list = ['type', 'name', 'size', 'time']
         order_list = ['up', 'down']
@@ -1567,8 +1616,7 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_last_show_cloud_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
+        gv.login_on_needed()
         gv.jump_to_index('last')
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/tv_from"]'))
         gv.jump_to_index('my')
@@ -1593,7 +1641,7 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_last_unlogin_show==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
-        if gv.get_element_result('//*[@text="退出登录"]'):
+        if gv.check_login_status():
             gv.logout_action()
         gv.jump_to_index()
         exist_files = ['欢迎使用永中Office.docx', '欢迎使用永中Office.pptx', '欢迎使用永中Office.pdf']
@@ -1646,10 +1694,7 @@ class TestHomePage(StartEnd):
     def test_hp_my2_account_edit(self):  # 登录账号信息展示及修改
         logging.info('==========test_hp_my2_about_head_login==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
-            gv.jump_to_index('my')
+        gv.login_on_needed()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_useredit').click()
         username = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').text
         loc = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_myinfo_name').location
@@ -1679,10 +1724,7 @@ class TestHomePage(StartEnd):
     def test_hp_my2_head_login(self):  # 已登陆头像功能
         logging.info('==========test_hp_my2_about_head_login==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
-            gv.jump_to_index('my')
+        gv.login_on_needed()
         username = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_username').text
         self.assertTrue(username != "")
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_userinfo').click()
@@ -1696,6 +1738,8 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_my2_login_way==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
+        if gv.check_login_status():
+            gv.logout_action()
         time.sleep(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_findpwd').click()
@@ -1716,10 +1760,7 @@ class TestHomePage(StartEnd):
     def test_hp_my2_logout(self):  # 退出登录
         logging.info('==========test_hp_my2_logout==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
-            gv.jump_to_index('my')
+        gv.login_on_needed()
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.assertTrue(gv.get_element_result('//*[@text="是否退出登录？"]'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
@@ -1732,10 +1773,7 @@ class TestHomePage(StartEnd):
     def test_hp_my2_opinion_feedback(self):
         logging.info('==========test_hp_my2_opinion_feedback==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
-        if not gv.get_element_result('//*[@text="退出登录"]'):
-            gv.login_from_my('13915575564', 'zhang199412')
-            gv.jump_to_index('my')
+        gv.login_on_needed()
         content = gv.getTime("%Y-%m-%d %H:%M:%S")
         result = gv.opinion_feedback('content', content)
         self.assertTrue(result)
@@ -1771,11 +1809,11 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="关于YOZO"]'))
 
-    # @unittest.skip('skip test_hp_my2_sys_setting')
+    @unittest.skip('skip test_hp_my2_sys_setting')
     def test_hp_my2_sys_setting(self):  # 系统设置
         logging.info('==========test_hp_my2_sys_setting==========')
         gv = HomePageView(self.driver)
-        gv.log_on_needed()
+        gv.login_on_needed()
         gv.jump_to_index('my')
         # if not l.check_login_status():
         #     l.login_from_my('13915575564', 'zhang199412')
@@ -2000,7 +2038,7 @@ class TestHomePage(StartEnd):
 
     @unittest.skip('skip test_hp_star_share')
     @data(*index_share_list)
-    def test_hp_star_share(self, way):
+    def test_hp_star_share(self, way='more'):
         logging.info('==========test_hp_star_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
@@ -2017,7 +2055,7 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_hp_star_share_back')
+    # @unittest.skip('skip test_hp_star_share_back')
     def test_hp_star_share_back(self):  # “打开”中的分享的返回键
         logging.info('==========test_hp_star_share_back==========')
         gv = HomePageView(self.driver)

@@ -53,13 +53,14 @@ class PGView(HomePageView, GeneralFunctionView):
     def edit_template(self, template):  # 模板
         logging.info('==========edit_template==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_edit_templet').click()
+        time.sleep(1)
         range = '//androidx.recyclerview.widget.RecyclerView'
         template_ele = '//*[@resource-id="com.yozo.office:id/yozo_ui_option_item_view"]'
         eles = self.driver.find_elements(By.XPATH, template_ele)
         if int(template) > 8:
             self.swipe_options(ele=range)
             self.swipe_options(ele=range)
-            template -= len(eles)
+            template -= 3
         eles[template].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 

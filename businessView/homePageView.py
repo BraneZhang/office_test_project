@@ -15,31 +15,46 @@ from common.common_fun import Common
 
 class HomePageView(Common):
 
+    def templates_access(self, file_type='wp', *options):  # 模板获取：收藏或者下载
+        logging.info('==========templates_access==========')
+        time.sleep(2)
+        self.tap(925, 1669)
+        time.sleep(2)
+        type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
+        self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
+        null_file = '//*[@resource-id="com.yozo.office:id/createEmpty"]'
+        if not self.exist(null_file):
+            return False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/card1').click()  # 选取模板目前写死
+        for i in options:
+            if i == '收藏':
+                self.driver.find_element(By.ID, 'com.yozo.office:id/star').click()
+                if not self.get_toast_message('已收藏'):
+                    logging.error('收藏失败')
+                    return False
+            elif i == '下载':
+                self.driver.find_element(By.ID, 'com.yozo.office:id/download').click()
+                if not self.get_toast_message('模板文件下载成功'):
+                    logging.error('下载失败')
+                    return False
+            time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        time.sleep(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        return True
+
     def templates_delete(self, check=True):
-        logging.info('==========templates_option==========')
+        logging.info('==========templates_option==========')  # 目前写死
         self.driver.find_element(By.XPATH, '//*[@text="批量管理"]').click()
-        index1 = self.get_element_index('//*[@text="文字处理"]')
-        index2 = self.get_element_index('//*[@text="简报制作"]')
-        index3 = self.get_element_index('//*[@text="电子表格"]')
-        indexs = [index1, index2, index3]
-        names = []
-        sup_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/rv').click()
-        # sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % index1)
-        if not -1 in indexs:
-            for e in indexs:
-                name = sup_ele.find_element(By.XPATH,
-                                            '//android.view.ViewGroup[@index="%s"]/android.widget.TextView' % (
-                                                        e + 1)).text
-                sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % (e + 1)).click()
-                names += name
-            # map(lambda e: sup_ele.find_element(By.XPATH, '//android.view.ViewGroup[@index="%s"]' % (e + 1)).click(), indexs)
+        self.swipe_options('//*[@resource-id="com.yozo.office:id/rv"]')
+        sup_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/rv')
+        sub_eles = sup_ele.find_elements(By.ID, 'com.yozo.office:id/tpTitle')
+        names = list(map(lambda e: e.text, sub_eles))
+        list(map(lambda e: e.click(), sub_eles))
         self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
         self.check_option(check)
         results = list(map(lambda e: self.get_element_result('//*[@text="%s"]' % e), names))
-        if False in results:
-            return False
-        else:
-            return True
+        return True if False in results else False
 
     def templates_preview(self, view_type):
         logging.info('==========templates_preview==========')
@@ -152,9 +167,11 @@ class HomePageView(Common):
         result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
         if not result:
             logging.error('searching timeout!')
+            self.getScreenShot('searching timeout')
             return False
         if not self.get_element_result('//android.widget.TextView[@text="%s"]' % keyword):
             logging.error('no file!')
+            self.getScreenShot('no file')
             return False
         else:
             return True
@@ -248,11 +265,9 @@ class HomePageView(Common):
             if not self.get_element_result('//*[@text="我的"]'):
                 self.driver.keyevent(4)
             self.jump_to_index('my')
-            # l = LoginView(self.driver)
-            # l.login_from_my('13915575564', 'zhang199412')
             self.login_from_my('13915575564', 'zhang199412')
-            return
-        # filename = 'upload ' + self.getTime('%Y-%m-%d %H_%M_%S')
+            logging.error('未登录')
+            return False
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_file_name').set_text(filename)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()
         self.cover_file(True)
@@ -299,15 +314,18 @@ class HomePageView(Common):
         else:
             return False
 
-    def create_file(self, file_type):  # 新建文档
-        logging.info('==========create_file_%s==========' % file_type)
-        # self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_main').click()
-        # self.driver.find_element(By.ID, 'com.yozo.office:id/fb_show_menu_%s' % type).click()
+    def create_file_preoption(self,file_type):#新建文档前置操作
+        logging.info('==========create_file_preoption_%s==========' % file_type)
         time.sleep(2)
         self.tap(925, 1669)
         time.sleep(2)
-        type_dice = {'wp': 3, 'ss': 2, 'pg': 1}
-        self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dice[file_type]).click()
+        type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
+        self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
+        time.sleep(1)
+
+    def create_file(self, file_type):  # 新建空白文档
+        logging.info('==========create_file_%s==========' % file_type)
+        self.create_file_preoption(file_type)
         null_file = '//*[@resource-id="com.yozo.office:id/createEmpty"]'
         if not self.exist(null_file):
             null_file = '//*[@resource-id="com.yozo.office:id/create_empty_offline_img"]'

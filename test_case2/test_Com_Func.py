@@ -592,8 +592,8 @@ class TestCommon(StartEnd):
         self.assertTrue(search_result, '查找失败')
         open_result = hp.open_file(file_name)
         self.assertTrue(open_result, '打开失败')
-        hp.zoom()
-        hp.pinch()
+        hp.zoom_in()
+        hp.zoom_out()
 
     @unittest.skip('skip test_save_as_existFile')
     @data(*wps)

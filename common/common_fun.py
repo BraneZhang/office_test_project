@@ -110,29 +110,29 @@ class Common(BaseView):
         action.perform()
         time.sleep(1)
 
-    def zoom(self):  # 缩小
+    def zoom_in(self):  # 放大
         logging.info('Zoom')
         action1 = TouchAction(self.driver)  # 第一个手势
         action2 = TouchAction(self.driver)  # 第二个手势
         zoom_action = MultiAction(self.driver)  # 放大手势
 
         x, y = self.get_size()
-        action1.press(x=x * 0.4, y=y * 0.4).move_to(x=x * 0.2, y=y * 0.2).release()
-        action2.press(x=x * 0.6, y=y * 0.6).move_to(x=x * 0.8, y=y * 0.8).release()
+        action1.press(x=x * 0.5, y=y * 0.4).wait(1000).move_to(x=x * 0.5, y=y * 0.2).release()
+        action2.press(x=x * 0.5, y=y * 0.6).wait(1000).move_to(x=x * 0.5, y=y * 0.8).release()
 
         zoom_action.add(action1, action2)  # 加载
         time.sleep(2)
         zoom_action.perform()  # 执行
 
-    def pinch(self):  # 缩小
+    def zoom_out(self):  # 缩小
         logging.info('==========Pinch==========')
         action1 = TouchAction(self.driver)  # 第一个手势
         action2 = TouchAction(self.driver)  # 第二个手势
         pinch_action = MultiAction(self.driver)  # 放大手势
 
         x, y = self.get_size()
-        action1.press(x=x * 0.8, y=y * 0.3).move_to(x=x * 0.5, y=y * 0.5).release()
-        action2.press(x=x * 0.3, y=y * 0.8).move_to(x=x * 0.5, y=y * 0.5).release()
+        action1.press(x=x * 0.8, y=y * 0.3).wait(1000).move_to(x=x * 0.5, y=y * 0.5).release()
+        action2.press(x=x * 0.3, y=y * 0.8).wait(1000).move_to(x=x * 0.5, y=y * 0.5).release()
 
         pinch_action.add(action1, action2)  # 加载
         time.sleep(2)
@@ -243,7 +243,7 @@ class Common(BaseView):
         image2 = Image.open(pic_path + pic2)
         h1 = image1.histogram()
         h2 = image2.histogram()
-        result = math.sqrt(reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
+        result = math.sqrt(reduce(operator.add, map(lambda a, b: (a - b) ** 2, h1, h2)) / len(h1))
         print(result)
         return result
 
