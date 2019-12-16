@@ -34,6 +34,9 @@ class HomePageView(Common):
                     return False
             elif i == '下载':
                 self.driver.find_element(By.ID, 'com.yozo.office:id/download').click()
+                if not self.is_not_visible('//*[@text="请稍等..."]'):
+                    logging.error('下载失败')
+                    return False
                 if not self.get_toast_message('模板文件下载成功'):
                     logging.error('下载失败')
                     return False
@@ -422,6 +425,9 @@ class HomePageView(Common):
         self.jump_to_index('my')
         if not self.check_login_status():
             self.login_from_my('13915575564', 'zhang199412')
+        else:
+            self.jump_to_index('last')
+
 
     def close_file(self):
         logging.info('======close_file=====')
@@ -506,7 +512,7 @@ class HomePageView(Common):
     # 一直等待某个元素消失，默认超时10秒
     def is_not_visible(self, locator, timeout=60):
         try:
-            ui.WebDriverWait(self.driver, timeout).until_not(EC.visibility_of_element_located((By.XPATH, locator)))
+            ui.WebDriverWait(self.driver, timeout).until_not(EC.presence_of_element_located((By.XPATH, locator)))
             return True
         except TimeoutException:
             return False

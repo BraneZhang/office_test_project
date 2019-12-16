@@ -123,11 +123,12 @@ class TestHomePage(StartEnd):
         hp.create_file(file_type)
         self.assertTrue(hp.get_element_result('//*[contains(@text, "新建空白")]'))
 
-    @unittest.skip('skip test_hp_my2_templates_preview')
+    @unittest.skip('skip test_hp_my2_templates_options')
     @data(*way_list)
-    def test_hp_my2_templates_options(self, way='收藏'):
-        logging.info('==========test_hp_my2_templates_preview==========')
+    def test_hp_my2_templates_options(self, way='下载'):
+        logging.info('==========test_hp_my2_templates_options==========')
         hp = HomePageView(self.driver)
+        hp.login_on_needed()
         for i in ['ss', 'wp', 'pg']:
             result = hp.templates_access(i, *[way])
             self.assertTrue(result, '%s%s失败' % (i, way))
@@ -558,6 +559,7 @@ class TestHomePage(StartEnd):
     def test_hp_alldoc_mobile_upload_file(self):  # 上传文件
         logging.info('==========test_hp_alldoc_mobile_upload_file==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
@@ -565,14 +567,6 @@ class TestHomePage(StartEnd):
             gv.swipeUp()
         gv.file_more_info(7)
         check = gv.upload_file('手机上传')
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.open_local_folder('手机')
-            self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-            for i in range(10):
-                gv.swipeUp()
-            gv.file_more_info(7)
-            check = gv.upload_file('手机上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
         gv.jump_to_index('my')
@@ -1248,7 +1242,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name))
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), '文件夹新建失败')
 
     @unittest.skip('skip test_hp_cloud_rename_folder')
     def test_hp_cloud_12_rename_folder(self):  # "云文档"新建文件夹
@@ -1259,19 +1253,19 @@ class TestHomePage(StartEnd):
         gv.file_more_info(2)
         folder_rename = 'RenameFolder'
         gv.rename_file(folder_rename)
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename))
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename), '文件夹重命名失败')
 
     @unittest.skip('skip test_hp_cloud_13_deletd_folder')
-    def test_hp_cloud_13_deletd_folder(self):  # "云文档"新建文件夹
+    def test_hp_cloud_13_deletd_folder(self):  # "云文档"删除文件夹
         logging.info('==========test_hp_cloud_13_deletd_folder==========')
         gv = HomePageView(self.driver)
-        gv.jump_to_index('my')
         gv.login_on_needed()
         gv.jump_to_index('cloud')
         gv.file_more_info(2)
         gv.delete_file()
+        time.sleep(1)
         folder_rename = 'RenameFolder'
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename))
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % folder_rename), '文件夹删除失败')
 
     @unittest.skip('skip test_hp_cloud_show_folder')
     def test_hp_cloud_1_show_folder(self):  # "云文档"中显示“自动上传”文件夹
@@ -1554,6 +1548,7 @@ class TestHomePage(StartEnd):
     def test_hp_last_scroll(self):  # 测试“最近”中的滑屏
         logging.info('==========test_hp_last_scroll==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         first_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
         ele = '//*[@resource-id="com.yozo.office:id/list_lastfile"]'
         gv.swipe_options(ele)
@@ -1642,27 +1637,32 @@ class TestHomePage(StartEnd):
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
+            gv.swipe_options('//android.widget.ScrollView')
             gv.logout_action()
         gv.jump_to_index()
         exist_files = ['欢迎使用永中Office.docx', '欢迎使用永中Office.pptx', '欢迎使用永中Office.pdf']
         for i in exist_files:
             file_ele = '//*[@text="%s"]' % i
-            self.assertTrue(gv.get_element_result(file_ele))
+            self.assertTrue(gv.get_element_result(file_ele), '文档不存在')
 
     @unittest.skip('skip test_hp_last_upload_file')
     def test_hp_last_upload_file(self):  # “最近”上传文件
         logging.info('==========test_hp_last_upload_file==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = gv.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = gv.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        gv.close_file()
+        self.driver.find_element(By.ID,'com.yozo.office:id/iv_search_back').click()
+        time.sleep(1)
         gv.file_more_info(1)
         check = gv.upload_file('最近上传')
-        if check == None:
-            gv.jump_to_index('alldoc')
-            gv.select_file_type('all')
-            gv.file_more_info(1)
-            check = gv.upload_file('最近上传')
         self.assertTrue(check, 'upload fail')
-        self.driver.keyevent(4)
         gv.jump_to_index('my')
+        gv.swipe_options('//android.widget.ScrollView')
         gv.logout_action()
 
     @unittest.skip('skip test_hp_my1_about_yozo')
@@ -1686,6 +1686,11 @@ class TestHomePage(StartEnd):
     def test_hp_my1_head_unlog(self):
         logging.info('==========test_hp_my1_head_unlog==========')
         gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        if gv.check_login_status():
+            gv.swipe_options('//android.widget.ScrollView')
+            gv.logout_action()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         gv.jump_to_index('my')
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
