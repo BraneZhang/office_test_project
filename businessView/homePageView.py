@@ -210,7 +210,7 @@ class HomePageView(Common):
 
     def select_all(self, select='all', del_list=[]):  # 全选、多选
         logging.info('=========select_all==========')
-        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
         name_list = []
         if select == 'all':
             self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
@@ -414,6 +414,7 @@ class HomePageView(Common):
 
     def logout_action(self):  # 退出登录
         logging.info('==========logout_action==========')
+        self.swipe_options('//android.widget.ScrollView')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         logging.info('logout finished!')

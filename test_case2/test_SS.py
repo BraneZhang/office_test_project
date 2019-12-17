@@ -686,7 +686,7 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.cell_num_format()
 
-    @unittest.skip('skip test_ss_row_options')
+    # @unittest.skip('skip test_ss_row_options')
     def test_ss_row_options(self):
         logging.info('==========test_ss_row_options==========')
         ss = SSView(self.driver)
