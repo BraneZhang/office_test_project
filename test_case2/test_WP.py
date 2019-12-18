@@ -3,19 +3,14 @@
 
 import logging
 import random
-import time
+
 import unittest
 from ddt import ddt, data
 from businessView.wpView import WPView
 from common.myunit import StartEnd
 from airtest.core.api import *
 
-# from common.start import get_desired_caps
-
 chart_type = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图', '圆锥图', '棱锥图']
-
-
-# auto_setup(__file__, devices=["Android:///" + "%s?ime_method=ADBIME" % get_desired_caps()['desired_caps']['udid']])
 
 
 @ddt
@@ -47,7 +42,7 @@ class TestWP(StartEnd):
 
         time.sleep(3)
 
-    # @unittest.skip('skip test_shape_text_attr_wp')
+    @unittest.skip('skip test_shape_text_attr_wp')
     def test_wp_shape_text_attr(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
@@ -85,7 +80,11 @@ class TestWP(StartEnd):
     def test_wp_bookmark(self):
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         wp.group_button_click('查看')
         wp.add_bookmark('test')
         self.assertTrue(wp.check_add_bookmark(), '书签插入失败！')
@@ -162,7 +161,11 @@ class TestWP(StartEnd):
     def test_wp_jump(self):  # 跳转页
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         wp.group_button_click('查看')
         wp.page_jump(7)
         time.sleep(2)
@@ -171,7 +174,11 @@ class TestWP(StartEnd):
     def test_wp_read_self_adaption(self):  # wp阅读自适应
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         wp.read_self_adaption()
         time.sleep(1)
         self.assertFalse(wp.get_element_result('//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]'),
@@ -181,7 +188,11 @@ class TestWP(StartEnd):
     def test_wp_text_select(self):  # 文本选取
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         wp.switch_write_read()
         x, y = wp.get_size()
         wp.drag_coordinate(x * 0.5, y * 0.4, x * 0.6, y * 0.5)
@@ -356,7 +367,6 @@ class TestWP(StartEnd):
         self.wp_insert_one_table()
         wp = WPView(self.driver)
         extend = loop_find(wp.template_object('table_select.png', target_pos=9))
-
         swipe([extend[0], extend[1]], [extend[0], extend[1] + 200])
         time.sleep(1)
 
@@ -472,10 +482,10 @@ class TestWP(StartEnd):
         wp.shape_fill_color_common()
         wp.shape_fill_color_all()
         wp.shape_fill_color_tran_seekbar()
-        wp.shape_fill_color_other()
+        wp.other_color()
         wp.shape_fill_color_gradation()
 
-    # @unittest.skip('skip test_wp_shape_outline')
+    @unittest.skip('skip test_wp_shape_outline')
     def test_wp_shape_outline(self):  # 形状轮廓
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         self.insert_one_shape()
@@ -486,7 +496,7 @@ class TestWP(StartEnd):
             wp.swipe(s[0], s[1], s[2], s[3])
         wp.shape_border_color_common()
         wp.shape_fill_color_all()
-        wp.shape_fill_color_other()
+        wp.other_color()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_group_button"]'):
@@ -506,7 +516,17 @@ class TestWP(StartEnd):
         wp.shape_border_width_common()
         wp.shape_border_width_all()
 
-
+    @unittest.skip('skip test_wp_shape_effect_type')
+    def test_wp_shape_effect_type(self):  # 形状效果 ：三维 阴影
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        s = wp.swipe_option('up')
+        while not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_effect_type"]'):
+            wp.swipe(s[0], s[1], s[2], s[3])
+        wp.shape_effect_type_common()
+        wp.shape_effect_type_shadow()
+        wp.shape_effect_type_3d()
 
     @unittest.skip('skip test_wp_shape_text_round')
     def test_wp_shape_text_round(self):
@@ -522,6 +542,13 @@ class TestWP(StartEnd):
         wp.text_wrap('紧密型')
         wp.text_wrap('衬于文字下方')
         wp.text_wrap()
+
+    @unittest.skip('skip test_wp_shape_order')
+    def test_wp_shape_order(self):  # 形状叠放次序
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        self.insert_one_shape()
+        wp = WPView(self.driver)
+        wp.object_wp_order()
 
     @unittest.skip('skip test_wp_shape_pop_menu_all')
     def test_wp_shape_pop_menu_all(self):
@@ -626,32 +653,21 @@ class TestWP(StartEnd):
         # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
-        cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
-
         wp.get_element(
-            '//*[@resource-id="%s"]'
-            '/android.widget.FrameLayout[5]' % cc).click()
+            '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_edit"]'
+            '/android.widget.FrameLayout[5]').click()
         # 属性调整大小
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_effect_type"
-        # else:
-        cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_effect" % type1
         for i in range(1, 7):
             wp.get_element(
-                '//*[@resource-id="%s"]'
-                '/android.widget.FrameLayout[%s]' % (cc, i)).click()
-
-        cc = 'com.yozo.office:id/yozo_ui_option_id_object_effect_shadow'
+                '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_effect"]'
+                '/android.widget.FrameLayout[%s]' % i).click()
         for i in range(1, 6):
             wp.get_element(
-                '//*[@resource-id="%s"]'
-                '/android.widget.FrameLayout[%s]' % (cc, i)).click()
+                '//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_object_effect_shadow"]'
+                '/android.widget.FrameLayout[%s]' % i).click()
         time.sleep(10)
 
     @unittest.skip('skip test_wp_pic_outline_color')
@@ -737,32 +753,20 @@ class TestWP(StartEnd):
         # type1 = 'wp'
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_quick_function"
-        # else:
-        cc = "com.yozo.office:id/yozo_ui_%s_option_id_picture_edit" % type1
         wp.get_element(
-            '//*[@resource-id="%s"]'
-            '/android.widget.FrameLayout[5]' % cc).click()
+            '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_edit"]'
+            '/android.widget.FrameLayout[5]').click()
         # 属性调整大小
         wp.shape_option_5()
         if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             wp.fold_expand()
-
-        # if type1 == 'pg':
-        #     cc = "com.yozo.office:id/yozo_ui_pg_option_id_picture_border_width"
-        # elif type1 == 'wp':
-        cc = "com.yozo.office:id/yozo_ui_wp_option_id_picture_border_width"
-        # elif type1 == 'ss':
-        #     cc = "com.yozo.office:id/yozo_ui_ss_option_id_picture_border_width"
         s = wp.swipe_option('up')
-        while not wp.exist('//*[@resource-id="%s"]' % cc):
+        while not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_border_width"]'):
             wp.swipe(s[0], s[1], s[2], s[3])
         for i in range(1, 7):
             wp.get_element(
-                '//*[@resource-id="%s"]'
-                '/android.widget.FrameLayout[%s]' % (cc, i)).click()
-        # cc = 'com.yozo.office:id/yozo_ui_option_id_objec_border_width_select'
+                '//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_picture_border_width"]'
+                '/android.widget.FrameLayout[%s]' % i).click()
         for i in range(30):
             wp.get_element(
                 '//*[@resource-id="com.yozo.office:id/yozo_ui_number_picker_arrow_right"]').click()
@@ -785,30 +789,10 @@ class TestWP(StartEnd):
             '/android.widget.FrameLayout[5]' % cc).click()
         # 属性调整大小
         wp.shape_option_5()
-        if wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
-            wp.fold_expand()
-        x, y = loop_find(wp.template_object('rotate_free.png'))
-        touch([x, y + 100])
-        touch(wp.template_object('copy.png'))
-        touch([x, y + 100])
-        touch(wp.template_object('paste.png'))
-        touch([x, y + 100])
-        touch(wp.template_object('paste.png'))
-        if not wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
-            wp.fold_expand()
-        ele1 = '//*[@text="图片"]'
-        ele2 = '//*[@text="轮廓"]'
-        wp.swipe_ele(ele2, ele1)
-        wp.shape_layer('置于底层')
-        wp.shape_layer('上移一层')
-        wp.shape_layer('置于顶层')
-        wp.shape_layer('下移一层')
-        if type1 == 'wp':
-            wp.shape_layer('衬于文字下方')
-            wp.shape_layer('浮于文字上方')
+        wp.object_wp_order()
 
     @unittest.skip('skip test_wp_pic_text_round')
-    def test_wp_pic_text_round(self):
+    def test_wp_pic_text_round(self):  # 图片 文字环绕
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         # 仅wp存在文字环绕功能
         self.insert_one_pic('wp')
@@ -823,7 +807,7 @@ class TestWP(StartEnd):
         wp.text_wrap()
 
     @unittest.skip('skip test_wp_pic_pop_menu_all')
-    def test_wp_pic_pop_menu_all(self, type1='wp'):
+    def test_wp_pic_pop_menu_all(self, type1='wp'):  # 图片 pop菜单
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
@@ -859,7 +843,7 @@ class TestWP(StartEnd):
         touch(wp.template_object('delete.png'))  # 删除
 
     @unittest.skip('skip test_wp_pic_free_rotate')
-    def test_wp_pic_free_rotate(self, type1='wp'):
+    def test_wp_pic_free_rotate(self, type1='wp'):  # 图片 移动图片 选中/取消选中 自由旋转
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         self.insert_one_pic(type1)
         wp = WPView(self.driver)
@@ -900,7 +884,7 @@ class TestWP(StartEnd):
 
     @unittest.skip('skip test_wp_insert_chart_list')
     @data(*chart_type)
-    def test_wp_insert_chart_list(self, chart_type):
+    def test_wp_insert_chart_list(self, chart_type):  # 插入图表 依次插入所有图表
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         logging.info('==========%s==========' % chart_type)
         wp = WPView(self.driver)
@@ -916,17 +900,15 @@ class TestWP(StartEnd):
         wp.get_element('//*[@text="%s"]' % chart_type).click()
         wp.chart_insert_list('%s' % chart_type)
 
-    @unittest.skip('skip insert_chart_first_type')
-    def insert_chart_first_type(self, chart_type):
+    def insert_chart_first_type(self, chart_type):  # 插入图表 chart_type 图表类型 默认为首个样式
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
-        # 插入图表 chart_type 图表类型 默认为首个样式
         wp = WPView(self.driver)
         wp.create_file('wp')
         wp.group_button_click('插入')
         wp.option_insert_first_chart(chart_type)
 
     @unittest.skip('skip test_wp_chart_get_data')
-    def test_wp_chart_get_data(self, chart_type='柱形图'):
+    def test_wp_chart_get_data(self, chart_type='柱形图'):  # 图表 查看数据源
         self.insert_chart_first_type(chart_type)
         wp = WPView(self.driver)
         wp.get_element('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_datasource"]').click()
@@ -934,26 +916,26 @@ class TestWP(StartEnd):
                         msg='%s data source not exist' % chart_type)
 
     @unittest.skip('skip test_wp_chart_fill_color')
-    def test_wp_chart_fill_color(self, chart_type='柱形图'):
+    def test_wp_chart_fill_color(self, chart_type='柱形图'):  # 图表 图表背景色填充
         self.insert_chart_first_type(chart_type)
         wp = WPView(self.driver)
         free_col = wp.chart_fill_color()
         self.assertNotEquals(free_col, '000000', msg='表格自定义颜色选择失败')
 
     @unittest.skip('skip test_wp_chart_type')
-    def test_wp_chart_type(self, chart_type='柱形图'):
+    def test_wp_chart_type(self, chart_type='柱形图'):  # 图表 图表类型
         self.insert_chart_first_type(chart_type)
         wp = WPView(self.driver)
         wp.chart_change_type_same(chart_type)
 
     @unittest.skip('skip test_wp_chart_random_style')
-    def test_wp_chart_random_style(self, chart_type='柱形图'):
+    def test_wp_chart_random_style(self, chart_type='柱形图'):  # 图表 图表样式 随机
         self.insert_chart_first_type(chart_type)
         wp = WPView(self.driver)
         wp.chart_random_style()
 
     @unittest.skip('skip test_wp_chart_change_color')
-    def test_wp_chart_change_color(self, chart_type='柱形图'):
+    def test_wp_chart_change_color(self, chart_type='柱形图'):  # 图表 更改颜色
         self.insert_chart_first_type(chart_type)
         wp = WPView(self.driver)
         wp.chart_change_color()
@@ -962,9 +944,11 @@ class TestWP(StartEnd):
     def test_wp_print_long_pic(self):
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
-        wp.wait_loading()
-        # time.sleep(2)
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         wp.group_button_click('文件')
         wp.print_long_pic()
         self.assertTrue(wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_export_longpic_share_buttons"]'),
@@ -974,7 +958,11 @@ class TestWP(StartEnd):
     def test_wp_swipe_up_down(self):
         logging.info('==========%s==========' % self.__str__().split(' ')[0])
         wp = WPView(self.driver)
-        wp.open_file('欢迎使用永中Office.docx')
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
         frame5 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
         frame2 = wp.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
                                    x_y=2)
