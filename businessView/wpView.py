@@ -4,7 +4,7 @@ import time
 
 from businessView.generalFunctionView import GeneralFunctionView
 from selenium.webdriver.common.by import By
-
+from airtest.core.api import *
 from businessView.homePageView import HomePageView
 
 
@@ -120,40 +120,32 @@ class WPView(HomePageView, GeneralFunctionView):
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[2].click()
 
     def shape_preset(self):
+
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_preset_style').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_object_preset_style')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_pg_option_id_object_preset_style"]')
 
     def shape_fill_color_common(self):
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_fill_color')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_fill_color"]')
 
     def shape_border_color_common(self):
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_color')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_color"]')
 
     def shape_border_type_common(self):
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_type')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_type"]')
 
     def shape_border_width_common(self):
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_shape_border_width')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_border_width"]')
+
+    def shape_effect_type_common(self):
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_shape_effect_type"]')
 
     def shape_fill_color_all(self):  # 所有单色填充
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_all"]')
 
     def shape_fill_color_tran_seekbar(self):  # 填充色透明度
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_seekbar').click()
 
-    def shape_fill_color_other(self):  # 其他填充色
+    def other_color(self):  # 其他填充色
         a, b, c, d = self.swipe_option("up")
         while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_others"]'):
             self.swipe(a, b, c, d)
@@ -170,21 +162,45 @@ class WPView(HomePageView, GeneralFunctionView):
         if not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             self.fold_expand()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_gradient').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_pg_option_id_object_gradient_fill')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_pg_option_id_object_gradient_fill"]')
 
-    def shape_border_type_all(self):  # 所有线条样式
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_shape_border_type')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+    def shape_border_type_all(self):  # 形状所有线条样式
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_shape_border_type"]')
 
-    def shape_border_width_all(self):  # 所有线条像素
+    def shape_border_width_all(self):  # 形状所有线条像素
         assert self.exist('//*[@text="5pt"]') is True, '结果异常'
         while len(
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_recycler_view').find_elements(
                     By.CLASS_NAME, 'android.widget.TextView')) != 2:
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_number_picker_arrow_right').click()
+
+    def shape_effect_type_shadow(self):  # 形状所有阴影效果
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_object_effect_shadow"]')
+
+    def shape_effect_type_3d(self):  # 形状所有阴影效果
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_object_effect_3d"]')
+
+    def object_wp_order(self):  # WP内对象叠放次序
+        if self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            self.fold_expand()
+        x, y = loop_find(self.template_object('rotate_free.png'))
+        touch([x, y + 200])
+        touch(self.template_object('copy.png'))
+        touch([x, y + 200])
+        touch(self.template_object('paste.png'))
+        touch([x, y + 200])
+        touch(self.template_object('paste.png'))
+        if not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            self.fold_expand()
+        s = self.swipe_option('up')
+        while not self.exist('//*[@text="叠放次序"]'):
+            self.swipe(s[0], s[1], s[2], s[3])
+        self.shape_layer('置于底层')
+        self.shape_layer('上移一层')
+        self.shape_layer('置于顶层')
+        self.shape_layer('下移一层')
+        self.shape_layer('衬于文字下方')
+        self.shape_layer('浮于文字上方')
 
     def table_merge_split(self):
         print(self.driver.find_element(By.ID,
@@ -201,10 +217,6 @@ class WPView(HomePageView, GeneralFunctionView):
     def table_insert_list(self):
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_table')
         childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        # for i in childs[:-1]:
-        #     i.click()
-        #     self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo').click()
-        #     self.group_button_click('插入')
         c_1 = childs[-1]
         c_1.click()
         parent = self.driver.find_element(By.XPATH,
@@ -232,9 +244,7 @@ class WPView(HomePageView, GeneralFunctionView):
             c_1.click()
 
     def table_type_list(self):
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_style')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_table_style"]')
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_options_table_style_all')
         childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
         list(map(lambda i: i.click(), childs0))
@@ -242,24 +252,17 @@ class WPView(HomePageView, GeneralFunctionView):
         s = self.swipe_option('up')
         if int(table_list0) != 0:
             self.swipe(s[0], s[1], s[2], s[3])
-            # for i in range(-(int(table_list0) * 5), 0):
-            #     parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click()
             list(map(lambda i: parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[i].click(),
                      range(-(int(table_list0) * 5), 0)))
 
     def table_fill_color(self):  # 填充色
         # 设置表格填充颜色，并返回自定义色值
         logging.info('==========table_fill_color==========')
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_cells_fill_color')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_cells_fill_color"]')
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_all"]')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_button_main_text_view').click()
         self.driver.find_element(By.ID, "com.yozo.office:id/color_picker_view").click()
         free_col = self.driver.find_element(By.ID, "com.yozo.office:id/tv_hex").get_attribute('text')
-
         self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_full_screen_base_dialog_id_ok").click()
         return free_col
 
@@ -277,12 +280,8 @@ class WPView(HomePageView, GeneralFunctionView):
     def chart_fill_color(self):  # 填充色
         # 设置图表填充颜色，并返回自定义色值
         logging.info('==========chart_fill_color==========')
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_background_color')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_background_color"]')
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_all"]')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_others').click()
         self.driver.find_element(By.ID, "com.yozo.office:id/color_picker_view").click()
         free_col = self.driver.find_element(By.ID, "com.yozo.office:id/tv_hex").get_attribute('text')
@@ -313,33 +312,26 @@ class WPView(HomePageView, GeneralFunctionView):
         while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme"]'):
             self.swipe(s[0], s[1], s[2], s[3])
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]')
 
     def table_border_line(self):  # 边框线
         logging.info('==========table_border_line==========')
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_table_border')
-        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs))
-
-        # # 边框线颜色
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_table_border"]')
+        # 边框线颜色
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_color').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_all"]')
+        # 边框线其他颜色
+        self.other_color()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        if not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
+            self.fold_expand()
         # 边框线线条样式
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style').click()
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        print(len(childs0))
-        list(map(lambda i: i.click(), childs0))
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_cell_border_style"]')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
-        # # 边框线样式
-        parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_cell_border_group_all')
-        childs0 = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
-        list(map(lambda i: i.click(), childs0))
+
+        # 边框线样式
+        self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_ss_option_id_cell_border_group_all"]')
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
 
     def table_insert_row_col(self, direction=''):
@@ -381,3 +373,8 @@ class WPView(HomePageView, GeneralFunctionView):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_export_image').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_long_picture_save_layout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_long_picture_share_layout').click()
+
+    def wp_ele_attr_list(self, ele):
+        parent = self.driver.find_element(By.XPATH, ele)
+        childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
+        list(map(lambda i: i.click(), childs))
