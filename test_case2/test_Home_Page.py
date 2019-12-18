@@ -956,7 +956,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
         gv.file_more_info(1)
-        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
         num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
@@ -970,12 +970,10 @@ class TestHomePage(StartEnd):
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
-        gv.sort_files('name', 'up')
         gv.file_more_info(1)
         name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
-            self.assertFalse(gv.search_file(i))
-            self.driver.keyevent(4)
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]'% i))
 
     @unittest.skip('skip test_hp_alldoc_share')
     @data(*index_share_list)
@@ -1575,17 +1573,19 @@ class TestHomePage(StartEnd):
     def test_hp_last_select_all1(self):  # “最近”全选操作
         logging.info('==========test_hp_last_select_all1==========')
         gv = HomePageView(self.driver)
+        gv.login_on_needed()
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="取消全选"]').click()
         num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
         self.assertTrue(num == 0)
-        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        # self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
         self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        time.sleep(1)
         self.assertTrue(gv.get_toast_message('此操作只是将文件从最近列表中删除'))
 
     @unittest.skip('skip test_share_from_index')
@@ -1641,7 +1641,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         if gv.check_login_status():
             gv.logout_action()
-        gv.jump_to_index()
+        gv.jump_to_index('my')
         exist_files = ['欢迎使用永中Office.docx', '欢迎使用永中Office.pptx', '欢迎使用永中Office.pdf']
         for i in exist_files:
             file_ele = '//*[@text="%s"]' % i
@@ -2083,10 +2083,15 @@ class TestHomePage(StartEnd):
         gv.mark_star()
 
     @unittest.skip('skip test_hp_star_show_no_file')
-    def test_hp_star_1_show_no_file(self):
+    def test_hp_star_show_no_file(self):
         logging.info('==========test_hp_star_show_no_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
+        if self.driver.find_element(By.ID,'com.yozo.office:id/file_item'):
+            length = len(self.driver.find_elements(By.ID,'com.yozo.office:id/file_item'))
+            for i in range(length):
+                gv.file_more_info(i+1)
+                gv.mark_star()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_view"]'))
 
     @unittest.skip('skip test_hp_star_upload_file')

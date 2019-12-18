@@ -35,10 +35,10 @@ class HomePageView(Common):
             elif i == '下载':
                 self.driver.find_element(By.ID, 'com.yozo.office:id/download').click()
                 if not self.is_not_visible('//*[@text="请稍等..."]'):
-                    logging.error('下载失败')
+                    logging.error('请稍等加载失败')
                     return False
                 if not self.get_toast_message('模板文件下载成功'):
-                    logging.error('下载失败')
+                    logging.error('模板文件下载成功提示失败')
                     return False
             time.sleep(2)
         self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
@@ -236,6 +236,7 @@ class HomePageView(Common):
         logging.info('=========delete_file==========')
         self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        time.sleep(1)  # 删除加载项尚未能捕捉，先写死
 
     def rename_file(self, new_name):  # 重命名文件
         logging.info('=========rename_file==========')
@@ -317,7 +318,7 @@ class HomePageView(Common):
         else:
             return False
 
-    def create_file_preoption(self,file_type):#新建文档前置操作
+    def create_file_preoption(self, file_type):  # 新建文档前置操作
         logging.info('==========create_file_preoption_%s==========' % file_type)
         time.sleep(2)
         self.tap(925, 1669)
@@ -428,7 +429,6 @@ class HomePageView(Common):
             self.login_from_my('13915575564', 'zhang199412')
         else:
             self.jump_to_index('last')
-
 
     def close_file(self):
         logging.info('======close_file=====')
