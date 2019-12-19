@@ -353,6 +353,8 @@ class HomePageView(Common):
             if not self.get_element_result('//*[@text="保存"]'):
                 self.group_button_click('文件')
             self.driver.find_element(By.XPATH, '//*[@text="保存"]').click()
+            time.sleep(0.5)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button').click()
 
     def save_new_file(self, file_name, save_path, item=1):  # 文件名，本地还是云端save_path=['local','cloud']，文件类型item=[1,2]
         logging.info('==========save_exist_file==========')

@@ -698,7 +698,7 @@ class TestCommon(StartEnd):
 
     @unittest.skip('skip test_share_editFile')
     @data(*share_list)
-    def test_share_editFile(self, share_info):
+    def test_share_editFile(self, share_info='ss_wx'):
         """
         编辑文档分享
         :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
@@ -712,11 +712,9 @@ class TestCommon(StartEnd):
 
         logging.info('==========edit and save File==========')
         hp.open_random_file(search_dict[file_type])
-
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()
         gv.group_button_click('插入')
         gv.insert_shape(file_type, 1)
-
         hp.save_file()
         self.assertTrue(hp.get_toast_message('保存成功'))
 
