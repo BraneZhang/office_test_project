@@ -163,7 +163,7 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_cell_select')
     def test_ss_cell_select(self):
         logging.info('==========test_ss_cell_select==========')
-        
+
         ss = SSView(self.driver)
         ss.create_file('ss')
         ss.cell_edit()
@@ -441,7 +441,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_filter').click()
         x1 = x - width - 18
         y1 = y - height * 3 - 27
-        ss.filter_data(x1, y1, '自定义', date_filter[random.randint(1, 12)], date_filter[random.randint(1, 12)])
+        ss.filter_data(x1, y1, '自定义', date_filter[random.randint(0, 11)], date_filter[random.randint(0, 11)])
 
         # ss.filter_data(x1, y1, '自定义', '等于', '等于')
         # ss.tap(x1, y1)
@@ -571,7 +571,7 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_formula_all')
     def test_ss_formula_for_all(self):  # 其他类型公式
         logging.info('==========test_ss_formula_all==========')
-        
+
         ss = SSView(self.driver)
         ss.create_file('ss')
 
@@ -645,7 +645,7 @@ class TestSS(StartEnd):
     @unittest.skip('skip test_ss_merge_wrap')
     def test_ss_merge_wrap(self):
         logging.info('==========test_ss_merge_wrap==========')
-        
+
         ss = SSView(self.driver)
         ss.create_file('ss')
         ss.cell_edit()
