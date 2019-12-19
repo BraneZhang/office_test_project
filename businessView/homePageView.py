@@ -115,6 +115,7 @@ class HomePageView(Common):
 
     def file_more_info(self, index):  # 查看指定文件信息
         logging.info('=========file_more_info==========')
+        time.sleep(0.5)
         ele = self.driver.find_element(By.CLASS_NAME, 'androidx.recyclerview.widget.RecyclerView')
         eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
         if index < 1:

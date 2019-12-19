@@ -1410,7 +1410,7 @@ class TestHomePage(StartEnd):
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
         is_displayed = WebDriverWait(self.driver, 120).until(
-            lambda driver: self.driver.find_element(By.XPATH, '//*[@text="下载成功"]')).is_displayed()
+            lambda driver: self.driver.find_element(By.XPATH, '//*[@text="下载成功"]').is_displayed())
         # gv.get_element_result('//*[@text="下载成功"]')
         self.assertTrue(is_displayed)
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
@@ -2087,7 +2087,7 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_star_show_no_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
-        if self.driver.find_element(By.ID,'com.yozo.office:id/file_item'):
+        if self.driver.find_elements(By.ID,'com.yozo.office:id/file_item'):
             length = len(self.driver.find_elements(By.ID,'com.yozo.office:id/file_item'))
             for i in range(length):
                 gv.file_more_info(i+1)
