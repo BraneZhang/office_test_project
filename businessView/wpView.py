@@ -25,7 +25,7 @@ class WPView(HomePageView, GeneralFunctionView):
     bookmark_insert = (By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_bookmark_insert')  # 插入书签
     bookmark_name_edit = (By.ID, 'com.yozo.office:id/bookmark_name_edit')  # 书签名输入框
     bookmark_sure_btn = (By.ID, 'com.yozo.office:id/sure_btn')  # 书签弹窗确定
-    bookmark_catalog = (By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_bookmark_catalog')  # 书签列表
+
     option_expand_button = (By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button')  # 展开菜单栏
     wp_goto = (By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_goto')  # 跳转页
     goto_page = (By.ID, 'com.yozo.office:id/et_goto_page')  # 输入页码
@@ -50,7 +50,7 @@ class WPView(HomePageView, GeneralFunctionView):
 
     def list_bookmark(self, marker):  # 书签列表
         logging.info('==========list_bookmark==========')
-        self.driver.find_element(*self.bookmark_catalog).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_bookmark_catalog').click()
         if self.get_element_result('//[@text="%s"]' % marker):
             self.driver.find_element(By.XPATH, '//[@text="%s"]' % marker).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
@@ -146,9 +146,8 @@ class WPView(HomePageView, GeneralFunctionView):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_seekbar').click()
 
     def other_color(self):  # 其他填充色
-        a, b, c, d = self.swipe_option("up")
-        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_others"]'):
-            self.swipe(a, b, c, d)
+        s = self.swipe_option("up")
+        self.while_not_exist_ele_swipe('//*[@resource-id="com.yozo.office:id/yozo_ui_option_id_color_others"]', s)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_id_color_others').click()
         x4, y4 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/color_picker_view"]', x_y=4)
         x5, y5 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/color_picker_view"]', x_y=5)
@@ -193,8 +192,7 @@ class WPView(HomePageView, GeneralFunctionView):
         if not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]'):
             self.fold_expand()
         s = self.swipe_option('up')
-        while not self.exist('//*[@text="叠放次序"]'):
-            self.swipe(s[0], s[1], s[2], s[3])
+        self.while_not_exist_ele_swipe('//*[@text="叠放次序"]', s)
         self.shape_layer('置于底层')
         self.shape_layer('上移一层')
         self.shape_layer('置于顶层')
@@ -268,12 +266,9 @@ class WPView(HomePageView, GeneralFunctionView):
 
     def option_insert_first_chart(self, chart_type):
         s = self.swipe_option('up')
-        'com.yozo.office:id/yozo_ui_wp_option_id_insert_chart'
-        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_insert_chart"]'):
-            self.swipe(s[0], s[1], s[2], s[3])
+        self.while_not_exist_ele_swipe('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_insert_chart"]', s)
         self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_wp_option_id_insert_chart").click()
-        while not self.exist('//*[@text="%s"]' % chart_type):
-            self.swipe(s[0], s[1], s[2], s[3])
+        self.while_not_exist_ele_swipe('//*[@text="%s"]' % chart_type, s)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
         self.driver.find_element(By.ID, "com.yozo.office:id/yozo_ui_option_item_view").click()
 
@@ -291,8 +286,7 @@ class WPView(HomePageView, GeneralFunctionView):
     def chart_change_type_same(self, chart_type):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_type').click()
         s = self.swipe_option('up')
-        while not self.exist('//*[@text="%s"]' % chart_type):
-            self.swipe(s[0], s[1], s[2], s[3])
+        self.while_not_exist_ele_swipe('//*[@text="%s"]' % chart_type, s)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')
         childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
@@ -309,8 +303,8 @@ class WPView(HomePageView, GeneralFunctionView):
 
     def chart_change_color(self):
         s = self.swipe_option('up')
-        while not self.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme"]'):
-            self.swipe(s[0], s[1], s[2], s[3])
+        self.while_not_exist_ele_swipe('//*[@resource-id="com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme"]',
+                                       s)
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_chart_color_scheme').click()
         self.wp_ele_attr_list('//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]')
 
@@ -361,20 +355,30 @@ class WPView(HomePageView, GeneralFunctionView):
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo').click()
             self.group_button_click('插入')
             s = self.swipe_option('up')
-            while not self.exist('//*[@text="图表"]'):
-                self.swipe(s[0], s[1], s[2], s[3])
+            self.while_not_exist_ele_swipe('//*[@text="图表"]', s)
             self.driver.find_element(By.XPATH, '//*[@text="图表"]').click()
-            while not self.exist('//*[@text="%s"]' % chart_type):
-                self.swipe(s[0], s[1], s[2], s[3])
+            self.while_not_exist_ele_swipe('//*[@text="%s"]' % chart_type, s)
             self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
 
     def print_long_pic(self):
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_export_image').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_long_picture_save_layout').click()
+        start = time.time()
+        while not self.exist('//*[@resource-id="com.yozo.office:id/rll_export_long_picture_share_layout"]'):
+            sleep(2)
+            if time.time() - start > 10:
+                raise TimeoutError('save_layout_timeout', self)
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_long_picture_share_layout').click()
 
     def wp_ele_attr_list(self, ele):
         parent = self.driver.find_element(By.XPATH, ele)
         childs = parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')
         list(map(lambda i: i.click(), childs))
+
+    def while_not_exist_ele_swipe(self, ele, xy_list):
+        start = time.time()
+        while not self.exist(ele):
+            self.swipe(xy_list[0], xy_list[1], xy_list[2], xy_list[3])
+            if time.time() - start > 15:
+                raise TimeoutError('%s' % self.__str__().split(' ')[0])
