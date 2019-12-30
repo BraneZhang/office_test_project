@@ -101,13 +101,21 @@ class WPView(HomePageView, GeneralFunctionView):
 
     def move_frame(self):
         # 移动视图，调整插入对象的位置
-        ele5 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]')
-        ele9 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
-                                   x_y=9)
-        self.swipe(ele5[0], ele5[1], ele9[0], ele9[1])
+        pinch(in_or_out="out")
+        ele4 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]', x_y=4)
+        ele6 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=6)
+        ele2 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=2)
+        ele8 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=8)
+        self.swipe(ele4[0], ele4[1], ele6[0], ele6[1])
+        self.swipe(ele2[0], ele2[1], ele8[0], ele8[1])
+        self.swipe(ele2[0], ele2[1], ele8[0], ele8[1])
 
     def insert_example_table(self):
         # 插入表格
+
         self.move_frame()
         parent = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_insert_table')
         parent.find_elements(By.CLASS_NAME, 'android.widget.FrameLayout')[0].click()
