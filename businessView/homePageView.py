@@ -15,6 +15,53 @@ from common.common_fun import Common
 
 class HomePageView(Common):
 
+    def recycle_files_clear(self):
+        logging.info('==========recycle_files_revert==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        if not self.is_not_visible('//*[@text="数据加载中.."]'):
+            logging.error('回收站加载过长')
+            return False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_clear_all').click()
+        self.check_option(True)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
+        return self.get_toast_message('已清空')
+
+    def recycle_files_revert(self,*num):
+        logging.info('==========recycle_files_revert==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        if not self.is_not_visible('//*[@text="数据加载中.."]'):
+            logging.error('回收站加载过长')
+            return False
+        eles = self.find_elements(By.ID,'com.yozo.office:id/file_item')
+        if len(eles)==0:
+            logging.error('回收站无文件')
+            return False
+        for index in num:
+            eles[index].find_element(By.ID, 'com.yozo.office:id/yozo_ui_file_list_item_check').click()
+        # map(lambda index:eles[index].find_element(By.ID,'com.yozo.office:id/yozo_ui_file_list_item_check').click(),num)
+        self.driver.find_element(By.ID,'com.yozo.office:id/tv_recycle_revert').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
+        return self.get_toast_message('已还原')
+
+    def recycle_files_delete(self,*num):
+        logging.info('==========recycle_files_delete==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        if not self.is_not_visible('//*[@text="数据加载中.."]'):
+            logging.error('回收站加载过长')
+            return False
+        eles = self.find_elements(By.ID,'com.yozo.office:id/file_item')
+        if len(eles)==0:
+            logging.error('回收站无文件')
+            return False
+        for index in num:
+            eles[index].find_element(By.ID, 'com.yozo.office:id/yozo_ui_file_list_item_check').click()
+        # map(lambda index:eles[index].find_element(By.ID,'com.yozo.office:id/yozo_ui_file_list_item_check').click(),num)
+        self.driver.find_element(By.ID,'com.yozo.office:id/tv_recycle_delete').click()
+        self.check_option(True)
+        self.driver.find_element(By.ID,'com.yozo.office:id/im_title_bar_menu_back').click()
+        return self.get_toast_message('已删除')
+
+
     def templates_access(self, file_type='wp', *options):  # 模板获取：收藏或者下载
         logging.info('==========templates_access==========')
         time.sleep(2)
@@ -354,7 +401,7 @@ class HomePageView(Common):
                 self.group_button_click('文件')
             self.driver.find_element(By.XPATH, '//*[@text="保存"]').click()
             time.sleep(0.5)
-            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button').click()
+            # self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button').click()
 
     def save_new_file(self, file_name, save_path, item=1):  # 文件名，本地还是云端save_path=['local','cloud']，文件类型item=[1,2]
         logging.info('==========save_exist_file==========')

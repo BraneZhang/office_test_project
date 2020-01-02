@@ -29,6 +29,82 @@ screenshot_file = '../screenshots/'
 @ddt
 class TestHomePage(StartEnd):
 
+    logging.info('======before 2020_01_02')
+
+    @unittest.skip('skip test_hp_my2_recycle_options')
+    def test_hp_my2_recycle_options(self):
+        logging.info('==========test_hp_my2_recycle_options==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        if not hp.is_not_visible('//*[@text="数据加载中.."]'):
+            logging.error('回收站加载过长')
+            return False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_file_list_item_check').click()
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        num = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num) != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="取消全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+
+    def test_hp_my2_recycle_restore(self):
+        logging.info('==========test_hp_my2_recycle_restore==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        result1 = hp.recycle_files_delete(*(0,))
+        self.assertTrue(result1 == True)
+        result2 = hp.recycle_files_revert(*(0,))
+        self.assertTrue(result2 == True)
+        result3 = hp.recycle_files_clear()
+        self.assertTrue(result3 == True)
+
+    @unittest.skip('skip test_hp_cloud_search')
+    def test_hp_cloud_search(self):
+        logging.info('==========test_hp_cloud_search==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.create_file('wp')
+        hp.save_new_file('localSearch', 'local')
+        hp.close_file()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        hp.create_file('pg')
+        hp.save_new_file('cloudSearch', 'cloud')
+        hp.close_file()
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        hp.jump_to_index('cloud')
+        results = hp.search_file('cloudSearch.ppt')
+        self.assertTrue(results == True)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_back').click()
+        results = hp.search_file('localSearch.doc')
+        self.assertTrue(results == False)
+
+    @unittest.skip('skip test_hp_alldoc_cloud_click_unlogin')
+    def test_hp_alldoc_cloud_click_unlogin(self):
+        logging.info('==========test_hp_alldoc_cloud_click_unlogin==========')
+        hp = HomePageView(self.driver)
+        if hp.check_login_status():
+            hp.jump_to_index('my')
+            hp.logout_action()
+        hp.jump_to_index('alldoc')
+        self.assertTrue(hp.get_element_result('//*[@text="登录送1G空间"]'))
+        self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
+        self.assertTrue(hp.get_element_result('//*[@text="账号登录"]'))
+
+    @unittest.skip('skip test_hp_alldoc_cloud_click_login')
+    def test_hp_alldoc_cloud_click_login(self):
+        logging.info('==========test_hp_alldoc_cloud_click_unlogin==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('alldoc')
+        self.assertTrue(hp.get_element_result('//*[contains(@text,"已用")]'))
+        self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
+        self.assertTrue(hp.get_element_result('//*[@text="自动上传"]'))
+
+    logging.info('======before 2020_01_02')
+
     @unittest.skip('skip test_hp_template_category')
     @data(*wps)
     def test_hp_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
@@ -973,7 +1049,7 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
-            self.assertFalse(gv.get_element_result('//*[@text="%s"]'% i))
+            self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
     @unittest.skip('skip test_hp_alldoc_share')
     @data(*index_share_list)
@@ -2087,10 +2163,10 @@ class TestHomePage(StartEnd):
         logging.info('==========test_hp_star_show_no_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
-        if self.driver.find_elements(By.ID,'com.yozo.office:id/file_item'):
-            length = len(self.driver.find_elements(By.ID,'com.yozo.office:id/file_item'))
+        if self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'):
+            length = len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'))
             for i in range(length):
-                gv.file_more_info(i+1)
+                gv.file_more_info(i + 1)
                 gv.mark_star()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_view"]'))
 
