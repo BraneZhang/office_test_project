@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
 import random
 import time
 import unittest
 
+from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
 from businessView.ssView import SSView
@@ -15,10 +17,188 @@ from data import data_info
 date_filter = data_info.date_filter
 num_filter = data_info.num_filter
 text_filter = data_info.text_filter
+index_share_list2 = data_info.index_share_list2
+print_ways = data_info.print_ways
 
 
+@ddt
 class TestSS(StartEnd):
 
+    # =======add 2020_01_03=====
+    @unittest.skip('skip test_ss_print')
+    @data(*print_ways)
+    def test_ss_print(self, print_way='current_table'):
+        logging.info('==========test_ss_print==========')
+        ss = SSView(self.driver)
+        search_result = ss.search_file('screen.xls')
+        self.assertTrue(search_result == True, '搜索失败')
+        open_result = ss.open_file('screen.xls')
+        self.assertEqual(open_result, True, '打开失败')
+        ss.fold_expand()
+        ss.swipe_options()
+
+        logging.info('==========打印==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_print').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s' % print_way).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_middle_ok').click()
+        self.assertTrue(ss.get_element_result('//*[@text="正在获取准备打印的文件"]'))
+
+    @unittest.skip('skip test_ss_export_each_page_share')
+    @data(*index_share_list2)
+    def test_ss_export_each_page_share(self, share_way='email'):
+        logging.info('==========test_ss_export_each_page_share==========')
+        ss = SSView(self.driver)
+        search_result = ss.search_file('screen.xls')
+        self.assertTrue(search_result == True, '搜索失败')
+        open_result = ss.open_file('screen.xls')
+        self.assertEqual(open_result, True, '打开失败')
+        ss.fold_expand()
+        ss.swipe_options()
+
+        logging.info('==========逐页输出图片==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_export_image_by_page').click()
+        self.assertTrue(ss.get_toast_message('图片预览加载中') == True, 'toast1 未捕捉到')
+        time.sleep(1)
+        self.assertTrue(ss.is_not_visible('//*[@text="已全部加载完"]') == True, 'toast2 未捕捉到')
+
+        logging.info('==========选择==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range').click()
+        edit_zone = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_frame_table_container')
+        table = edit_zone.find_element(By.XPATH, '//android.view.ViewGroup/android.view.ViewGroup').get_attribute(
+            'bounds')
+        print(f'table:{table}')
+        loc = table[1:-1].split('][')
+        loca_list = list(map(lambda a: eval(a), loc))
+        ss.tap(loca_list[0][0], loca_list[0][1])
+        ss.drag_coordinate(loca_list[0][0], loca_list[0][1], loca_list[1][0] - 20, loca_list[1][1] - 10)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range_make_page_ok').click()
+
+        logging.info('==========分享==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_share_layout').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ss_rl_longPic_share_%s' % share_way).click()
+
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_export_each_page_save')
+    def test_ss_export_each_page_save(self):
+        logging.info('==========test_ss_export_each_page_save==========')
+        ss = SSView(self.driver)
+        search_result = ss.search_file('screen.xls')
+        self.assertTrue(search_result == True, '搜索失败')
+        open_result = ss.open_file('screen.xls')
+        self.assertEqual(open_result, True, '打开失败')
+        ss.fold_expand()
+        ss.swipe_options()
+
+        logging.info('==========逐页输出图片==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_export_image_by_page').click()
+        self.assertTrue(ss.get_toast_message('图片预览加载中') == True, 'toast1 未捕捉到')
+        time.sleep(1)
+        self.assertTrue(ss.is_not_visible('//*[@text="已全部加载完"]') == True, 'toast2 未捕捉到')
+
+        logging.info('==========选中、取消选中==========')
+        select_ele = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_pic_checkbox')
+        select_ele.click()
+        self.assertTrue(select_ele.get_attribute('checked') == 'false', '取消选中失败')
+        select_ele.click()
+        self.assertTrue(select_ele.get_attribute('checked') == 'true', '选中失败')
+
+        logging.info('==========选择==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range').click()
+        edit_zone = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_frame_table_container')
+        table = edit_zone.find_element(By.XPATH, '//android.view.ViewGroup/android.view.ViewGroup').get_attribute(
+            'bounds')
+        print(f'table:{table}')
+        loc = table[1:-1].split('][')
+        loca_list = list(map(lambda a: eval(a), loc))
+        ss.tap(loca_list[0][0], loca_list[0][1])
+        ss.drag_coordinate(loca_list[0][0], loca_list[0][1], loca_list[1][0] - 20, loca_list[1][1] - 10)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range_make_page_ok').click()
+
+        logging.info('==========保存到相册==========')
+        ss.is_not_visible('//*[@resource-id="图片预览加载中"]')
+        ss.is_not_visible('//*[@resource-id="已全部加载完"]')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_save_layout').click()
+        self.assertTrue(ss.get_toast_message('已保存到/storage/emulated/0/Pictures') == True, 'toast 未捕捉到')
+
+    @unittest.skip('skip test_ss_export_long_picture_share')
+    @data(*index_share_list2)
+    def test_ss_export_long_picture_share(self, share_way):
+        logging.info('==========test_ss_export_long_picture_share==========')
+        ss = SSView(self.driver)
+        search_result = ss.search_file('screen.xls')
+        self.assertTrue(search_result == True, '搜索失败')
+        open_result = ss.open_file('screen.xls')
+        self.assertEqual(open_result, True, '打开失败')
+        ss.fold_expand()
+        ss.swipe_options()
+
+        logging.info('==========输出长图==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_export_long_picture').click()
+        self.assertTrue(ss.get_toast_message('图片预览加载中') == True, 'toast1 未捕捉到')
+        time.sleep(1)
+        # self.assertTrue(ss.get_toast_message('已全部加载完') == True, 'toast2 未捕捉到')
+
+        logging.info('==========选择==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range').click()
+        edit_zone = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_frame_table_container')
+        table = edit_zone.find_element(By.XPATH, '//android.view.ViewGroup/android.view.ViewGroup').get_attribute(
+            'bounds')
+        print(f'table:{table}')
+        loc = table[1:-1].split('][')
+        loca_list = list(map(lambda a: eval(a), loc))
+        ss.tap(loca_list[0][0], loca_list[0][1])
+        ss.drag_coordinate(loca_list[0][0], loca_list[0][1], loca_list[1][0] - 20, loca_list[1][1] - 10)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range_make_page_ok').click()
+
+        logging.info('==========分享==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_share_layout').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ss_rl_longPic_share_%s' % share_way).click()
+
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_export_long_picture')
+    def test_ss_export_long_picture_save(self):
+        logging.info('==========test_ss_export_long_picture==========')
+        ss = SSView(self.driver)
+        search_result = ss.search_file('screen.xls')
+        self.assertTrue(search_result == True, '搜索失败')
+        open_result = ss.open_file('screen.xls')
+        self.assertEqual(open_result, True, '打开失败')
+        ss.fold_expand()
+        ss.swipe_options()
+
+        logging.info('==========输出长图==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_option_id_export_long_picture').click()
+        self.assertTrue(ss.get_toast_message('图片预览加载中') == True, 'toast1 未捕捉到')
+        time.sleep(1)
+        # self.assertTrue(ss.get_toast_message('已全部加载完') == True, 'toast2 未捕捉到')
+
+        logging.info('==========选择==========')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range').click()
+        edit_zone = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_frame_table_container')
+        table = edit_zone.find_element(By.XPATH, '//android.view.ViewGroup/android.view.ViewGroup').get_attribute(
+            'bounds')
+        print(f'table:{table}')
+        loc = table[1:-1].split('][')
+        loca_list = list(map(lambda a: eval(a), loc))
+        ss.tap(loca_list[0][0], loca_list[0][1])
+        ss.drag_coordinate(loca_list[0][0], loca_list[0][1], loca_list[1][0] - 20, loca_list[1][1] - 10)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range_make_page_ok').click()
+
+        logging.info('==========保存到相册==========')
+        ss.is_not_visible('//*[@resource-id="图片预览加载中"]')
+        ss.is_not_visible('//*[@resource-id="已全部加载完"]')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_save_layout').click()
+        self.assertTrue(ss.get_toast_message('已保存到/storage/emulated/0/Pictures') == True, 'toast 未捕捉到')
+
+    # =======before 2019_12_31=====
     @unittest.skip('skip test_ss_cell_border')
     def test_ss_cell_border(self):  # 遍历边框所有功能
         logging.info('==========test_ss_cell_border==========')
@@ -686,7 +866,7 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.cell_num_format()
 
-    # @unittest.skip('skip test_ss_row_options')
+    @unittest.skip('skip test_ss_row_options')
     def test_ss_row_options(self):
         logging.info('==========test_ss_row_options==========')
         ss = SSView(self.driver)

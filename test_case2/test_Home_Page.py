@@ -29,7 +29,7 @@ screenshot_file = '../screenshots/'
 @ddt
 class TestHomePage(StartEnd):
 
-    logging.info('======before 2020_01_02')
+    #======add 2020_01_02=====
 
     @unittest.skip('skip test_hp_my2_recycle_options')
     def test_hp_my2_recycle_options(self):
@@ -48,6 +48,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消全选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
 
+    @unittest.skip('skip test_hp_my2_recycle_restore')
     def test_hp_my2_recycle_restore(self):
         logging.info('==========test_hp_my2_recycle_restore==========')
         hp = HomePageView(self.driver)
@@ -103,8 +104,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
         self.assertTrue(hp.get_element_result('//*[@text="自动上传"]'))
 
-    logging.info('======before 2020_01_02')
-
+    #======before 2020_01_02========
     @unittest.skip('skip test_hp_template_category')
     @data(*wps)
     def test_hp_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
