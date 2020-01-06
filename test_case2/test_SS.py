@@ -401,16 +401,16 @@ class TestSS(StartEnd):
         x1, y1 = ss.find_pic_position('chart_title')
         ss.tap(x1, y1)
         ss.pop_menu_click('cut')
-        ss.tap(x1, y1)
-        ss.tap(x1, y1)
+        ss.tap(x + width * 0.5, y + height * 0.5)
+        ss.tap(x + width * 0.5, y + height * 0.5)
         ss.pop_menu_click('paste')
-        x1, y1 = ss.find_pic_position('chart_title')
-        ss.tap(x1, y1)
+        # x1, y1 = ss.find_pic_position('chart_title')
+        ss.tap(x + width * 0.5, y + height * 0.5)
         ss.pop_menu_click('copy')
-        ss.tap(x1, y1)
+        ss.tap(x + width * 0.5, y + height * 0.5)
         ss.pop_menu_click('paste')
-        x1, y1 = ss.find_pic_position('chart_title')
-        ss.swipe(x1, y1, x1 + 100, y1 + 100)
+        # x1, y1 = ss.find_pic_position('chart_title')
+        ss.swipe(x + width * 0.5, y + height * 0.5, x1 + 100, y1 + 100)
         x1, y1 = ss.find_pic_position('chart_all1')
         ss.swipe(x1, y1, x1 + 10, y1 + 10)
 
@@ -439,7 +439,7 @@ class TestSS(StartEnd):
         ss.pop_menu_click('cut')
         ss.tap(x + width * 0.5, y - 10)  # 选择单列
         x2, y2 = ss.find_pic_position('cut')
-        ss.swipe(x2, y2, x2 - width * 3, y2)
+        ss.swipe(x2, y2, x2 - width * 2, y2)
         ss.pop_menu_click('paste')
         ss.tap(x + width * 0.5, y - 10)  # 选择单列
         ss.pop_menu_click('copy')
@@ -461,7 +461,7 @@ class TestSS(StartEnd):
         ss.create_file('ss')
         ss.cell_edit()
         x, y, width, height = ss.cell_location()
-        for i in range(10):
+        for i in range(7):
             ss.tap(x + width * 0.5, y + height * (0.5 + i))
             ss.cell_edit()
             self.driver.press_keycode(random.randint(7, 16))
@@ -755,6 +755,7 @@ class TestSS(StartEnd):
         ss = SSView(self.driver)
         ss.create_file('ss')
 
+        ss.zoom_out()
         ss.cell_edit()
         x, y, width, height = ss.cell_location()  # cell A1
         for i in range(11):
@@ -890,7 +891,7 @@ class TestSS(StartEnd):
         ss.pop_menu_click('cut')
         ss.tap(x - 10, y + height * 0.5)  # 选择单行
         x2, y2 = ss.find_pic_position('cut')
-        ss.swipe(x2, y2, x2 - width * 3, y2)
+        ss.swipe(x2, y2, x2 - width * 2, y2)
         ss.pop_menu_click('paste')
         ss.tap(x - 10, y + height * 0.5)  # 选择单行
         ss.pop_menu_click('copy')
