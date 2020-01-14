@@ -8,12 +8,12 @@ import sys
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
 
-test_dir = '../test_case'
+test_dir = '../test_case1'
 report_dir = '../reports'
 # test_dir = 'D:/PycharmProjects/office_test_project/test_case'
 # report_dir = 'D:/PycharmProjects/office_test_project/reports'
 
-discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_func_dzh.py')
+discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_EBen.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
 with open(r'%s' % report_name, 'wb') as f:
