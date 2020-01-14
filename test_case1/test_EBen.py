@@ -23,14 +23,13 @@ class TestEBen(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id').click()  # 进入编辑状态
 
         start_time = time.time()
-        for i in range(10):
-            self.driver.keyevent(randint(29, 54))
         end_time = time.time()
-
         last_time = end_time - start_time
         print(f'las_ttime:{last_time}')
+
         while last_time < 32 * 60:
-            self.driver.keyevent(randint(29, 54))
+            for i in range(500):
+                self.driver.keyevent(randint(29, 54))
             end_time = time.time()
             last_time = end_time - start_time
 
@@ -70,15 +69,15 @@ class TestEBen(StartEnd):
         self.assertTrue(hp.get_toast_message('保存完成'))
 
         self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id').click()  # 进入编辑状态
-        start_time = time.time()
-        for i in range(10):
-            self.driver.keyevent(randint(29, 54))
-        end_time = time.time()
 
+        start_time = time.time()
+        end_time = time.time()
         last_time = end_time - start_time
         print(f'las_ttime:{last_time}')
+
         while last_time < 32 * 60:
-            self.driver.keyevent(randint(29, 54))
+            for i in range(500):
+                self.driver.keyevent(randint(29, 54))
             end_time = time.time()
             last_time = end_time - start_time
 
