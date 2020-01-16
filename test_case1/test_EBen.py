@@ -3,6 +3,7 @@
 import logging
 import os
 import time
+import unittest
 from random import randint
 
 from selenium.webdriver.common.by import By
@@ -13,6 +14,60 @@ from common.myunit import StartEnd
 
 class TestEBen(StartEnd):
 
+    def test_new_file_edit_30min_save_mobile(self):
+        os.system('adb shell rm -rf /storage/emulated/0/new_edit30save.doc')
+        logging.info('==========test_new_file_edit_30min_save==========')
+        hp = HomePageView(self.driver)
+        time.sleep(2)
+        hp.tap(1430, 1780)
+        time.sleep(2)
+        self.driver.find_element(By.XPATH, '//android.widget.ImageButton[3]').click()
+        time.sleep(1)
+        null_file = '//*[@resource-id="com.yozo.office:id/create_empty_offline_img"]'
+        self.driver.find_element(By.XPATH, null_file).click()
+
+        #编辑
+        self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id').click()  # 进入编辑状态
+        start_time = time.time()
+        # for i in range(100):
+        #     logging.info('>>>>>>>>No.%s' % i)
+        #     self.driver.keyevent(randint(29, 54))
+        end_time = time.time()
+        last_time = end_time - start_time
+        print(f'las_ttime:{last_time}')
+
+        while last_time < 32 * 60:
+            for i in range(100):
+                logging.info('>>>>>>>>No.%s'%i)
+                self.driver.keyevent(randint(29, 54))
+            end_time = time.time()
+            last_time = end_time - start_time
+            logging.info('last_time>>>>>>>>%s' % last_time)
+
+        hp.save_new_file('new_edit30save.doc','local')
+        self.assertTrue(hp.get_toast_message('保存成功'))
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id').click()  # 进入编辑状态
+        start_time = time.time()
+        # for i in range(100):
+        #     logging.info('>>>>>>>>No.%s' % i)
+        #     self.driver.keyevent(randint(29, 54))
+        end_time = time.time()
+        last_time = end_time - start_time
+        print(f'las_ttime:{last_time}')
+
+        while last_time < 32 * 60:
+            for i in range(100):
+                logging.info('>>>>>>>>No.%s' % i)
+                self.driver.keyevent(randint(29, 54))
+            end_time = time.time()
+            last_time = end_time - start_time
+            logging.info('last_time>>>>>>>>%s' % last_time)
+
+        hp.save_file()
+        self.assertTrue(hp.get_toast_message('保存成功'))
+
+    @unittest.skip("贵州政务")
     def test_new_file_edit_30min_save(self):
         os.system('adb shell rm -rf /storage/emulated/0/Office_Docs/new_edit30save.doc')
         logging.info('==========test_new_file_edit_30min_save==========')
@@ -46,6 +101,7 @@ class TestEBen(StartEnd):
         self.assertTrue(saving == True, '保存过程未显示')
         self.assertTrue(hp.get_toast_message('保存完成'))
 
+    @unittest.skip("贵州政务")
     def test_exist_file_edit_30min_save(self):
         os.system('adb shell rm -rf /storage/emulated/0/Office_Docs/exist_edit30save.doc')
         logging.info('==========test_new_file_edit_30min_save==========')

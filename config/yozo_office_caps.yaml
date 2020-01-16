@@ -23,7 +23,7 @@ desired_caps:
   appPackage: com.yozo.office
 #  appPackage: com.ebensz.office.entry
   noReset:  !!bool True
-#  appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
-  appActivity: com.yozo.ui.launchui.MainActivity #真机需要从最开始的activity进入
+  appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
+#  appActivity: com.yozo.ui.launchui.MainActivity #真机需要从最开始的activity进入
 #  appActivity: com.yozo.MainActivity  #模拟机可以从主活动进入
   newCommandTimeout: 120
