@@ -9,11 +9,11 @@ desired_caps:
 #  platformVersion: 5.1.1
   deviceName: xxxx
 #  udid: e7a9d079
-#  udid: 9613fafd
-  udid: 3a055a13
+  udid: 9613fafd
+#  udid: 3a055a13
 #  udid: 66J0218B19001424
-#  platformVersion: 7.1.2
-  platformVersion: 6.0.1
+  platformVersion: 7.1.2
+#  platformVersion: 6.0.1
 #  deviceName: xxxx
 #  udid: emulator-5554
 #  platformVersion: 7.1.1
