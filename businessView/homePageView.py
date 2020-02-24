@@ -26,41 +26,40 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
         return self.get_toast_message('已清空')
 
-    def recycle_files_revert(self,*num):
+    def recycle_files_revert(self, *num):
         logging.info('==========recycle_files_revert==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
         if not self.is_not_visible('//*[@text="数据加载中.."]'):
             logging.error('回收站加载过长')
             return False
-        eles = self.find_elements(By.ID,'com.yozo.office:id/file_item')
-        if len(eles)==0:
+        eles = self.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        if len(eles) == 0:
             logging.error('回收站无文件')
             return False
         for index in num:
             eles[index].find_element(By.ID, 'com.yozo.office:id/yozo_ui_file_list_item_check').click()
         # map(lambda index:eles[index].find_element(By.ID,'com.yozo.office:id/yozo_ui_file_list_item_check').click(),num)
-        self.driver.find_element(By.ID,'com.yozo.office:id/tv_recycle_revert').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_recycle_revert').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
         return self.get_toast_message('已还原')
 
-    def recycle_files_delete(self,*num):
+    def recycle_files_delete(self, *num):
         logging.info('==========recycle_files_delete==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
         if not self.is_not_visible('//*[@text="数据加载中.."]'):
             logging.error('回收站加载过长')
             return False
-        eles = self.find_elements(By.ID,'com.yozo.office:id/file_item')
-        if len(eles)==0:
+        eles = self.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        if len(eles) == 0:
             logging.error('回收站无文件')
             return False
         for index in num:
             eles[index].find_element(By.ID, 'com.yozo.office:id/yozo_ui_file_list_item_check').click()
         # map(lambda index:eles[index].find_element(By.ID,'com.yozo.office:id/yozo_ui_file_list_item_check').click(),num)
-        self.driver.find_element(By.ID,'com.yozo.office:id/tv_recycle_delete').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_recycle_delete').click()
         self.check_option(True)
-        self.driver.find_element(By.ID,'com.yozo.office:id/im_title_bar_menu_back').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
         return self.get_toast_message('已删除')
-
 
     def templates_access(self, file_type='wp', *options):  # 模板获取：收藏或者下载
         logging.info('==========templates_access==========')
@@ -366,18 +365,18 @@ class HomePageView(Common):
         else:
             return False
 
-    def create_file_preoption(self, file_type):  # 新建文档前置操作
+    def create_file_preoption(self, file_type, x=925, y=1669):  # 新建文档前置操作
         logging.info('==========create_file_preoption_%s==========' % file_type)
         time.sleep(2)
-        self.tap(925, 1669)
+        self.tap(x, y) #“+”元素不可捕捉，只能通过坐标来点击，坐标不唯一，随手机改变
         time.sleep(2)
         type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
         self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
         time.sleep(1)
 
-    def create_file(self, file_type):  # 新建空白文档
+    def create_file(self, file_type, x=925, y=1669):  # 新建空白文档
         logging.info('==========create_file_%s==========' % file_type)
-        self.create_file_preoption(file_type)
+        self.create_file_preoption(file_type, x, y)
         null_file = '//*[@resource-id="com.yozo.office:id/createEmpty"]'
         if not self.exist(null_file):
             null_file = '//*[@resource-id="com.yozo.office:id/create_empty_offline_img"]'
