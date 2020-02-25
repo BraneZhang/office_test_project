@@ -33,6 +33,7 @@ class TestContinuousEdit(StartEnd):
         while last_time < 1 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
+                ss.cell_edit()
                 self.driver.keyevent(32)
                 if i == 9:
                     ss.swipe(x + width, y, x, y)
@@ -47,6 +48,7 @@ class TestContinuousEdit(StartEnd):
         while last_time1 < 1 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
+                ss.cell_edit()
                 self.driver.keyevent(32)
                 if i == 9:
                     ss.swipe(x + width, y, x, y)
@@ -60,6 +62,7 @@ class TestContinuousEdit(StartEnd):
         while last_time2 < 1 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
+                ss.cell_edit()
                 self.driver.keyevent(32)
                 if i == 9:
                     ss.swipe(x + width, y, x, y)
