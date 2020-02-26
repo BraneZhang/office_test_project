@@ -12,6 +12,9 @@ from functools import reduce
 from selenium.webdriver.common.by import By
 
 
+class Device_Select(object):# 选择使用的设备
+    pass
+
 def ele_screenshots(ele, pic_name):
     left = ele.location['x']
     top = ele.location['y']

@@ -4,6 +4,7 @@ import unittest
 import time, logging
 import sys
 
+from common.tool import Device_Select
 
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
@@ -12,6 +13,7 @@ test_dir = '../test_case1'
 report_dir = '../reports'
 # test_dir = 'D:/PycharmProjects/office_test_project/test_case'
 # report_dir = 'D:/PycharmProjects/office_test_project/reports'
+Device_Select.device = 'yeshen'
 
 discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_Continuous_Edit.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
