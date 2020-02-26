@@ -19,18 +19,20 @@ class TestContinuousEdit(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/ss_new_edit_save.xls')
         logging.info('==========test_ss_new_edit_save==========')
         ss = SSView(self.driver)
-        ss.create_file('ss')
+        ss.create_file('ss', 978, 1754)  # 基于夜神模拟器修改
 
         ss.save_new_file('ss_new_edit_save', 'local')
         self.assertTrue(ss.get_toast_message('保存成功'))
 
-        x, y, width, height = ss.cell_location()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_cancel').click()
+        time.sleep(1)
+        # x, y, width, height = ss.cell_location() #模拟器该功能无用直接给定数据
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_cancel').click()
+        x, y, width, height = 94, 258, 197, 46
         start_time = time.time()
         last_time = 0
 
         # while last_time < 2 * 60 * 60:
-        while last_time < 1 * 60:
+        while last_time < 60 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()
@@ -42,10 +44,10 @@ class TestContinuousEdit(StartEnd):
             logging.info('last_time>>>>>>>>%s' % last_time)
 
         ss.show_sheet()
-        self.driver.find_element(By.XPATH,'//*[@text="工作表2"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="工作表2"]').click()
         start_time = time.time()
         last_time1 = 0
-        while last_time1 < 1 * 60:
+        while last_time1 < 60 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()
@@ -59,7 +61,7 @@ class TestContinuousEdit(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="工作表3"]').click()
         start_time = time.time()
         last_time2 = 0
-        while last_time2 < 1 * 60:
+        while last_time2 < 60 * 60:
             for i in range(10):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()
@@ -99,7 +101,7 @@ class TestContinuousEdit(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/wp_new_edit_save.doc')
         logging.info('==========test_wp_new_edit_save==========')
         hp = HomePageView(self.driver)
-        hp.create_file('wp')
+        hp.create_file('wp', 978, 1754)  # 基于夜神模拟器修改
 
         hp.save_new_file('wp_new_edit_save', 'local')
         self.assertTrue(hp.get_toast_message('保存成功'))
