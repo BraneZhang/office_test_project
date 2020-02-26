@@ -4,6 +4,7 @@ import random
 
 share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
+share_list1= ['wx','qq','ding','mail']
 wps = ['wp', 'ss', 'pg']
 ps = ['ss', 'pg']
 wp = ['wp', 'pg']
