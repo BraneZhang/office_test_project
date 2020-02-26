@@ -10,9 +10,11 @@ import unittest
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
+from businessView.homePageView import HomePageView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
 from data import data_info
+from data.data_info import share_list1, search_dict
 
 date_filter = data_info.date_filter
 num_filter = data_info.num_filter
@@ -23,6 +25,564 @@ print_ways = data_info.print_ways
 
 @ddt
 class TestSS(StartEnd):
+
+    # =======add 2020_02_25===== 拆分共用功能
+
+    @unittest.skip('skip test_ss_file_info')
+    def test_ss_file_info(self, file_type='ss'):
+        """
+        文档信息
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return: None
+        """
+        logging.info('==========test_ss_file_info==========')
+        gv = SSView(self.driver)
+        gv.open_random_file(search_dict[file_type])
+
+        logging.info('==========show file info==========')
+        gv.wait_loading()
+        gv.file_info()
+
+    @unittest.skip('skip test_ss_share_editFile')
+    @data(*share_list1)
+    def test_ss_share_editFile(self, share_info):
+        """
+        编辑文档分享
+        :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
+        :return: None
+        """
+        logging.info('==========test_ss_share_editFile==========')
+        ss = SSView(self.driver)
+        file_type = 'ss'
+
+        logging.info('==========edit and save File==========')
+        ss.open_random_file(search_dict[file_type])
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()
+        ss.group_button_click('插入')
+        ss.insert_shape(file_type, 1)
+        ss.save_file()
+        self.assertTrue(ss.get_toast_message('保存成功'))
+
+        logging.info('==========share new File==========')
+        ss.share_file(file_type, share_info)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_share_newFile')
+    @data(*share_list1)
+    def test_share_newFile(self, share_info):
+        """
+        新建文档分享
+        :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
+        :return: None
+        """
+        logging.info('==========test_share_newFile==========')
+        hp = SSView(self.driver)
+        file_type = 'ss'
+
+        logging.info('==========create and save new File==========')
+        hp.create_file(file_type)
+        hp.save_new_file('%s%s分享' % (file_type, share_info), 'local')
+        time.sleep(1)
+        hp.cover_file(True)
+        self.assertTrue(hp.get_toast_message('保存成功'))
+
+        logging.info('==========share new File==========')
+        hp.share_file(file_type, share_info)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_close_file')
+    def test_ss_close_file(self, file_type='ss'):
+        """
+        关闭功能（X）
+        :param file_type: 文档类型：'wp', 'ss', 'pg'
+        :return: None
+        """
+        logging.info('==========test_ss_close_file==========')
+        hp = HomePageView(self.driver)
+        isOpen = hp.open_random_file(search_dict[file_type])
+        self.assertTrue(isOpen, 'open fail')
+        hp.close_file()
+        self.assertTrue(hp.check_close_file())
+
+    @unittest.skip('skip test_ss_save_newFile')
+    def test_ss_save_newFile(self, type='ss'):  # 新建脚本保存
+        logging.info('==========test_ss_save_newFile==========')
+        hp = SSView(self.driver)
+        hp.create_file(type)
+        file_name = 'save_new ' + hp.getTime('%Y-%m-%d %H-%M-%S')
+        hp.save_new_file(file_name, 'local', 2)
+        self.assertTrue(hp.check_save_file())
+
+    @unittest.skip('skip test_ss_save_existFile')
+    def test_ss_save_existFile(self, type='ss'):  # 已有文件改动保存
+        logging.info('==========test_ss_save_existFile==========')
+        gv = SSView(self.driver)
+
+        suffix = search_dict[type]
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = gv.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = gv.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        gv.switch_write_read()
+        gv.group_button_click('签批')
+        gv.pen_type(type, '荧光笔')
+        self.driver.swipe(300, 400, 800, 500)
+        gv.save_file()
+        self.assertTrue(gv.check_save_file())
+
+    @unittest.skip('skip test_ss_save_as_newFile')
+    def test_ss_save_as_newFile(self, type='ss'):  # 新建脚本另存为
+        logging.info('==========test_ss_save_as_newFile==========')
+        hp = SSView(self.driver)
+        hp.create_file(type)
+        file_name = 'save_as_new ' + hp.getTime('%H_%M_%S')
+        hp.save_as_file(file_name, 'local', 1)
+        self.assertTrue(hp.check_save_file())
+
+    @unittest.skip('skip test_ss_save_as_existFile')
+    def test_ss_save_as_existFile(self, type='ss'):  # 已有文件另存为
+        logging.info('==========test_ss_save_as_existFile==========')
+        hp = SSView(self.driver)
+
+        suffix = search_dict[type]
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        file_name = '已有文档另存'
+        hp.save_as_file(file_name, 'local', 1)
+        self.assertTrue(hp.check_save_file())
+
+    @unittest.skip('skip test_ss_zoom_pinch')
+    def test_ss_zoom_pinch(self, type='ss'):
+        logging.info('==========test_ss_zoom_pinch==========')
+        hp = SSView(self.driver)
+        suffix = search_dict[type]
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        hp.zoom_in()
+        hp.zoom_out()
+
+    @unittest.skip('skip test_ss_undo_redo')
+    def test_ss_undo_redo(self, type='ss'):  # 撤销、重做
+        logging.info('==========test_ss_undo_redo==========')
+        gv = SSView(self.driver)
+        gv.create_file(type)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo')  # 判断页面是否已切过来
+
+        gv.group_button_click('插入')
+        gv.insert_shape(type, 1)
+        gv.fold_expand()
+
+        gv.undo_option()
+        time.sleep(1)
+        gv.redo_option()
+        time.sleep(1)
+        gv.undo_option()
+        time.sleep(1)
+
+        logging.info('capture before undo')
+        gv.getScreenShot4Compare('before_undo')
+
+        gv.redo_option()
+        time.sleep(1)
+
+        logging.info('capture before redo')
+        gv.getScreenShot4Compare('before_redo')
+
+        gv.undo_option()
+        time.sleep(1)
+        logging.info('capture after undo')
+        gv.getScreenShot4Compare('after_undo')
+
+        gv.redo_option()
+        time.sleep(1)
+        logging.info('capture after redo')
+        gv.getScreenShot4Compare('after_redo')
+
+        result1 = gv.compare_pic('before_undo.png', 'after_undo.png')
+        result2 = gv.compare_pic('before_redo.png', 'after_redo.png')
+
+        self.assertLess(result1, 100, 'undo fail!')
+        self.assertLess(result2, 100, 'redo fail!')
+
+    @unittest.skip('skip test_ss_signature')
+    def test_ss_signature(self, type='ss'):  # 签批
+        logging.info('==========test_ss_signature==========')
+        gv = SSView(self.driver)
+        gv.create_file(type)
+        gv.group_button_click('签批')
+        gv.use_finger(type)
+        gv.use_finger(type)
+        gv.pen_type(type, '钢笔')
+        gv.pen_color(type, 15)
+        gv.pen_size(type, 3)
+        gv.swipe(300, 400, 800, 400, 500)
+        gv.pen_type(type, '荧光笔')
+        gv.pen_color(type, 30)
+        gv.pen_size(type, 6)
+        gv.swipe(300, 600, 800, 600, 500)
+        gv.pen_type(type, '擦除')
+        gv.swipe(200, 400, 900, 400, 500)
+        gv.swipe(200, 600, 900, 600, 500)
+        time.sleep(3)
+
+    @unittest.skip('skip test_ss_share_file_edit')
+    @data(*share_list1)
+    def test_ss_share_file_edit(self, way):
+        logging.info('==========test_ss_share_file_edit==========')
+        ss = SSView(self.driver)
+
+        type = 'ss'
+        suffix = search_dict[type]
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        ss.switch_write_read()
+        ss.group_button_click('插入')
+        ss.insert_shape(type)
+        ss.share_file(type, way)
+        self.driver.find_element(By.ID, 'android:id/button1').click()
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_share_file_create')
+    @data(*share_list1)
+    def test_ss_share_file_create(self, way):
+        logging.info('==========test_ss_share_file_create==========')
+        ss = SSView(self.driver)
+
+        type = 'ss'
+        ss.create_file(type)
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
+        create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
+        self.assertTrue(file_name == create_dict[type])
+        ss.share_file(type, way)
+        self.driver.find_element(By.ID, 'android:id/button1').click()
+        save_name = ss.getTime("%Y%m%d%H%M%S")
+        ss.save_step('local', save_name, 1)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_share_file')
+    @data(*share_list1)
+    def test_ss_share_file(self, way):  # 分享文件
+        logging.info('==========test_ss_share_file==========')
+        ss = SSView(self.driver)
+        file_type = 'ss'
+
+        suffix = search_dict[file_type]
+        file_name = '欢迎使用永中Office.%s' % suffix
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        ss.share_file(file_type, way)
+        os.system('adb shell am force-stop com.tencent.mobileqq')
+        os.system('adb shell am force-stop com.tencent.mm')
+        os.system('adb shell am force-stop com.vivo.email')
+        os.system('adb shell am force-stop com.alibaba.android.rimet')
+
+    @unittest.skip('skip test_ss_shape_attr')
+    def test_ss_shape_attr(self, type='ss'):
+        logging.info('==========test_ss_shape_attr==========')
+        gv = SSView(self.driver)
+        gv.create_file(type)
+        gv.group_button_click('插入')
+        gv.insert_shape(type, 6, 30)
+        gv.shape_insert(type, 6, 31)
+        gv.shape_insert(type, 6, 32)
+        gv.shape_insert(type, 6, 33)
+        ele1 = '//*[@text="形状"]'
+        ele2 = '//*[@text="轮廓"]'
+        ele3 = '//*[@text="效果"]'
+        gv.swipe_ele(ele2, ele1)
+        gv.swipe_ele(ele3, ele1)
+        gv.shape_layer('下移一层')
+        gv.shape_layer('置于底层')
+        gv.shape_layer('上移一层')
+        gv.shape_layer('置于顶层')
+
+    @unittest.skip('skip test_ss_shape_attr2')
+    def test_ss_shape_attr2(self, file_type='ss'):
+        logging.info('==========test_ss_shape_attr2==========')
+        gv = SSView(self.driver)
+        gv.create_file(file_type)
+        gv.group_button_click('插入')
+        gv.insert_shape(file_type, 6, 10)
+        gv.shape_option(file_type, 2)
+        gv.shape_fill_color(file_type, 6, 24)
+        gv.shape_fill_color_transparency(5)
+        ele1 = '//*[@text="形状"]'
+        ele2 = '//*[@text="轮廓"]'
+        gv.swipe_ele(ele2, ele1)
+        gv.shape_border_color(file_type, 6, 5)
+        gv.shape_border_type(file_type, 6, 3)
+        gv.shape_border_width(file_type, 6, 5)
+        gv.shape_effect_type(file_type, 6, 4, 5)
+        time.sleep(1)
+
+    @unittest.skip('skip test_ss_shape_attr1')
+    def test_ss_shape_attr1(self, file_type='ss'):  # 文本框字符属性
+        logging.info('==========test_shape_attr1==========')
+        gv = SSView(self.driver)
+        gv.create_file(file_type)
+        x1, y1 = 0, 0
+        x1, y1, w, h = gv.cell_location()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
+
+        gv.group_button_click('插入')
+        gv.insert_shape(file_type)
+        time.sleep(1)
+        x, y = gv.find_pic_position('drag_all')
+        gv.tap(x, y)  # 进入编辑
+        gv.pop_menu_click('editText')
+
+        gv.fold_expand()
+        gv.fold_expand()
+        x, y = gv.find_pic_position('drag_all')
+        gv.tap(x, y)  # 进入编辑
+        gv.pop_menu_click('editText')
+
+        for i in range(50):
+            self.driver.press_keycode(random.randint(7, 16))
+
+        gv.tap(x1, y1)
+        gv.tap(x, y)
+        gv.fold_expand()
+
+        gv.shape_option(file_type, 5, width=5, height=5)
+        gv.shape_option(file_type, 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.shape_content_align(file_type, '右对齐', '下对齐')
+        gv.shape_content_align(file_type)
+        gv.shape_content_align(file_type, '水平居中', '垂直居中')
+
+    @unittest.skip('skip test_ss_search_replace')
+    def test_ss_search_replace(self):  # 查找替换
+        logging.info('==========test_ss_search_replace==========')
+        gv = SSView(self.driver)
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = gv.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = gv.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        gv.switch_write_read()
+        gv.group_button_click('查看')
+        gv.search_content('ss', '的')
+        gv.replace_content('得')
+        time.sleep(3)
+        gv.replace_content('得', 'all')
+
+    @unittest.skip('skip test_ss_scroll_screen')
+    def test_ss_scroll_screen(self):  # 滚屏
+        logging.info('==========test_ss_scroll_screen==========')
+        hp = SSView(self.driver)
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        time.sleep(3)
+        hp.swipeLeft()
+        hp.swipeLeft()
+        hp.swipeRight()
+        hp.swipeUp()
+        hp.swipeUp()
+        hp.swipeDown()
+        time.sleep(3)
+
+    @unittest.skip('skip test_ss_rotate')
+    def test_ss_rotate(self):
+        logging.info('==========test_ss_rotate==========')
+        hp = SSView(self.driver)
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = hp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = hp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        # gv.screen_rotate('landscape')
+        self.assertTrue(hp.check_rotate())
+        hp.screen_rotate('portrait')
+
+    @unittest.skip('skip test_ss_read_mode')
+    def test_ss_read_mode(self):  # 阅读模式
+        logging.info('==========test_ss_read_mode==========')
+        ss = SSView(self.driver)
+
+        ss.create_file('ss')
+        ss.switch_write_read()
+        self.assertTrue(ss.check_write_read())
+
+    @unittest.skip('skip test_ss_pop_menu_shape')
+    def test_ss_pop_menu_shape(self):  # pg未好
+        logging.info('==========test_ss_pop_menu_shape==========')
+        gv = SSView(self.driver)
+
+        gv.create_file('ss')
+        gv.group_button_click('插入')
+        gv.insert_shape('ss')
+        time.sleep(1)
+        gv.tap(700, 700)
+        gv.pop_menu_click('editText')
+
+        for i in range(20):
+            self.driver.press_keycode(random.randint(29, 54))
+
+        gv.long_press(700, 700)
+        gv.pop_menu_click('selectAll')
+        # gv.drag_coordinate(700, 700, 550, 550)
+        gv.pop_menu_click('copy')
+        gv.tap(700, 700)
+        gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+        gv.long_press(700, 700)
+        gv.pop_menu_click('selectAll')
+        # gv.drag_coordinate(700, 700, 550, 550)
+        gv.pop_menu_click('cut')
+        # gv.tap(700, 700)
+        # time.sleep(1)
+        gv.long_press(700, 700)
+        gv.pop_menu_click('paste')
+        # gv.drag_coordinate(700, 700, 550, 550)
+        gv.long_press(700, 700)
+        gv.pop_menu_click('selectAll')
+        gv.pop_menu_click('delete')
+
+    @unittest.skip('skip test_ss_pop_menu_shape1')
+    def test_ss_pop_menu_shape1(self):
+        logging.info('==========test_ss_pop_menu_shape1==========')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
+
+        time.sleep(1)
+        ss.group_button_click('插入')
+        ss.insert_shape('ss')
+
+        ss.fold_expand()
+        x1, y1 = ss.find_pic_position('drag_all')
+        ss.drag_coordinate(x1, y1, x1 - 100, y1)
+
+        x1, y1 = ss.find_pic_position('drag_all')
+        ss.drag_coordinate(x1, y1, x1 + 100, y1)
+
+        x1, y1 = ss.find_pic_position('drag_all')
+        ss.drag_coordinate(x1, y1, x1 - 50, y1 - 50)
+
+        x2, y2 = ss.find_pic_position('drag_all1')
+        ss.drag_coordinate(x2, y2, x2, y2 - 100)
+
+        x2, y2 = ss.find_pic_position('drag_all1')
+        ss.drag_coordinate(x2, y2, x2, y2 + 100)
+
+        x2, y2 = ss.find_pic_position('drag_all1')
+        ss.drag_coordinate(x2, y2, x2 - 50, y2 - 50)
+
+        x, y = ss.find_pic_position('rotate_free')
+        ss.drag_coordinate(x, y, x + 50, y + 50)
+
+    @unittest.skip('skip test_ss_insert_shape')
+    def test_ss_insert_shape(self):
+        logging.info('==========test_ss_insert_shape==========')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
+
+        ss.group_button_click('插入')
+        ss.insert_shape('ss')
+        for i in range(5):
+            ss.shape_insert('ss', 6, random.randint(1, 42))
+        time.sleep(3)
+
+    @unittest.skip('skip test_ss_insert_chart')
+    def test_ss_insert_chart(self):  # 插入图表
+        logging.info('==========test_ss_insert_chart==========')
+        chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
+                      '圆锥图', '棱锥图']
+        ss = SSView(self.driver)
+        ss.create_file('ss')
+
+        time.sleep(1)
+        x, y, width, height = ss.cell_location()
+        for i in range(3):
+            ss.tap(x + width * 0.5, y + height * (i + 0.5))
+            ss.cell_edit()  # 双击进入编辑
+            self.driver.press_keycode(random.randint(7, 16))
+        ss.drag_coordinate(x, y + height * 2, x, y)
+
+        for i in range(12):
+            time.sleep(1)
+            ss.group_button_click('插入')
+            ss.insert_chart_insert(chart_list[i], random.randint(1, 9))
+            ss.chart_template()
+        time.sleep(1)
+
+    @unittest.skip('skip test_ss_insert_chart1')
+    def test_ss_insert_chart1(self):
+        logging.info('==========test_ss_insert_chart1==========')
+        ss = SSView(self.driver)
+        ss.create_file('ss')
+
+        time.sleep(1)
+        x, y, width, height = ss.cell_location()
+        for i in range(3):
+            ss.tap(x + width * 0.5, y + height * (i + 0.5))
+            ss.cell_edit()  # 双击进入编辑
+            self.driver.press_keycode(random.randint(7, 16))
+        ss.drag_coordinate(x, y + height * 2, x, y)
+
+        ss.group_button_click('插入')
+        ss.insert_chart_insert('柱形图', random.randint(1, 9))
+        ss.chart_color(random.randint(1, 8))
+        ss.chart_element('ss', ('大标题', 1), 2, 1)
+        ss.chart_element_XY('x', 'xAxis', 0, 0, 0)
+        ss.chart_element_XY('y', 'yAxis', 1, 1, 1, (1, 1))
+        # gv.chart_element_XY('y', 'y', 0, 1, 1, 0, 1, 0)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_back_button').click()
+        ss.change_row_column()
+        time.sleep(3)
+
+    @unittest.skip('skip test_ss_expand_fold')
+    def test_ss_expand_fold(self):  # 编辑栏收起展开
+        logging.info('==========test_ss_expand_fold==========')
+        ss = SSView(self.driver)
+
+        file_name = '欢迎使用永中Office.xlsx'
+        search_result = ss.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = ss.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        ss.switch_write_read()
+        ss.fold_expand()
+        ss.fold_expand()
+
+    @unittest.skip('skip test_ss_create_file')
+    def test_ss_create_file(self):  # 新建文档
+        logging.info('==========test_ss_create_file==========')
+        hp = SSView(self.driver)
+        hp.create_file('ss')
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_title_text_view').text
+        create_dict = {'wp': '新建空白.doc', 'ss': '新建空白.xls', 'pg': '新建空白.ppt'}
+        self.assertTrue(file_name == create_dict['ss'])
 
     # =======add 2020_01_03=====
     @unittest.skip('skip test_ss_print')
