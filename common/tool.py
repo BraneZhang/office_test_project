@@ -1,6 +1,10 @@
 import csv
+import json
 import logging
+from http import server
 
+import flask
+import requests
 import xlrd
 from PIL import Image, ImageChops
 import os
@@ -11,9 +15,52 @@ from functools import reduce
 
 from selenium.webdriver.common.by import By
 
+def read_csv(file_path):#读取csv文件
+    name_list =[]
+    with open(file_path, 'r', encoding='utf-8') as f:
+        # name_list.append(f.readlines())
+        name_list1=f.readlines()
+        for i in name_list1:
+            name_list.append(i.strip())
+    # print(name_list)
+    return name_list
 
-class Device_Select(object):# 选择使用的设备
+def get_online_templates_name(file_type='pg'):  # 获取所有在线模板的名字
+    name_list = []
+    file_dict = {'wp': 0, 'pg': 1, 'ss': 2}
+    name_dict = {'wp': 'WP_Online_Templates.csv', 'pg': 'PG_Online_Templates.csv', 'ss': 'SS_Online_Templates.csv'}
+    page = 0
+    url = 'http://www.yomoer.cn/office/mobile/templateList'
+    while True:
+        print(f'page:{page}')
+        response = requests.post(url, data={'key': '', 'offset': page, 'type': file_dict[file_type]}).content.decode(
+            'utf-8')
+
+        page += 1
+        result = json.loads(response)
+        data_list = result['data']
+        if not data_list:
+            break
+        for e in data_list:
+            print(f'No.{data_list.index(e)}')
+            name_list.append(e['name'])
+    with open('../data/' + name_dict[file_type], 'w', encoding='utf-8') as f:
+        for i in name_list:
+            f.writelines(i + '\n')
+
+    # print(type(result))
+    # print(type(data_list))
+    # name_list.append(data_list[0]['name'])
+    # print(name_list)
+    # print(result['data'][0])
+    # html = requests.get(url).content.decode('gbk')
+    # print(html)
+    # toc_url_list = get_toc(html, start_url)
+
+
+class Device_Select(object):  # 选择使用的设备
     pass
+
 
 def ele_screenshots(ele, pic_name):
     left = ele.location['x']
@@ -101,7 +148,6 @@ def write_data():
     #     row_num += 1
     book.save('files_list.xls')
 
-
 def chart(self, i):
     b1 = self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')  # 获取父节点
     b2 = b1.find_elements_by_class_name("android.widget.RadioButton")  # 点位到所有子节点，保存到e2列表中
@@ -113,11 +159,13 @@ def chart(self, i):
 
 
 if __name__ == '__main__':
+    read_csv('../data/SS_Online_Templates.csv')
+    # get_online_templates_name()
     # capture_path = get_project_path() + '\Screenshot\sheet_name\cile_name.png'
     # print(capture_path)
-    prth = get_project_path()
-    print(os.path.dirname(os.path.dirname(__file__)))
-    print(os.path.dirname(os.getcwd()))
+    # prth = get_project_path()
+    # print(os.path.dirname(os.path.dirname(__file__)))
+    # print(os.path.dirname(os.getcwd()))
     # report_path = str(get_project_path) + '\Report\Mobile_Office_Report_%s.html' % time.strftime("%Y_%m_%d_%H_%M_%S")
     # print(report_path)
     # fp = open(r'%s' % report_path, "wb")
