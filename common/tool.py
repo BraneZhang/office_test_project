@@ -1,9 +1,6 @@
 import csv
 import json
 import logging
-from http import server
-
-import flask
 import requests
 import xlrd
 from PIL import Image, ImageChops
