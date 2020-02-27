@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
+import os
 import random
 import time
 
@@ -211,7 +212,7 @@ class HomePageView(Common):
         logging.info('==========search_file==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
         logging.info('input keyword %s' % keyword)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(os.path.splitext(keyword)[0])
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
         logging.info('searching...')
         result = self.is_not_visible('//*[@text="文件搜索.."]', 60)

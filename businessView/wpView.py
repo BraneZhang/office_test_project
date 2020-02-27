@@ -369,7 +369,6 @@ class WPView(HomePageView, GeneralFunctionView):
             self.driver.find_element(By.XPATH, '//*[@text="%s"]' % chart_type).click()
 
     def print_long_pic(self):
-
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_export_image').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_long_picture_save_layout').click()
         start = time.time()
