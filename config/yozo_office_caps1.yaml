@@ -1,0 +1,51 @@
+- desc: vivoX9
+  port: 4727
+  bp: 4728
+  ip: 127.0.0.1
+  desired_caps:
+    deviceName: xxxxxxx
+    udid: 9613fafd
+    platformVersion: 7.1.2
+    platformName: Android
+    automationName: uiautomator2
+    systemPort: 8201
+    appPackage: com.yozo.office
+    #  appPackage: com.ebensz.office.entry
+    noReset:  !!bool True
+    appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
+    newCommandTimeout: 120
+
+- desc: vivoX9 Plus
+  port: 4723
+  bp: 4724
+  ip: 127.0.0.1
+  desired_caps:
+    deviceName: vivoX9 Plus
+    udid: 9613fafd
+    platformVersion: 7.1.2
+    platformName: Android
+    automationName: uiautomator2
+    systemPort: 8200
+    appPackage: com.yozo.office
+  #  appPackage: com.ebensz.office.entry
+    noReset:  !!bool True
+    appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
+    newCommandTimeout: 120
+
+- desc: yeshen01
+  port: 4725
+  bp: 4726
+  ip: 127.0.0.1
+  desired_caps:
+    #模拟器
+    deviceName: 127.0.0.1:62001
+    udid: 127.0.0.1:62001
+    platformVersion: 5.1.1
+    platformName: Android
+    automationName: uiautomator2
+    systemPort: 8205
+    appPackage: com.yozo.office
+    #  appPackage: com.ebensz.office.entry
+    noReset:  !!bool True
+    appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
+    newCommandTimeout: 120

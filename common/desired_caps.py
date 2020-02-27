@@ -14,10 +14,15 @@ CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
 logging = logging.getLogger()
 
-
-
-def get_desired_caps(devices='vivoX9 Plus'):
+def get_desired_caps():
     with open('../config/yozo_office_caps.yaml', 'r', encoding='utf-8') as file:
+        devices_data = yaml.load(file, Loader=yaml.FullLoader)
+    print(devices_data)
+    return devices_data
+    # print(f'devices_data:{devices_data}')
+
+def get_desired_caps1(devices='vivoX9'):
+    with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
         devices_data = yaml.load(file, Loader=yaml.FullLoader)
     # print(f'devices_data:{devices_data}')
     device = ''
@@ -30,13 +35,9 @@ def get_desired_caps(devices='vivoX9 Plus'):
     else:
         logging.error('设备不在配置表中')
 
-
-data = get_desired_caps(Device_Select.device)
-
-
 def start_server():
     logging.info('start appium')
-    # data = get_desired_caps()
+    data = get_desired_caps()
     port, bp, udid = data['port'], data['bp'], data['desired_caps']['udid']
     cmd = os.popen('netstat -ano | findstr "%s" ' % port)
     msg = cmd.read()
@@ -49,20 +50,19 @@ def start_server():
 
 
 def appium_desired1():
-    # data = get_desired_caps()
+    data = get_desired_caps()
     desired_caps = data['desired_caps']
 
     logging.info('start app...')
     driver = webdriver.Remote('http://%s:%s/wd/hub' % (data['ip'], data['port']), desired_caps)
     # driver = webdriver.Remote('http://%s:%s/wd/hub' % (ip, port), desired_caps)
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(1)
 
     return driver
 
-def appium_desired(device='vivoX9 Plus'):
-    with open('../config/yozo_office_caps.yaml', 'r', encoding='utf-8') as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
-        print(f'data:{data}')
+
+def appium_desired():
+    data = get_desired_caps()
     desired_caps = data['desired_caps']
     # 使用adb shell input 代替Yosemite输入  ?ime_method=ADBIME
     # from airtest.core.api import *
@@ -91,14 +91,12 @@ def appium_desired(device='vivoX9 Plus'):
 
     return driver
 
+
 if __name__ == '__main__':
-    # data = get_desired_caps('yeshen01')
+    data = get_desired_caps()
     # print(data)
-    Device_Select.device = 'AS'
-    AS = Device_Select.device
-    print(Device_Select.device)
-    print(AS)
-    Device_Select.device = 'BS'
-    print(Device_Select.device)
-    BS = Device_Select.device
-    print(BS)
+
+    # ss = ['A','B','C']
+    # print(ss.index('C'))
+
+

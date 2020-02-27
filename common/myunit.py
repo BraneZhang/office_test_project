@@ -1,5 +1,5 @@
 import unittest
-from common.desired_caps import start_server, appium_desired1
+from common.desired_caps import start_server, appium_desired
 import logging
 import warnings
 
@@ -22,8 +22,7 @@ class StartEnd(unittest.TestCase):
 
     def setUp(self):
         logging.info('=====setUp====')
-        self.driver = appium_desired1()
-        # self.driver = appium_desired()
+        self.driver = appium_desired()
 
     def tearDown(self):
         logging.info('====tearDown====')
