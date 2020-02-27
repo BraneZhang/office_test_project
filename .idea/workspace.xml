@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8a58e94d-a429-40b7-bd87-ea0d124ccc0b" name="Default Changelist" comment="添加自由表格插入行，列，调整表格尺寸用例">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clickPicture_CN/delete_cols.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clickPicture_CN/delete_rows.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clickPicture_CN/insert_cols.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/clickPicture_CN/insert_rows.png" afterDir="false" />
+    <list default="true" id="8a58e94d-a429-40b7-bd87-ea0d124ccc0b" name="Default Changelist" comment="图像识别新增参数:target_pos 图像点击位置">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/businessView/homePageView.py" beforeDir="false" afterPath="$PROJECT_DIR$/businessView/homePageView.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/businessView/wpView.py" beforeDir="false" afterPath="$PROJECT_DIR$/businessView/wpView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clickPicture_CN/point.png" beforeDir="false" afterPath="$PROJECT_DIR$/clickPicture_CN/point.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/common_fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/common_fun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/yozo_office_caps.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/yozo_office_caps.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/after_redo.png" beforeDir="false" afterPath="$PROJECT_DIR$/screenshots/after_redo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/after_undo.png" beforeDir="false" afterPath="$PROJECT_DIR$/screenshots/after_undo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/before_redo.png" beforeDir="false" afterPath="$PROJECT_DIR$/screenshots/before_redo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/before_undo.png" beforeDir="false" afterPath="$PROJECT_DIR$/screenshots/before_undo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/source.png" beforeDir="false" afterPath="$PROJECT_DIR$/screenshots/source.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case2/test_Com_Func.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_case2/test_Com_Func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case2/test_PG.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_case2/test_PG.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case2/test_SS.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_case2/test_SS.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_case2/test_WP.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_case2/test_WP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_run/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_run/run.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,138 +28,44 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_case2/test_WP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
+            <state relative-caret-position="43">
+              <caret line="910" lean-forward="true" selection-start-line="910" selection-end-line="910" />
               <folding>
                 <element signature="n#!!doc" />
-                <element signature="e#601#1333#0" />
-                <element signature="e#1452#2640#0" />
-                <element signature="e#2726#3127#0" />
-                <element signature="e#3229#3991#0" />
-                <element signature="e#4079#5174#0" />
-                <element signature="e#5276#5640#0" />
-                <element signature="e#5725#5969#0" />
-                <element signature="e#6086#6488#0" />
-                <element signature="e#6588#6898#0" />
-                <element signature="e#6943#7167#0" />
-                <element signature="e#7211#7480#0" />
-                <element signature="e#7528#8756#0" />
-                <element signature="e#8800#9338#0" />
-                <element signature="e#9388#9904#0" />
-                <element signature="e#9953#10469#0" />
-                <element signature="e#10517#11704#0" />
-                <element signature="e#11754#12901#0" />
-                <element signature="e#12951#14074#0" />
-                <element signature="e#14125#14535#0" />
-                <element signature="e#14581#14803#0" />
-                <element signature="e#14854#15012#0" />
-                <element signature="e#15069#15311#0" />
-                <element signature="e#15369#15536#0" />
-                <element signature="e#15597#16065#0" />
-                <element signature="e#16124#16535#0" />
-                <element signature="e#16598#16979#0" />
-                <element signature="e#16811#16941#0" />
-                <element signature="e#17039#17136#0" />
-                <element signature="e#17196#17417#0" />
-                <element signature="e#17631#18009#0" />
-                <element signature="e#17806#18009#0" />
-                <element signature="e#17821#17964#0" />
-                <element signature="e#18059#18476#0" />
-                <element signature="e#18540#19725#0" />
-                <element signature="e#19784#19994#0" />
-                <element signature="e#20070#20593#0" />
-                <element signature="e#20230#20249#0" />
-                <element signature="e#20468#20593#0" />
-                <element signature="e#20500#20574#0" />
-                <element signature="e#20658#21688#0" />
-                <element signature="e#20851#21181#0" />
-                <element signature="e#21190#21209#0" />
-                <element signature="e#21422#21491#0" />
-                <element signature="e#21744#23024#0" />
-                <element signature="e#21898#21917#0" />
-                <element signature="e#22131#22200#0" />
-                <element signature="e#22397#22416#0" />
-                <element signature="e#22634#22759#0" />
-                <element signature="e#22666#22740#0" />
-                <element signature="e#22876#23001#0" />
-                <element signature="e#22908#22982#0" />
-                <element signature="e#23087#24764#0" />
-                <element signature="e#23248#23267#0" />
-                <element signature="e#23480#23549#0" />
-                <element signature="e#23747#23766#0" />
-                <element signature="e#23956#23977#0" />
-                <element signature="e#24239#24364#0" />
-                <element signature="e#24271#24345#0" />
-                <element signature="e#24482#24552#0" />
-                <element signature="e#24596#24620#0" />
-                <element signature="e#24833#26349#0" />
-                <element signature="e#25000#25019#0" />
-                <element signature="e#25232#25301#0" />
-                <element signature="e#25499#25518#0" />
-                <element signature="e#25713#25734#0" />
-                <element signature="e#25996#26121#0" />
-                <element signature="e#26028#26102#0" />
-                <element signature="e#26224#26349#0" />
-                <element signature="e#26256#26330#0" />
-                <element signature="e#26416#27941#0" />
-                <element signature="e#26581#26600#0" />
-                <element signature="e#26813#26882#0" />
-                <element signature="e#27080#27099#0" />
-                <element signature="e#27296#27317#0" />
-                <element signature="e#27580#27705#0" />
-                <element signature="e#27612#27686#0" />
-                <element signature="e#27826#27941#0" />
-                <element signature="e#27996#29806#0" />
-                <element signature="e#28213#28334#0" />
-                <element signature="e#28343#28362#0" />
-                <element signature="e#28577#28676#0" />
-                <element signature="e#28713#28782#0" />
-                <element signature="e#28975#28994#0" />
-                <element signature="e#29745#29806#0" />
-                <element signature="e#29854#30267#0" />
-                <element signature="e#30329#31856#0" />
-                <element signature="e#30847#30916#0" />
-                <element signature="e#31917#33847#0" />
-                <element signature="e#32434#32503#0" />
-                <element signature="e#33933#34522#0" />
-                <element signature="e#34570#35003#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/businessView/createView.py">
+        <entry file="file://D:/python/Lib/unittest/case.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="13731">
+              <caret line="610" selection-start-line="610" selection-end-line="610" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/python/Lib/site-packages/airtest/core/api.py">
+        <entry file="file://$PROJECT_DIR$/common/myunit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="245" column="4" selection-start-line="245" selection-start-column="4" selection-end-line="245" selection-end-column="4" />
+            <state relative-caret-position="644">
+              <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/businessView/generalView.py">
+        <entry file="file://$PROJECT_DIR$/common/common_fun.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="712" column="8" selection-start-line="712" selection-start-column="8" selection-end-line="712" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/yozo_office_caps.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="9" column="18" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+            <state relative-caret-position="3680">
+              <caret line="177" column="8" selection-start-line="177" selection-start-column="8" selection-end-line="177" selection-end-column="8" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -164,10 +73,135 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/businessView/wpView.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="226">
-              <caret line="114" column="102" selection-start-line="114" selection-start-column="102" selection-end-line="114" selection-end-column="102" />
+            <state relative-caret-position="8556">
+              <caret line="379" selection-start-line="379" selection-end-line="379" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_case1/test_func_dzh.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3588">
+              <caret line="517" column="23" selection-start-line="517" selection-start-column="23" selection-end-line="517" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+                <element signature="e#2090#2247#0" />
+                <element signature="e#2298#2386#0" />
+                <element signature="e#2743#2833#0" />
+                <element signature="e#2894#3282#0" />
+                <element signature="e#3341#3674#0" />
+                <element signature="e#3737#4055#0" />
+                <element signature="e#3887#4017#0" />
+                <element signature="e#4119#4149#0" />
+                <element signature="e#4209#4505#0" />
+                <element signature="e#4359#4489#0" />
+                <element signature="e#4584#4891#0" />
+                <element signature="e#4688#4891#0" />
+                <element signature="e#4703#4846#0" />
+                <element signature="e#4941#5289#0" />
+                <element signature="e#5353#6467#0" />
+                <element signature="e#5453#5472#0" />
+                <element signature="e#6526#6677#0" />
+                <element signature="e#6753#7207#0" />
+                <element signature="e#6844#6863#0" />
+                <element signature="e#7082#7207#0" />
+                <element signature="e#7114#7188#0" />
+                <element signature="e#7272#8230#0" />
+                <element signature="e#7393#7723#0" />
+                <element signature="e#7732#7751#0" />
+                <element signature="e#7964#8033#0" />
+                <element signature="e#8286#9503#0" />
+                <element signature="e#8377#8396#0" />
+                <element signature="e#8610#8679#0" />
+                <element signature="e#8876#8895#0" />
+                <element signature="e#9113#9238#0" />
+                <element signature="e#9145#9219#0" />
+                <element signature="e#9355#9480#0" />
+                <element signature="e#9387#9461#0" />
+                <element signature="e#9566#11173#0" />
+                <element signature="e#9657#9676#0" />
+                <element signature="e#9889#9958#0" />
+                <element signature="e#10156#10175#0" />
+                <element signature="e#10365#10386#0" />
+                <element signature="e#10648#10773#0" />
+                <element signature="e#10680#10754#0" />
+                <element signature="e#10891#10961#0" />
+                <element signature="e#11005#11029#0" />
+                <element signature="e#11242#12682#0" />
+                <element signature="e#11333#11352#0" />
+                <element signature="e#11565#11634#0" />
+                <element signature="e#11832#11851#0" />
+                <element signature="e#12046#12067#0" />
+                <element signature="e#12329#12454#0" />
+                <element signature="e#12361#12435#0" />
+                <element signature="e#12557#12682#0" />
+                <element signature="e#12589#12663#0" />
+                <element signature="e#12749#14200#0" />
+                <element signature="e#12840#12859#0" />
+                <element signature="e#13072#13141#0" />
+                <element signature="e#13339#13358#0" />
+                <element signature="e#13555#13576#0" />
+                <element signature="e#13839#13964#0" />
+                <element signature="e#13871#13945#0" />
+                <element signature="e#14085#14200#0" />
+                <element signature="e#14255#16005#0" />
+                <element signature="e#14411#14532#0" />
+                <element signature="e#14542#14561#0" />
+                <element signature="e#14776#14875#0" />
+                <element signature="e#14912#14981#0" />
+                <element signature="e#15174#15193#0" />
+                <element signature="e#15944#16005#0" />
+                <element signature="e#16053#16399#0" />
+                <element signature="e#16461#17919#0" />
+                <element signature="e#16910#16979#0" />
+                <element signature="e#18429#18498#0" />
+                <element signature="e#19929#20448#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/businessView/homePageView.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="6210">
+              <caret line="281" column="15" selection-start-line="281" selection-start-column="15" selection-end-line="281" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/desired_caps.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/yozo_office_caps.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="230">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_run/run.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="368">
+              <caret line="20" column="93" selection-start-line="20" selection-start-column="93" selection-end-line="20" selection-end-column="93" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -184,45 +218,49 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>more than one device/emulator</find>
-      <find>device/emulator</find>
-      <find>get_project</find>
-      <find>unclosed file</find>
-      <find>ResourceWarning: unclosed file</find>
-      <find>ST.P</find>
-      <find>-id</find>
-      <find>2</find>
-      <find>ime_method</find>
-      <find>%</find>
-      <find>By.CLASS_NAME, 'android.widget.FrameLayout'</find>
-      <find>text_round</find>
-      <find>x_y</find>
-      <find>runlog.log</find>
-      <find>handler_fileHandler</find>
-      <find>log.conf</find>
-      <find>PGView</find>
-      <find>if</find>
-      <find>unittest</find>
-      <find># @unittest.skip('skip test_pop_menu_shape')</find>
-      <find>wp.swipe_option('up')</find>
-      <find>test_wp_pic_order</find>
-      <find>delete_table</find>
-      <find>table</find>
-      <find>test_share_file_create</find>
-      <find>test_show_open_file</find>
-      <find>test_pop_menu_shape</find>
-      <find>shape</find>
-      <find>text('YOZOYOZOYOZO')</find>
-      <find>YOZOYOZOYOZO</find>
+      <find>if not</find>
+      <find>test_wp_chart_change_color</find>
+      <find>叠放</find>
+      <find>order</find>
+      <find>@unittest.skip</find>
+      <find>chart_all2</find>
+      <find>#@unittest.skip</find>
+      <find>欢迎</find>
+      <find>while_not_exist_swipe</find>
+      <find>png</find>
+      <find>exists</find>
+      <find>while not</find>
+      <find>com.yozo.office:id/yozo_ui_wp_option_id_bookmark_catalog</find>
+      <find>test_wp_bookmark</find>
+      <find>test_wp_check_approve</find>
+      <find>com.yozo.office:id/yozo_ui_option_group_checkbox_switch</find>
+      <find>self.driver.find_element(By.XPATH, color_index)</find>
+      <find>color_index</find>
+      <find>test_wp_font_attr</find>
+      <find>com.yozo.office:id/yozo_ui_wp_option_id_font_name</find>
+      <find>test_wp_table_right_cols</find>
+      <find>test_wp_table_size</find>
+      <find>test_wp_table_pop_cell</find>
+      <find>test_wp_pic_width_to_height</find>
+      <find>test_wp_pic_pop_menu_all</find>
+      <find>pic</find>
+      <find>test_wp_print_long_pic</find>
+      <find>oast</find>
+      <find>click()</find>
+      <find>后缀</find>
     </findStrings>
     <replaceStrings>
-      <replace>@unittest.skip</replace>
       <replace>unittest.skip</replace>
-      <replace>#@unittest.skip</replace>
       <replace>@unittest</replace>
       <replace>wp.</replace>
       <replace>1</replace>
       <replace>9</replace>
+      <replace>time.sleep(5)</replace>
+      <replace>logging.info('==========%s==========' % self.__str__().split(' ')[0])</replace>
+      <replace># @unittest.skip</replace>
+      <replace>#@unittest.skip</replace>
+      <replace>@unittest.skip</replace>
+      <replace>while_not_exist_ele_swipe</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -232,9 +270,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/config/wx_read_caps.yaml" />
-        <option value="$PROJECT_DIR$/test_run/run.py" />
         <option value="$PROJECT_DIR$/test_case/test_func.py" />
-        <option value="$PROJECT_DIR$/businessView/generalView.py" />
         <option value="$PROJECT_DIR$/test_run/001.py" />
         <option value="$PROJECT_DIR$/test_case/test_func_pop.py" />
         <option value="$PROJECT_DIR$/common/start.py" />
@@ -243,10 +279,18 @@
         <option value="$PROJECT_DIR$/businessView/createView.py" />
         <option value="$PROJECT_DIR$/test_case/test_func_dzh.py" />
         <option value="$PROJECT_DIR$/test_case1/test_func_dzh.py" />
-        <option value="$PROJECT_DIR$/config/yozo_office_caps.yaml" />
-        <option value="$PROJECT_DIR$/common/desired_caps.py" />
         <option value="$PROJECT_DIR$/common/common_fun.py" />
+        <option value="$PROJECT_DIR$/businessView/generalView.py" />
+        <option value="$PROJECT_DIR$/test_case2/test_SS.py" />
+        <option value="$PROJECT_DIR$/test_case2/test_PG.py" />
+        <option value="$PROJECT_DIR$/test_case2/test_Home_Page.py" />
+        <option value="$PROJECT_DIR$/test_case2/test_Com_Func.py" />
+        <option value="$PROJECT_DIR$/common/desired_caps.py" />
+        <option value="$PROJECT_DIR$/businessView/openView.py" />
+        <option value="$PROJECT_DIR$/businessView/homePageView.py" />
+        <option value="$PROJECT_DIR$/test_run/run.py" />
         <option value="$PROJECT_DIR$/businessView/wpView.py" />
+        <option value="$PROJECT_DIR$/config/yozo_office_caps.yaml" />
         <option value="$PROJECT_DIR$/test_case2/test_WP.py" />
       </list>
     </option>
@@ -263,7 +307,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -274,27 +317,7 @@
             <path>
               <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
               <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
               <item name="APP_info" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="baseView" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="businessView" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="clickPicture_CN" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
@@ -309,27 +332,7 @@
             <path>
               <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
               <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="logs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
               <item name="reports" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="screenshots" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="office_test_project" type="462c0819:PsiDirectoryNode" />
-              <item name="test_case" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="office_test_project" type="b2602c69:ProjectViewProjectNode" />
@@ -350,6 +353,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -378,8 +382,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for test_WP.TestWP.test_wp_shape_pop_menu_all">
-    <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Unittests for test_WP.TestWP.test_wp_print_all_pic">
+    <configuration name="Unittests for test_WP.TestWP.test_wp_pic_free_rotate" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="office_test_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -389,11 +393,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_WP.TestFunc.test_wp_shape_pop_menu_all&quot;" />
+      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_pic_free_rotate&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for test_WP.TestFunc.test_wp_table_move" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for test_WP.TestWP.test_wp_pic_pop_menu_all" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="office_test_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -403,11 +407,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_WP.TestFunc.test_wp_table_move&quot;" />
+      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_pic_pop_menu_all&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for test_WP.TestFunc.test_wp_table_pop_1_rows" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="office_test_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -417,11 +421,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_WP.TestFunc.test_wp_table_pop_1_rows&quot;" />
+      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_print_all_pic&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for test_WP.TestFunc.test_wp_table_pop_A_cols" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for test_WP.TestWP.test_wp_print_long_pic" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="office_test_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -431,11 +435,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_WP.TestFunc.test_wp_table_pop_A_cols&quot;" />
+      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_print_long_pic&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests for test_WP.TestWP.test_wp_shape_pop_menu_all" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration name="Unittests for test_WP.TestWP.test_wp_swipe_up_down" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="office_test_project" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -445,24 +449,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_shape_pop_menu_all&quot;" />
+      <option name="_new_target" value="&quot;test_WP.TestWP.test_wp_swipe_up_down&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_move" />
-      <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_pop_1_rows" />
-      <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_pop_A_cols" />
-      <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" />
-      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_shape_pop_menu_all" />
+      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_pic_free_rotate" />
+      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_pic_pop_menu_all" />
+      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_print_all_pic" />
+      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_print_long_pic" />
+      <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_swipe_up_down" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_shape_pop_menu_all" />
-        <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" />
-        <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_pop_1_rows" />
-        <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_pop_A_cols" />
-        <item itemvalue="Python tests.Unittests for test_WP.TestFunc.test_wp_table_move" />
+        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_print_all_pic" />
+        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_swipe_up_down" />
+        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_print_long_pic" />
+        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_pic_pop_menu_all" />
+        <item itemvalue="Python tests.Unittests for test_WP.TestWP.test_wp_pic_free_rotate" />
       </list>
     </recent_temporary>
   </component>
@@ -598,61 +602,229 @@
       <option name="project" value="LOCAL" />
       <updated>1573027247699</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="添加自由表格图片">
+      <created>1573035430138</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1573035430138</updated>
+    </task>
+    <task id="LOCAL-00019" summary="上传">
+      <created>1573035883018</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1573035883018</updated>
+    </task>
+    <task id="LOCAL-00020" summary="添加跳过">
+      <created>1573036135773</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1573036135773</updated>
+    </task>
+    <task id="LOCAL-00021" summary="图像识别新增参数及其详情">
+      <created>1573113226411</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1573113226411</updated>
+    </task>
+    <task id="LOCAL-00022" summary="设置adb shell input 为默认输入方式">
+      <created>1573611947154</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1573611947154</updated>
+    </task>
+    <task id="LOCAL-00023" summary="添加wp图表用例方法">
+      <created>1573611999614</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1573611999614</updated>
+    </task>
+    <task id="LOCAL-00024" summary="添加WP图表用例方法">
+      <created>1573612061789</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1573612061789</updated>
+    </task>
+    <task id="LOCAL-00025" summary="添加表格插入行列图片">
+      <created>1574133690893</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1574133690893</updated>
+    </task>
+    <task id="LOCAL-00026" summary="条件表格大小图标">
+      <created>1574134953139</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1574134953139</updated>
+    </task>
+    <task id="LOCAL-00027" summary="BUG修复">
+      <created>1574143954633</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1574143954633</updated>
+    </task>
+    <task id="LOCAL-00028" summary="更改部分定位方式">
+      <created>1575356255491</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1575356255491</updated>
+    </task>
+    <task id="LOCAL-00029" summary="更改图片插入流程">
+      <created>1575356450516</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1575356450516</updated>
+    </task>
+    <task id="LOCAL-00030" summary="增加在线、离线打开按钮">
+      <created>1575356500797</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1575356500797</updated>
+    </task>
+    <task id="LOCAL-00031" summary="更改日志写法，更改部分用例bug">
+      <created>1575356568609</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1575356568609</updated>
+    </task>
+    <task id="LOCAL-00032" summary="更改转义字符问题">
+      <created>1575441652764</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1575441652764</updated>
+    </task>
+    <task id="LOCAL-00033" summary="添加对象属性独立用例，测试方法中添加断言">
+      <created>1576209350852</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1576209350852</updated>
+    </task>
+    <task id="LOCAL-00034" summary="添加WP测试方法">
+      <created>1576209440208</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1576209440208</updated>
+    </task>
+    <task id="LOCAL-00035" summary="更改测试用例，打开文件">
+      <created>1576631251913</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1576631251913</updated>
+    </task>
+    <task id="LOCAL-00036" summary="精简属性遍历方法">
+      <created>1576631345026</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1576631345026</updated>
+    </task>
+    <task id="LOCAL-00037" summary="添加查找元素循环控制">
+      <created>1577248720813</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1577248720814</updated>
+    </task>
+    <task id="LOCAL-00038" summary="添加查找元素循环控制">
+      <created>1577248736862</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1577248736862</updated>
+    </task>
+    <task id="LOCAL-00039" summary="初始缩放比例修改，调整图片识别位置">
+      <created>1577678809821</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1577678809821</updated>
+    </task>
+    <task id="LOCAL-00040" summary="图像更新">
+      <created>1577678844854</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1577678844854</updated>
+    </task>
+    <task id="LOCAL-00041" summary="图像更新">
+      <created>1577678862075</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1577678862075</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 40m 56s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_long_pic - 2020.01.06 at 10h 03m 20s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_long_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 41m 44s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 03m 58s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 42m 28s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 04m 21s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 42m 46s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 05m 32s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 48m 32s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_swipe_up_down - 2020.01.06 at 10h 08m 25s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_swipe_up_down" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 49m 21s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 10m 32s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 50m 59s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 11m 03s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 53m 48s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 11m 43s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestFunc_test_wp_shape_pop_menu_all - 2019.11.06 at 17h 59m 46s.xml">
-      <configuration name="Unittests for test_WP.TestFunc.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 13m 02s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_shape_pop_menu_all - 2019.11.06 at 18h 01m 06s.xml">
-      <configuration name="Unittests for test_WP.TestWP.test_wp_shape_pop_menu_all" configurationId="tests" />
+    <history-entry file="Unittests_for_test_WP_TestWP_test_wp_print_all_pic - 2020.01.06 at 10h 14m 51s.xml">
+      <configuration name="Unittests for test_WP.TestWP.test_wp_print_all_pic" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="1560000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8560461" visible="true" weight="0.31399047" />
-      <window_info id="Structure" order="1" sideWeight="0.14395393" side_tool="true" visible="true" weight="0.31399047" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8180243" visible="true" weight="0.115384616" />
+      <window_info id="Structure" order="1" sideWeight="0.18197574" side_tool="true" weight="0.11959958" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49841017" visible="true" weight="0.38123515" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39904988" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49789253" weight="0.35746104" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3986637" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.8370429" weight="0.33135393" />
+      <window_info anchor="bottom" id="Version Control" order="8" sideWeight="0.8370429" weight="0.27394208" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50158983" side_tool="true" weight="0.23634204" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5021075" side_tool="true" weight="0.35746104" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.34679335" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -666,72 +838,34 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="wp新增测试用例" />
-    <MESSAGE value="添加更新图片" />
-    <MESSAGE value="wp新增测试方法" />
-    <MESSAGE value="新建文档方法修改" />
-    <MESSAGE value="新增元素坐标获取方法：get_element_xy，设计参考：https://airtest.doc.io.netease.com/IDEdocs/airtest_framework/1_script_settings/" />
-    <MESSAGE value="auto_setup 添加airtest图像识别初始化代码" />
-    <MESSAGE value="修复BUG:wp新增菜单属性后，部分代码功能失效" />
-    <MESSAGE value="添加忽略警告代码，adb命令添加手机设备号" />
-    <MESSAGE value="联网状态下新建文档方法修改" />
-    <MESSAGE value="添加自由表格pop菜单、插入行，列、调整表格尺寸用例" />
-    <MESSAGE value="添加自由表格插入方法" />
-    <MESSAGE value="禁用airtest输入法" />
     <MESSAGE value="更新WP用例列表" />
     <MESSAGE value="更新工作表WP" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新工作表WP" />
+    <MESSAGE value="添加自由表格图片" />
+    <MESSAGE value="添加WP模块插入对象前置条件" />
+    <MESSAGE value="上传" />
+    <MESSAGE value="添加跳过" />
+    <MESSAGE value="图像识别新增参数及其详情" />
+    <MESSAGE value="设置adb shell input 为默认输入方式" />
+    <MESSAGE value="添加wp图表用例方法" />
+    <MESSAGE value="添加WP图表用例方法" />
+    <MESSAGE value="添加表格插入行列图片" />
+    <MESSAGE value="条件表格大小图标" />
+    <MESSAGE value="BUG修复" />
+    <MESSAGE value="更改部分定位方式" />
+    <MESSAGE value="更改图片插入流程" />
+    <MESSAGE value="增加在线、离线打开按钮" />
+    <MESSAGE value="更改日志写法，更改部分用例bug" />
+    <MESSAGE value="更改转义字符问题" />
+    <MESSAGE value="添加对象属性独立用例，测试方法中添加断言" />
+    <MESSAGE value="添加WP测试方法" />
+    <MESSAGE value="更改测试用例，打开文件" />
+    <MESSAGE value="精简属性遍历方法" />
+    <MESSAGE value="添加查找元素循环控制" />
+    <MESSAGE value="初始缩放比例修改，调整图片识别位置" />
+    <MESSAGE value="图像更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="图像更新" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test_case/test_cloud.py" />
-    <entry file="file://$PROJECT_DIR$/config/wx_read_caps.yaml" />
-    <entry file="file://$PROJECT_DIR$/clickPicture/rotate_free.png" />
-    <entry file="file://$PROJECT_DIR$/clickPicture/rotate_90.png" />
-    <entry file="file://$PROJECT_DIR$/clickPicture/paste.png" />
-    <entry file="file://$PROJECT_DIR$/test_case/test_insert.py" />
-    <entry file="file://$PROJECT_DIR$/businessView/pgView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="64" column="23" selection-start-line="64" selection-start-column="23" selection-end-line="64" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture/drag_all1.png" />
-    <entry file="file://$PROJECT_DIR$/businessView/openView.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture/drag_pic.png" />
-    <entry file="file://$PROJECT_DIR$/clickPicture/drag_all.png" />
-    <entry file="file://$PROJECT_DIR$/test_run/001.py" />
-    <entry file="file://D:/python/Lib/operator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="245" column="29" lean-forward="true" selection-start-line="245" selection-start-column="29" selection-end-line="245" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/-287100998/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117047">
-          <caret line="5089" column="8" selection-start-line="5089" selection-start-column="8" selection-end-line="5089" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/python/Lib/site-packages/airtest/core/cv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="185" column="23" selection-start-line="185" selection-start-column="23" selection-end-line="185" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/tool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1150">
-          <caret line="61" column="11" selection-start-line="61" selection-start-column="11" selection-end-line="61" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_case/test_func_pop.py" />
     <entry file="file://$PROJECT_DIR$/clickPicture_CN/rotate_free.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -739,16 +873,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="115">
           <caret line="10" column="19" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_run/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="11" column="24" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -776,26 +900,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/myunit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="21" column="16" lean-forward="true" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/baseView/baseView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="13" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/businessView/cloudView.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://D:/python/Lib/site-packages/airtest/core/android/android.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="230">
@@ -819,20 +923,210 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test_case/test_func.py" />
     <entry file="file://$PROJECT_DIR$/test_case/test_func_dzh.py" />
-    <entry file="file://$PROJECT_DIR$/test_case1/test_func_dzh.py">
+    <entry file="file://D:/python/Lib/site-packages/airtest/core/android/adb.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="29" selection-start-line="29" selection-end-line="94" selection-end-column="67" />
+        <state relative-caret-position="165">
+          <caret line="705" column="56" selection-start-line="705" selection-start-column="44" selection-end-line="705" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/site-packages/airtest/aircv/template_matching.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clickPicture_CN/copy.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clickPicture_CN/insert_rows.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clickPicture_CN/insert_cols.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/logs/runlog.log">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://D:/python/Lib/logging/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-552" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/log.conf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="15" selection-start-line="15" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case2/test_common_func.py" />
+    <entry file="file://$PROJECT_DIR$/clickPicture_CN/point.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/baseView/baseView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/data_info.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_run/run_func.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/loginView.py" />
+    <entry file="file://$PROJECT_DIR$/data/need_run.csv">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/account.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="3" column="12" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case1/test_cloud.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="25" column="30" selection-start-line="25" selection-start-column="30" selection-end-line="25" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/cloudView.py" />
+    <entry file="file://$PROJECT_DIR$/test_case1/test_login.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="24" column="10" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clickPicture_CN/drag_pic.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/unittest/__init__.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3358">
+          <caret line="153" column="8" selection-start-line="153" selection-start-column="8" selection-end-line="153" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case2/test_PG.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6532">
+          <caret line="301" column="20" selection-start-line="301" selection-start-column="20" selection-end-line="301" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/openView.py" />
+    <entry file="file://$PROJECT_DIR$/test_case2/test_Home_Page.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46575">
+          <caret line="2037" column="18" selection-start-line="2037" selection-start-column="18" selection-end-line="2037" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/generalView.py" />
+    <entry file="file://$PROJECT_DIR$/businessView/createView.py" />
+    <entry file="file://$PROJECT_DIR$/test_case2/test_Com_Func.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="805">
+          <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="53" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/site-packages/airtest/core/cv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-308">
+          <caret line="134" column="94" selection-start-line="134" selection-start-column="94" selection-end-line="134" selection-end-column="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/generalFunctionView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12880">
+          <caret line="572" column="8" selection-start-line="572" selection-start-column="8" selection-end-line="572" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/site-packages/airtest/core/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7291">
+          <caret line="327" column="4" selection-start-line="327" selection-start-column="4" selection-end-line="327" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case2/test_SS.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="220" column="28" selection-start-line="220" selection-start-column="25" selection-end-line="220" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case2/test_WP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="43">
+          <caret line="910" lean-forward="true" selection-start-line="910" selection-end-line="910" />
+          <folding>
+            <element signature="n#!!doc" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/python/Lib/unittest/case.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13731">
+          <caret line="610" selection-start-line="610" selection-end-line="610" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/myunit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="644">
+          <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/common_fun.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3680">
+          <caret line="177" column="8" selection-start-line="177" selection-start-column="8" selection-end-line="177" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/businessView/wpView.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8556">
+          <caret line="379" selection-start-line="379" selection-end-line="379" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#930#2091#0" />
-            <element signature="e#2135#2610#0" />
-            <element signature="e#2660#3107#0" />
-            <element signature="e#3156#3582#0" />
-            <element signature="e#3630#3757#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_case1/test_func_dzh.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3588">
+          <caret line="517" column="23" selection-start-line="517" selection-start-column="23" selection-end-line="517" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
             <element signature="e#2090#2247#0" />
             <element signature="e#2298#2386#0" />
-            <element signature="e#2443#2685#0" />
             <element signature="e#2743#2833#0" />
             <element signature="e#2894#3282#0" />
             <element signature="e#3341#3674#0" />
@@ -900,219 +1194,42 @@
             <element signature="e#16053#16399#0" />
             <element signature="e#16461#17919#0" />
             <element signature="e#16910#16979#0" />
-            <element signature="e#17980#19842#0" />
             <element signature="e#18429#18498#0" />
             <element signature="e#19929#20448#0" />
-            <element signature="e#20496#20862#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/python/Lib/site-packages/airtest/core/android/adb.py">
+    <entry file="file://$PROJECT_DIR$/businessView/homePageView.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="705" column="56" selection-start-line="705" selection-start-column="44" selection-end-line="705" selection-end-column="56" />
+        <state relative-caret-position="6210">
+          <caret line="281" column="15" selection-start-line="281" selection-start-column="15" selection-end-line="281" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://D:/python/Lib/site-packages/airtest/aircv/template_matching.py">
+    <entry file="file://$PROJECT_DIR$/common/desired_caps.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture_CN/copy.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture_CN/insert_rows.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture_CN/insert_cols.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/common_fun.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="343" column="34" selection-start-line="343" selection-start-column="34" selection-end-line="343" selection-end-column="34" />
+        <state relative-caret-position="161">
+          <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logs/runlog.log">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://D:/python/Lib/logging/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-552" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/log.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="15" selection-start-line="15" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/desired_caps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/yozo_office_caps.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="9" column="18" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
+        <state relative-caret-position="230">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_case2/test_SS.py">
+    <entry file="file://$PROJECT_DIR$/test_run/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-31" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_case2/test_common_func.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="471" column="36" lean-forward="true" selection-start-line="471" selection-start-column="36" selection-end-line="471" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/businessView/generalView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="712" column="8" selection-start-line="712" selection-start-column="8" selection-end-line="712" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/businessView/wpView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="114" column="102" selection-start-line="114" selection-start-column="102" selection-end-line="114" selection-end-column="102" />
+        <state relative-caret-position="368">
+          <caret line="20" column="93" selection-start-line="20" selection-start-column="93" selection-end-line="20" selection-end-column="93" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/python/Lib/site-packages/airtest/core/api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="245" column="4" selection-start-line="245" selection-start-column="4" selection-end-line="245" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clickPicture_CN/point.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/businessView/createView.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_case2/test_WP.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="19" column="23" lean-forward="true" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" />
-            <element signature="e#601#1333#0" />
-            <element signature="e#1452#2640#0" />
-            <element signature="e#2726#3127#0" />
-            <element signature="e#3229#3991#0" />
-            <element signature="e#4079#5174#0" />
-            <element signature="e#5276#5640#0" />
-            <element signature="e#5725#5969#0" />
-            <element signature="e#6086#6488#0" />
-            <element signature="e#6588#6898#0" />
-            <element signature="e#6943#7167#0" />
-            <element signature="e#7211#7480#0" />
-            <element signature="e#7528#8756#0" />
-            <element signature="e#8800#9338#0" />
-            <element signature="e#9388#9904#0" />
-            <element signature="e#9953#10469#0" />
-            <element signature="e#10517#11704#0" />
-            <element signature="e#11754#12901#0" />
-            <element signature="e#12951#14074#0" />
-            <element signature="e#14125#14535#0" />
-            <element signature="e#14581#14803#0" />
-            <element signature="e#14854#15012#0" />
-            <element signature="e#15069#15311#0" />
-            <element signature="e#15369#15536#0" />
-            <element signature="e#15597#16065#0" />
-            <element signature="e#16124#16535#0" />
-            <element signature="e#16598#16979#0" />
-            <element signature="e#16811#16941#0" />
-            <element signature="e#17039#17136#0" />
-            <element signature="e#17196#17417#0" />
-            <element signature="e#17631#18009#0" />
-            <element signature="e#17806#18009#0" />
-            <element signature="e#17821#17964#0" />
-            <element signature="e#18059#18476#0" />
-            <element signature="e#18540#19725#0" />
-            <element signature="e#19784#19994#0" />
-            <element signature="e#20070#20593#0" />
-            <element signature="e#20230#20249#0" />
-            <element signature="e#20468#20593#0" />
-            <element signature="e#20500#20574#0" />
-            <element signature="e#20658#21688#0" />
-            <element signature="e#20851#21181#0" />
-            <element signature="e#21190#21209#0" />
-            <element signature="e#21422#21491#0" />
-            <element signature="e#21744#23024#0" />
-            <element signature="e#21898#21917#0" />
-            <element signature="e#22131#22200#0" />
-            <element signature="e#22397#22416#0" />
-            <element signature="e#22634#22759#0" />
-            <element signature="e#22666#22740#0" />
-            <element signature="e#22876#23001#0" />
-            <element signature="e#22908#22982#0" />
-            <element signature="e#23087#24764#0" />
-            <element signature="e#23248#23267#0" />
-            <element signature="e#23480#23549#0" />
-            <element signature="e#23747#23766#0" />
-            <element signature="e#23956#23977#0" />
-            <element signature="e#24239#24364#0" />
-            <element signature="e#24271#24345#0" />
-            <element signature="e#24482#24552#0" />
-            <element signature="e#24596#24620#0" />
-            <element signature="e#24833#26349#0" />
-            <element signature="e#25000#25019#0" />
-            <element signature="e#25232#25301#0" />
-            <element signature="e#25499#25518#0" />
-            <element signature="e#25713#25734#0" />
-            <element signature="e#25996#26121#0" />
-            <element signature="e#26028#26102#0" />
-            <element signature="e#26224#26349#0" />
-            <element signature="e#26256#26330#0" />
-            <element signature="e#26416#27941#0" />
-            <element signature="e#26581#26600#0" />
-            <element signature="e#26813#26882#0" />
-            <element signature="e#27080#27099#0" />
-            <element signature="e#27296#27317#0" />
-            <element signature="e#27580#27705#0" />
-            <element signature="e#27612#27686#0" />
-            <element signature="e#27826#27941#0" />
-            <element signature="e#27996#29806#0" />
-            <element signature="e#28213#28334#0" />
-            <element signature="e#28343#28362#0" />
-            <element signature="e#28577#28676#0" />
-            <element signature="e#28713#28782#0" />
-            <element signature="e#28975#28994#0" />
-            <element signature="e#29745#29806#0" />
-            <element signature="e#29854#30267#0" />
-            <element signature="e#30329#31856#0" />
-            <element signature="e#30847#30916#0" />
-            <element signature="e#31917#33847#0" />
-            <element signature="e#32434#32503#0" />
-            <element signature="e#33933#34522#0" />
-            <element signature="e#34570#35003#0" />
+            <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>
