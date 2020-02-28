@@ -1,18 +1,24 @@
 import os
 import shutil
-import unittest
 import logging
+
 from ddt import ddt, data
 
 from businessView.homePageView import HomePageView
 from common.myunit import StartEnd
 
-path1 = r'E:\MSfiles\MS2003files\xls\20000-20999'
+path1 = r'C:\Users\DZPC1906167\Desktop\work'
 file_names = []
+sub_dirs_path = []
 for root, dirs, files in os.walk(path1):
-    for f in files:
-        file_names.append(f)
-
+    for name in dirs:
+        sub_dirs_path.append(os.path.join(root, name))
+        print('dir: '+os.path.join(root, name))
+target_path = sub_dirs_path[0:2]
+for i in target_path:
+    for root, dirs, files in os.walk(i):
+        file_names = file_names + files
+print('files>>>>> '+len(file_names))
 
 @ddt
 class OpenFiles(StartEnd):
@@ -36,6 +42,3 @@ class OpenFiles(StartEnd):
         hp.close_file()
         self.assertTrue(hp.check_close_file(), msg='close file failed')
 
-
-if __name__ == '__main__':
-    unittest.main()
