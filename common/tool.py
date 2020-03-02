@@ -12,15 +12,24 @@ from functools import reduce
 
 from selenium.webdriver.common.by import By
 
-def read_csv(file_path):#读取csv文件
-    name_list =[]
+
+def get_files_list(path):
+    file_list = []
+    for root, dirs, files in os.walk(path):
+        file_list = files
+    return file_list
+
+
+def read_csv(file_path):  # 读取csv文件
+    name_list = []
     with open(file_path, 'r', encoding='utf-8') as f:
         # name_list.append(f.readlines())
-        name_list1=f.readlines()
+        name_list1 = f.readlines()
         for i in name_list1:
             name_list.append(i.strip())
     # print(name_list)
     return name_list
+
 
 def get_online_templates_name(file_type='pg'):  # 获取所有在线模板的名字
     name_list = []
@@ -145,6 +154,7 @@ def write_data():
     #     row_num += 1
     book.save('files_list.xls')
 
+
 def chart(self, i):
     b1 = self.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_content_container')  # 获取父节点
     b2 = b1.find_elements_by_class_name("android.widget.RadioButton")  # 点位到所有子节点，保存到e2列表中
@@ -156,7 +166,13 @@ def chart(self, i):
 
 
 if __name__ == '__main__':
-    read_csv('../data/SS_Online_Templates.csv')
+    path = r'E:\MSfiles\MS2003files\xls'
+    sub = '20000-20999'
+    path1 = os.path.join(path, sub)
+    print(path1)
+    file_list = get_files_list(path1)
+    print(file_list)
+    # read_csv('../data/SS_Online_Templates.csv')
     # get_online_templates_name()
     # capture_path = get_project_path() + '\Screenshot\sheet_name\cile_name.png'
     # print(capture_path)

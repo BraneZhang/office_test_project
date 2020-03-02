@@ -18,7 +18,7 @@ class StartEnd(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         logging.info('=====tearDownClass=====')
-        stop_server()
+        # stop_server()
 
     def setUp(self):
         logging.info('=====setUp====')
