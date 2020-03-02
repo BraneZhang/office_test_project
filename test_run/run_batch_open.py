@@ -4,8 +4,6 @@ import unittest
 import time, logging
 import sys
 
-from common.tool import Device_Select
-
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
 
