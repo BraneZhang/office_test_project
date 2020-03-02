@@ -369,7 +369,7 @@ class HomePageView(Common):
     def create_file_preoption(self, file_type, x=925, y=1669):  # 新建文档前置操作
         logging.info('==========create_file_preoption_%s==========' % file_type)
         time.sleep(2)
-        self.tap(x, y) #“+”元素不可捕捉，只能通过坐标来点击，坐标不唯一，随手机改变
+        self.tap(x, y)  # “+”元素不可捕捉，只能通过坐标来点击，坐标不唯一，随手机改变
         time.sleep(2)
         type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
         self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
@@ -506,6 +506,13 @@ class HomePageView(Common):
         if not loading_result:
             logging.error('loading timeout')
             return False
+        if self.get_element_result('//*[contains(@text,"永中Office无响应")]'):
+            logging.error('app down!!!')
+            self.getScreenShot(file_name + 'make app down')
+            self.driver.find_element(By.ID, 'android:id/button1').click()
+            return False
+        if self.get_element_result('//*[@resource-id="com.yozo.office:id/text_content"]'):
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_right').click()
         show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
                      '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
                      '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
