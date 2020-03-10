@@ -9,61 +9,54 @@ from businessView.homePageView import HomePageView
 from common.myunit import StartEnd
 from common.tool import get_files_list, copy_file_to_wrong
 
-path = r'E:\MSfiles\MS2003files\xls'
-path1 = r'E:\MSfiles\MS2007files\xlsx'
+path = r'E:\MSfiles\MS2003files\ppt'
+path1 = r'E:\MSfiles\MS2007files\pptx'
 
-ss03_dirs = ['20000-20999', '21000-21999', '22000-22999', '23000-23999', '24000-24999', '25000-25999', '26000-26999',
-             '27000-27999', '28000-28999', '29000-29999', '30000-30999', '31000-31999', '32000-32999', '33000-33999',
-             '34000-34999', '35000-35999', '36000-36999', '37000-37999', '38000-38999', '39000-39999', '其他']
+pg03_dirs = ['1001-2000', '3001-4000', '4001-4640']
 
-ss07_dirs = ['10000-10999', '11000-11999', '12000-12999', '13000-13999', '14000-14999', '15000-25999', '16000-26999',
-             '17000-17999', '18000-18999', '19000-19999', '20000-20999', '21000-21999', '22000-22999', '23000-23999',
-             '24000-24999', '25000-25999', '26000-26999', '27000-27999', '28000-28999', '29000-29999', '30000-30999',
-             '31000-31999', '32000-32999', '33000-33999', '34000-34999', '35000-35999', '36000-36999', '37000-37999',
-             '38000-38999', '39000-39999', '40000-40999', '41000-41999', '42000-42999', '43000-43999', '44000-44999',
-             '45000-45999', '46000-46999', '47000-47999', '48000-48999', '49000-49999', '50000-50999', '51000-51999',
-             '52000-52999', '53000-53999', '54000-54999']
+pg07_dirs = ['10001-11000', '11001-12000', '12001-13000', '13001-14000', '14001-15000', '15001-16000', '16001-17000',
+             '17001-18000', '18001-19000', '19001-19999', '20000-20000', '21001-22000', '22001-23000', '23001-24000',
+             '24001-25000', '25001-26000', '26001-27000', '27001-28000', '28001-29000', '29000-29999', '30000-30999',
+             '31001-32000', '32001-33000', '33001-34000', '34001-35000', '35001-36000', '36001-37000', '37001-38000',
+             '38001-39000', '39001-40000', '40001-41000', '41001-42000', '42001-42950']
 
-ss03_test_dirs = ss03_dirs  # 03文档需要跑的文件夹
-ss07_test_dirs = ss07_dirs  # 07文档需要跑的文件夹
+pg03_test_dirs = pg03_dirs  # 03文档需要跑的文件夹
+pg07_test_dirs = pg03_dirs  # 07文档需要跑的文件夹
 
 path03_list = []
 file03_list = []
-for i in ss03_test_dirs:
+for i in pg03_test_dirs:
     path03_list.append(os.path.join(path, i))
 for i in path03_list:
     file03_list = file03_list + get_files_list(i)
 
-
 path07_list = []
 file07_list = []
-for i in ss07_test_dirs:
+for i in pg07_test_dirs:
     path07_list.append(os.path.join(path, i))
 for i in path07_list:
     file07_list = file07_list + get_files_list(i)
 
 
 @ddt
-class OpenFiles_SS(StartEnd):
-
-
+class OpenFiles_PG(StartEnd):
 
     @unittest.skip('skip test_bat_open_files07')
     # @data(*file07_list)
     def test_bat_open_files07(self, file_name=''):
         logging.info('==========正在打开%s==========' % file_name)
 
-        if not file_name.endswith(('.xls','xlsx')):
-            copy_file_to_wrong(*path07_list,file_name=file_name)
+        if not file_name.endswith(('.ppt', 'pptx')):
+            copy_file_to_wrong(*path07_list, file_name=file_name)
             self.assertTrue(False, 'file format wrong')
         hp = HomePageView(self.driver)
         search_result = hp.search_file(file_name)
         if not search_result:
-            copy_file_to_wrong(*path07_list,file_name=file_name)
+            copy_file_to_wrong(*path07_list, file_name=file_name)
         self.assertTrue(search_result, 'cannot find file')
         open_result = hp.open_file(file_name)
         if not open_result:
-            copy_file_to_wrong(*path07_list,file_name=file_name)
+            copy_file_to_wrong(*path07_list, file_name=file_name)
         self.assertTrue(open_result, 'open file failed')
         close_result = hp.check_close_file()
         if not close_result:
@@ -75,7 +68,7 @@ class OpenFiles_SS(StartEnd):
     def test_bat_open_files03(self, file_name=''):
         logging.info('==========正在打开%s==========' % file_name)
 
-        if not file_name.endswith(('.xls', 'xlsx')):
+        if not file_name.endswith(('.ppt', 'pptx')):
             copy_file_to_wrong(*path03_list, file_name=file_name)
             self.assertTrue(False, 'file format wrong')
         hp = HomePageView(self.driver)
