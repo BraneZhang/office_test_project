@@ -1,6 +1,8 @@
 import csv
 import json
 import logging
+import shutil
+
 import requests
 import xlrd
 from PIL import Image, ImageChops
@@ -12,6 +14,14 @@ from functools import reduce
 
 from selenium.webdriver.common.by import By
 
+
+def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件夹
+    pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
+    for i in path:
+        try:
+            shutil.copy(os.path.join(i, file_name), pc_path)
+        except Exception:
+            pass
 
 def get_files_list(path):
     file_list = []
@@ -166,23 +176,33 @@ def chart(self, i):
 
 
 if __name__ == '__main__':
-    path = r'E:\MSfiles\MS2003files\xls'
-    sub = '20000-20999'
-    path1 = os.path.join(path, sub)
-    print(path1)
-    file_list = get_files_list(path1)
-    print(file_list)
-    # read_csv('../data/SS_Online_Templates.csv')
-    # get_online_templates_name()
-    # capture_path = get_project_path() + '\Screenshot\sheet_name\cile_name.png'
-    # print(capture_path)
-    # prth = get_project_path()
-    # print(os.path.dirname(os.path.dirname(__file__)))
-    # print(os.path.dirname(os.getcwd()))
-    # report_path = str(get_project_path) + '\Report\Mobile_Office_Report_%s.html' % time.strftime("%Y_%m_%d_%H_%M_%S")
-    # print(report_path)
-    # fp = open(r'%s' % report_path, "wb")
-    # write_data()
-    # report_path = get_project_path()
-    # report_path = get_project_path() + '\\Report\\Mobile_Office_Report_%s.html' % time.strftime("%Y_%m_%d_%H_%M_%S")
-    # print(report_path)
+    files1 = 'dfd.xls'
+    files2 = 'ddfd.xlsx'
+    files3 = 'ddfd.xlsm'
+    print( not files1.endswith(('.xls','xlsx')))
+    print(files2.endswith(('.xls','xlsx')))
+    print(files3.endswith(('.xls','xlsx')))
+
+    # path = r'D:\1111\pdf测试文档'
+    #
+    # # sub_list = ['大于10M','公文pdf']
+    # sub_list = ['大于10M']
+    # path_list = []
+    # file_list = []
+    # for i in sub_list:
+    #     path_list.append(os.path.join(path, i))
+    # for i in path_list:
+    #     file_list = file_list + get_files_list(i)
+    # # for i in path_list:
+    #     # time0  = time
+    #     # if os.path.exists(os.path.join(i,'万达电影2011-11.pdf')):
+    # # pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
+    #
+    # copy_file_to_wrong(*path_list, file_name='黑客入门全程图解.pdf')
+    # for i in path_list:
+    #     try:
+    #         shutil.copy(os.path.join(path,i,'2014092914151166830261.pdf'), pc_path)
+    #     except Exception:
+    #          pass
+    # print(file_list)
+    # print(len(file_list))
