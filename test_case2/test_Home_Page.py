@@ -29,7 +29,7 @@ screenshot_file = '../screenshots/'
 @ddt
 class TestHomePage(StartEnd):
 
-    #======add 2020_01_02=====
+    # ======add 2020_01_02=====
 
     # @unittest.skip('skip test_hp_my2_recycle_options')
     def test_hp_my2_recycle_options(self):
@@ -104,7 +104,7 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
         self.assertTrue(hp.get_element_result('//*[@text="自动上传"]'))
 
-    #======before 2020_01_02========
+    # ======before 2020_01_02========
     # @unittest.skip('skip test_hp_template_category')
     @data(*wps)
     def test_hp_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
@@ -437,7 +437,7 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip('skip test_hp_alldoc_local_folder')
     @data(*folder_list)
-    def test_hp_alldoc_local_folder(self, folder):  # 测试本地文档打开
+    def test_hp_alldoc_local_folder(self, folder='TIM'):  # 测试本地文档打开
         logging.info('==========test_hp_alldoc_local_folder==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
@@ -464,9 +464,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
         fileName = location[location.rindex('/') + 1:]
         check = gv.copy_file()
@@ -508,12 +509,13 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         file = gv.mark_star()
         self.assertTrue(gv.check_mark_satr(file))
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
@@ -524,9 +526,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
@@ -562,9 +565,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
         self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
@@ -580,9 +584,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(1)
+        gv.file_more_info(8)
         name_list = gv.select_all('multi', [1, 3, 5])
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
@@ -595,9 +600,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(7)
+        gv.file_more_info(8)
         gv.share_file_index(way)
         os.system('adb shell am force-stop com.tencent.mobileqq')
         os.system('adb shell am force-stop com.tencent.mm')
@@ -611,9 +617,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(7)
+        gv.file_more_info(8)
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
@@ -639,9 +646,10 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
         self.assertTrue(gv.check_open_folder('手机'), 'open fail')
-        for i in range(10):
+        while not self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text.endswith(
+                ('.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.txt')):
             gv.swipeUp()
-        gv.file_more_info(7)
+        gv.file_more_info(8)
         check = gv.upload_file('手机上传')
         self.assertTrue(check, 'upload fail')
         self.driver.keyevent(4)
@@ -1614,6 +1622,7 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         if gv.check_login_status():
             gv.logout_action()
+        gv.jump_to_index('last')
         gv.file_more_info(1)
         file = gv.mark_star()
         self.assertTrue(gv.check_mark_satr(file))
@@ -1909,7 +1918,7 @@ class TestHomePage(StartEnd):
         gv.select_file_type('all')
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
-        self.assertTrue(gv.get_toast_message('仅在WI-FI下传输'))
+        self.assertTrue(gv.get_element_result('//*[contains(@text,"当前为非wifi环境")]'),'未捕捉到toast')
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip('skip test_hp_my_login_fail')
@@ -1941,25 +1950,6 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.check_login_status(), msg='login fail')
 
         gv.logout_action()
-
-    # @unittest.skip('skip test_hp_rotate_index')
-    def test_hp_rotate_index(self):
-        logging.info('==========test_hp_rotate_index==========')
-        gv = HomePageView(self.driver)
-        gv.screen_rotate('landscape')
-        gv.screen_rotate('portrait')
-        gv.jump_to_index('alldoc')
-        gv.screen_rotate('landscape')
-        gv.screen_rotate('portrait')
-        gv.jump_to_index('cloud')
-        gv.screen_rotate('landscape')
-        gv.screen_rotate('portrait')
-        gv.jump_to_index('star')
-        gv.screen_rotate('landscape')
-        gv.screen_rotate('portrait')
-        gv.jump_to_index('my')
-        gv.screen_rotate('landscape')
-        gv.screen_rotate('portrait')
 
     # @unittest.skip('skip test_hp_search_icon_show')
     def test_hp_search_icon_show(self):  # 搜索键显示

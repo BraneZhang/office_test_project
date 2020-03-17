@@ -20,7 +20,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
 csv_file = '../data/account.csv'
-folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
+folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信','TIM']
 index_share_list = ['qq', 'wechat', 'email', 'more']
 index_share_list1 = ['qq', 'wechat', 'email', 'ding']
 index_share_list2 = ['qq', 'wechat', 'email', 'dingding']

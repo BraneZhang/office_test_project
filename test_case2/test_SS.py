@@ -28,7 +28,7 @@ class TestSS(StartEnd):
 
     # =======add 2020_02_25===== 拆分共用功能
 
-    @unittest.skip('skip test_ss_file_info')
+    # @unittest.skip('skip test_ss_file_info')
     def test_ss_file_info(self, file_type='ss'):
         """
         文档信息
@@ -43,9 +43,9 @@ class TestSS(StartEnd):
         gv.wait_loading()
         gv.file_info()
     
-    @unittest.skip('skip test_ss_share_editFile')
-    @data(*share_list1)
-    def test_ss_share_editFile(self, share_info):
+    # @unittest.skip('skip test_ss_share_editFile')
+    # @data(*share_list1)
+    def test_ss_share_editFile(self, share_info='qq'):
         """
         编辑文档分享
         :param share_info: 分享相关信息，'wp_wx', 'wp_qq', 'wp_ding', 'wp_mail'..
@@ -70,7 +70,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
     
-    @unittest.skip('skip test_share_newFile')
+    # @unittest.skip('skip test_share_newFile')
     @data(*share_list1)
     def test_share_newFile(self, share_info):
         """
@@ -96,7 +96,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_close_file')
+    # @unittest.skip('skip test_ss_close_file')
     def test_ss_close_file(self, file_type='ss'):
         """
         关闭功能（X）
@@ -110,7 +110,7 @@ class TestSS(StartEnd):
         hp.close_file()
         self.assertTrue(hp.check_close_file())
 
-    @unittest.skip('skip test_ss_save_newFile')
+    # @unittest.skip('skip test_ss_save_newFile')
     def test_ss_save_newFile(self, type='ss'):  # 新建脚本保存
         logging.info('==========test_ss_save_newFile==========')
         hp = SSView(self.driver)
@@ -119,7 +119,7 @@ class TestSS(StartEnd):
         hp.save_new_file(file_name, 'local', 2)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_ss_save_existFile')
+    # @unittest.skip('skip test_ss_save_existFile')
     def test_ss_save_existFile(self, type='ss'):  # 已有文件改动保存
         logging.info('==========test_ss_save_existFile==========')
         gv = SSView(self.driver)
@@ -137,7 +137,7 @@ class TestSS(StartEnd):
         gv.save_file()
         self.assertTrue(gv.check_save_file())
 
-    @unittest.skip('skip test_ss_save_as_newFile')
+    # @unittest.skip('skip test_ss_save_as_newFile')
     def test_ss_save_as_newFile(self, type='ss'):  # 新建脚本另存为
         logging.info('==========test_ss_save_as_newFile==========')
         hp = SSView(self.driver)
@@ -146,7 +146,7 @@ class TestSS(StartEnd):
         hp.save_as_file(file_name, 'local', 1)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_ss_save_as_existFile')
+    # @unittest.skip('skip test_ss_save_as_existFile')
     def test_ss_save_as_existFile(self, type='ss'):  # 已有文件另存为
         logging.info('==========test_ss_save_as_existFile==========')
         hp = SSView(self.driver)
@@ -161,7 +161,7 @@ class TestSS(StartEnd):
         hp.save_as_file(file_name, 'local', 1)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_ss_zoom_pinch')
+    # @unittest.skip('skip test_ss_zoom_pinch')
     def test_ss_zoom_pinch(self, type='ss'):
         logging.info('==========test_ss_zoom_pinch==========')
         hp = SSView(self.driver)
@@ -174,7 +174,7 @@ class TestSS(StartEnd):
         hp.zoom_in()
         hp.zoom_out()
 
-    @unittest.skip('skip test_ss_undo_redo')
+    # @unittest.skip('skip test_ss_undo_redo')
     def test_ss_undo_redo(self, type='ss'):  # 撤销、重做
         logging.info('==========test_ss_undo_redo==========')
         gv = SSView(self.driver)
@@ -217,7 +217,7 @@ class TestSS(StartEnd):
         self.assertLess(result1, 100, 'undo fail!')
         self.assertLess(result2, 100, 'redo fail!')
 
-    @unittest.skip('skip test_ss_signature')
+    # @unittest.skip('skip test_ss_signature')
     def test_ss_signature(self, type='ss'):  # 签批
         logging.info('==========test_ss_signature==========')
         gv = SSView(self.driver)
@@ -238,7 +238,7 @@ class TestSS(StartEnd):
         gv.swipe(200, 600, 900, 600, 500)
         time.sleep(3)
 
-    @unittest.skip('skip test_ss_share_file_edit')
+    # @unittest.skip('skip test_ss_share_file_edit')
     @data(*share_list1)
     def test_ss_share_file_edit(self, way):
         logging.info('==========test_ss_share_file_edit==========')
@@ -261,7 +261,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_share_file_create')
+    # @unittest.skip('skip test_ss_share_file_create')
     @data(*share_list1)
     def test_ss_share_file_create(self, way):
         logging.info('==========test_ss_share_file_create==========')
@@ -281,7 +281,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_share_file')
+    # @unittest.skip('skip test_ss_share_file')
     @data(*share_list1)
     def test_ss_share_file(self, way):  # 分享文件
         logging.info('==========test_ss_share_file==========')
@@ -300,7 +300,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_shape_attr')
+    # @unittest.skip('skip test_ss_shape_attr')
     def test_ss_shape_attr(self, type='ss'):
         logging.info('==========test_ss_shape_attr==========')
         gv = SSView(self.driver)
@@ -310,17 +310,15 @@ class TestSS(StartEnd):
         gv.shape_insert(type, 6, 31)
         gv.shape_insert(type, 6, 32)
         gv.shape_insert(type, 6, 33)
-        ele1 = '//*[@text="形状"]'
-        ele2 = '//*[@text="轮廓"]'
-        ele3 = '//*[@text="效果"]'
-        gv.swipe_ele(ele2, ele1)
-        gv.swipe_ele(ele3, ele1)
+        gv.swipe_options()
+        gv.swipe_options()
+        gv.swipe_options()
         gv.shape_layer('下移一层')
         gv.shape_layer('置于底层')
         gv.shape_layer('上移一层')
         gv.shape_layer('置于顶层')
 
-    @unittest.skip('skip test_ss_shape_attr2')
+    # @unittest.skip('skip test_ss_shape_attr2')
     def test_ss_shape_attr2(self, file_type='ss'):
         logging.info('==========test_ss_shape_attr2==========')
         gv = SSView(self.driver)
@@ -339,7 +337,7 @@ class TestSS(StartEnd):
         gv.shape_effect_type(file_type, 6, 4, 5)
         time.sleep(1)
 
-    @unittest.skip('skip test_ss_shape_attr1')
+    # @unittest.skip('skip test_ss_shape_attr1')
     def test_ss_shape_attr1(self, file_type='ss'):  # 文本框字符属性
         logging.info('==========test_shape_attr1==========')
         gv = SSView(self.driver)
@@ -378,7 +376,7 @@ class TestSS(StartEnd):
         gv.shape_content_align(file_type)
         gv.shape_content_align(file_type, '水平居中', '垂直居中')
 
-    @unittest.skip('skip test_ss_search_replace')
+    # @unittest.skip('skip test_ss_search_replace')
     def test_ss_search_replace(self):  # 查找替换
         logging.info('==========test_ss_search_replace==========')
         gv = SSView(self.driver)
@@ -394,7 +392,7 @@ class TestSS(StartEnd):
         time.sleep(3)
         gv.replace_content('得', 'all')
 
-    @unittest.skip('skip test_ss_scroll_screen')
+    # @unittest.skip('skip test_ss_scroll_screen')
     def test_ss_scroll_screen(self):  # 滚屏
         logging.info('==========test_ss_scroll_screen==========')
         hp = SSView(self.driver)
@@ -412,7 +410,7 @@ class TestSS(StartEnd):
         hp.swipeDown()
         time.sleep(3)
 
-    @unittest.skip('skip test_ss_rotate')
+    # @unittest.skip('skip test_ss_rotate')
     def test_ss_rotate(self):
         logging.info('==========test_ss_rotate==========')
         hp = SSView(self.driver)
@@ -425,7 +423,7 @@ class TestSS(StartEnd):
         self.assertTrue(hp.check_rotate())
         hp.screen_rotate('portrait')
 
-    @unittest.skip('skip test_ss_read_mode')
+    # @unittest.skip('skip test_ss_read_mode')
     def test_ss_read_mode(self):  # 阅读模式
         logging.info('==========test_ss_read_mode==========')
         ss = SSView(self.driver)
@@ -434,7 +432,7 @@ class TestSS(StartEnd):
         ss.switch_write_read()
         self.assertTrue(ss.check_write_read())
 
-    @unittest.skip('skip test_ss_pop_menu_shape')
+    # @unittest.skip('skip test_ss_pop_menu_shape')
     def test_ss_pop_menu_shape(self):  # pg未好
         logging.info('==========test_ss_pop_menu_shape==========')
         gv = SSView(self.driver)
@@ -469,7 +467,7 @@ class TestSS(StartEnd):
         gv.pop_menu_click('selectAll')
         gv.pop_menu_click('delete')
 
-    @unittest.skip('skip test_ss_pop_menu_shape1')
+    # @unittest.skip('skip test_ss_pop_menu_shape1')
     def test_ss_pop_menu_shape1(self):
         logging.info('==========test_ss_pop_menu_shape1==========')
         ss = SSView(self.driver)
@@ -501,7 +499,7 @@ class TestSS(StartEnd):
         x, y = ss.find_pic_position('rotate_free')
         ss.drag_coordinate(x, y, x + 50, y + 50)
 
-    @unittest.skip('skip test_ss_insert_shape')
+    # @unittest.skip('skip test_ss_insert_shape')
     def test_ss_insert_shape(self):
         logging.info('==========test_ss_insert_shape==========')
         ss = SSView(self.driver)
@@ -513,7 +511,7 @@ class TestSS(StartEnd):
             ss.shape_insert('ss', 6, random.randint(1, 42))
         time.sleep(3)
 
-    @unittest.skip('skip test_ss_insert_chart')
+    # @unittest.skip('skip test_ss_insert_chart')
     def test_ss_insert_chart(self):  # 插入图表
         logging.info('==========test_ss_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
@@ -536,7 +534,7 @@ class TestSS(StartEnd):
             ss.chart_template()
         time.sleep(1)
 
-    @unittest.skip('skip test_ss_insert_chart1')
+    # @unittest.skip('skip test_ss_insert_chart1')
     def test_ss_insert_chart1(self):
         logging.info('==========test_ss_insert_chart1==========')
         ss = SSView(self.driver)
@@ -561,7 +559,7 @@ class TestSS(StartEnd):
         ss.change_row_column()
         time.sleep(3)
 
-    @unittest.skip('skip test_ss_expand_fold')
+    # @unittest.skip('skip test_ss_expand_fold')
     def test_ss_expand_fold(self):  # 编辑栏收起展开
         logging.info('==========test_ss_expand_fold==========')
         ss = SSView(self.driver)
@@ -575,7 +573,7 @@ class TestSS(StartEnd):
         ss.fold_expand()
         ss.fold_expand()
 
-    @unittest.skip('skip test_ss_create_file')
+    # @unittest.skip('skip test_ss_create_file')
     def test_ss_create_file(self):  # 新建文档
         logging.info('==========test_ss_create_file==========')
         hp = SSView(self.driver)
@@ -585,7 +583,7 @@ class TestSS(StartEnd):
         self.assertTrue(file_name == create_dict['ss'])
 
     # =======add 2020_01_03=====
-    @unittest.skip('skip test_ss_print')
+    # @unittest.skip('skip test_ss_print')
     @data(*print_ways)
     def test_ss_print(self, print_way='current_table'):
         logging.info('==========test_ss_print==========')
@@ -603,7 +601,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_middle_ok').click()
         self.assertTrue(ss.get_element_result('//*[@text="正在获取准备打印的文件"]'))
 
-    @unittest.skip('skip test_ss_export_each_page_share')
+    # @unittest.skip('skip test_ss_export_each_page_share')
     @data(*index_share_list2)
     def test_ss_export_each_page_share(self, share_way='email'):
         logging.info('==========test_ss_export_each_page_share==========')
@@ -642,7 +640,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_export_each_page_save')
+    # @unittest.skip('skip test_ss_export_each_page_save')
     def test_ss_export_each_page_save(self):
         logging.info('==========test_ss_export_each_page_save==========')
         ss = SSView(self.driver)
@@ -684,9 +682,9 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_save_layout').click()
         self.assertTrue(ss.get_toast_message('已保存到/storage/emulated/0/Pictures') == True, 'toast 未捕捉到')
 
-    @unittest.skip('skip test_ss_export_long_picture_share')
-    @data(*index_share_list2)
-    def test_ss_export_long_picture_share(self, share_way):
+    # @unittest.skip('skip test_ss_export_long_picture_share')
+    # @data(*index_share_list2)
+    def test_ss_export_long_picture_share(self, share_way='qq'):
         logging.info('==========test_ss_export_long_picture_share==========')
         ss = SSView(self.driver)
         search_result = ss.search_file('screen.xls')
@@ -715,6 +713,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_ss_select_range_make_page_ok').click()
 
         logging.info('==========分享==========')
+        time.sleep(3)
         self.driver.find_element(By.ID, 'com.yozo.office:id/rll_export_ss_long_picture_share_layout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/ss_rl_longPic_share_%s' % share_way).click()
 
@@ -723,7 +722,7 @@ class TestSS(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_ss_export_long_picture')
+    # @unittest.skip('skip test_ss_export_long_picture')
     def test_ss_export_long_picture_save(self):
         logging.info('==========test_ss_export_long_picture==========')
         ss = SSView(self.driver)
@@ -759,7 +758,7 @@ class TestSS(StartEnd):
         self.assertTrue(ss.get_toast_message('已保存到/storage/emulated/0/Pictures') == True, 'toast 未捕捉到')
 
     # =======before 2019_12_31=====
-    @unittest.skip('skip test_ss_cell_border')
+    # @unittest.skip('skip test_ss_cell_border')
     def test_ss_cell_border(self):  # 遍历边框所有功能
         logging.info('==========test_ss_cell_border==========')
         ss = SSView(self.driver)
@@ -771,7 +770,7 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.cell_border()
 
-    @unittest.skip('skip test_ss_cell_edit')
+    # @unittest.skip('skip test_ss_cell_edit')
     def test_ss_cell_edit(self):
         logging.info('==========test_ss_cell_edit==========')
         ss = SSView(self.driver)
@@ -792,7 +791,7 @@ class TestSS(StartEnd):
             self.driver.press_keycode(45)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_ss_cell_options')
+    # @unittest.skip('skip test_ss_cell_options')
     def test_ss_cell_options(self):  # 插入删除行宽列高清除
         logging.info('==========test_ss_cell_options==========')
         ss = SSView(self.driver)
@@ -836,7 +835,7 @@ class TestSS(StartEnd):
         ss.cell_fit_width()
         time.sleep(1)
 
-    @unittest.skip('skip test_ss_cell_pop_menu')
+    # @unittest.skip('skip test_ss_cell_pop_menu')
     def test_ss_cell_pop_menu(self):
         logging.info('==========test_ss_cell_pop_menu==========')
         ss = SSView(self.driver)
@@ -873,7 +872,7 @@ class TestSS(StartEnd):
         ss.swipe(x2, y2, x2 - width, y2)
         ss.pop_menu_click('clear_content')
 
-    @unittest.skip('skip test_ss_cell_pop_menu_text')
+    # @unittest.skip('skip test_ss_cell_pop_menu_text')
     def test_ss_cell_pop_menu_text(self):
         logging.info('==========test_ss_cell_pop_menu_text==========')
         ss = SSView(self.driver)
@@ -900,7 +899,7 @@ class TestSS(StartEnd):
         ss.pop_menu_click('newline')
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_ss_cell_select')
+    # @unittest.skip('skip test_ss_cell_select')
     def test_ss_cell_select(self):
         logging.info('==========test_ss_cell_select==========')
 
@@ -929,7 +928,7 @@ class TestSS(StartEnd):
         ss.cell_color()
         ss.cell_align('水平居中', '下对齐')
 
-    @unittest.skip('skip test_ss_cells_select')
+    # @unittest.skip('skip test_ss_cells_select')
     def test_ss_cells_select(self):
         logging.info('==========test_ss_cells_select==========')
         ss = SSView(self.driver)
@@ -941,7 +940,7 @@ class TestSS(StartEnd):
         ss.drag_coordinate(x + width * 2, y + height * 2, x + width * 3, y + height * 3)
         ss.tap(x - 10, y - 10)
 
-    @unittest.skip('skip test_ss_chart_pop')
+    # @unittest.skip('skip test_ss_chart_pop')
     def test_ss_chart_pop(self):  # 图表相关操作
         logging.info('==========test_ss_chart_pop==========')
         ss = SSView(self.driver)
@@ -974,7 +973,7 @@ class TestSS(StartEnd):
         x1, y1 = ss.find_pic_position('chart_all1')
         ss.swipe(x1, y1, x1 + 10, y1 + 10)
 
-    @unittest.skip('skip test_ss_column_options')
+    # @unittest.skip('skip test_ss_column_options')
     def test_ss_column_options(self):
         logging.info('==========test_ss_column_options==========')
         ss = SSView(self.driver)
@@ -1014,7 +1013,7 @@ class TestSS(StartEnd):
         ss.swipe(x3, y3, x3 - width, y3)
         ss.pop_menu_click('hide_cancel')
 
-    @unittest.skip('skip test_ss_data_table')
+    # @unittest.skip('skip test_ss_data_table')
     def test_ss_data_table(self):  # 数据排序，工作表格式
         logging.info('==========test_ss_data_table==========')
         ss = SSView(self.driver)
@@ -1044,7 +1043,7 @@ class TestSS(StartEnd):
         ss.sheet_style('取消冻结')
         ss.sheet_style('100%')
 
-    @unittest.skip('skip test_ss_edit_area_fling')
+    # @unittest.skip('skip test_ss_edit_area_fling')
     def test_ss_edit_area_fling(self):
         logging.info('==========test_ss_edit_area_fling==========')
         ss = SSView(self.driver)
@@ -1056,7 +1055,7 @@ class TestSS(StartEnd):
         ss.swipe_options(ele=ele, option='left')
         ss.swipe_options(ele=ele, option='right')
 
-    @unittest.skip('skip test_ss_worksheet_hide_show')
+    # @unittest.skip('skip test_ss_worksheet_hide_show')
     def test_ss_edit_bar_expand_fold(self):
         logging.info('==========test_ss_edit_bar_expand_fold==========')
         ss = SSView(self.driver)
@@ -1065,7 +1064,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_formula_drop_down').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_formula_drop_down').click()
 
-    @unittest.skip('skip test_ss_filter1')
+    # @unittest.skip('skip test_ss_filter1')
     def test_ss_filter1(self):
         logging.info('==========test_ss_filter1==========')
         ss = SSView(self.driver)
@@ -1095,7 +1094,7 @@ class TestSS(StartEnd):
         self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_customize'))
         self.assertTrue(self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_clean'))
 
-    @unittest.skip('skip test_ss_filter2')
+    # @unittest.skip('skip test_ss_filter2')
     def test_ss_filter2(self):
         logging.info('==========test_ss_filter2==========')
         ss = SSView(self.driver)
@@ -1128,7 +1127,7 @@ class TestSS(StartEnd):
         self.driver.find_element_by_id('com.yozo.office:id/ll_ss_filter_customize').click()
         self.driver.find_element_by_id('com.yozo.office:id/iv_ss_customize_back').click()
 
-    @unittest.skip('skip test_ss_filter_by_color')
+    # @unittest.skip('skip test_ss_filter_by_color')
     def test_ss_filter_by_color(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
@@ -1164,7 +1163,7 @@ class TestSS(StartEnd):
         eles[random.randint(0, len(eles) - 1)].click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv_ss_filter_ok').click()
 
-    @unittest.skip('skip test_ss_filter_by_date')
+    # @unittest.skip('skip test_ss_filter_by_date')
     def test_ss_filter_by_date(self):
         logging.info('==========test_ss_filter_by_date==========')
         ss = SSView(self.driver)
@@ -1194,7 +1193,7 @@ class TestSS(StartEnd):
         #             ss.tap(x1, y1,3)
         #         ss.filter_data(x1, y1, '自定义', cd1, cd2)
 
-    @unittest.skip('skip test_ss_filter_by_num')
+    # @unittest.skip('skip test_ss_filter_by_num')
     def test_ss_filter_by_num(self):
         logging.info('==========test_ss_filter_by_num==========')
         ss = SSView(self.driver)
@@ -1213,7 +1212,7 @@ class TestSS(StartEnd):
         y1 = y - height * 3 - 27
         ss.filter_data(x1, y1, '自定义', num_filter[random.randint(1, 12)], num_filter[random.randint(1, 12)])
 
-    @unittest.skip('skip test_ss_filter_by_num_shortcut')
+    # @unittest.skip('skip test_ss_filter_by_num_shortcut')
     def test_ss_filter_by_num_shortcut(self):
         logging.info('==========test_ss_filter_by_num_shortcut==========')
         ss = SSView(self.driver)
@@ -1242,7 +1241,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="自定义"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="低于平均值"]').click()
 
-    @unittest.skip('skip test_ss_filter_by_text')
+    # @unittest.skip('skip test_ss_filter_by_text')
     def test_ss_filter_by_text(self):
         logging.info('==========test_ss_filter_by_text==========')
         ss = SSView(self.driver)
@@ -1261,7 +1260,7 @@ class TestSS(StartEnd):
         y1 = y - height * 3 - 27
         ss.filter_data(x1, y1, '自定义', text_filter[random.randint(1, 12)], text_filter[random.randint(1, 12)])
 
-    @unittest.skip('skip test_ss_filter_cd1_none')
+    # @unittest.skip('skip test_ss_filter_cd1_none')
     def test_ss_filter_cd1_none(self):
         logging.info('==========test_ss_filter_cd1_none==========')
         ss = SSView(self.driver)
@@ -1287,7 +1286,7 @@ class TestSS(StartEnd):
             self.assertTrue(ss.get_toast_message('第一个条件不能为空'))
             self.driver.find_element(By.ID, 'com.yozo.office:id/iv_ss_customize_back').click()
 
-    @unittest.skip('skip test_ss_formula_auto_sum')
+    # @unittest.skip('skip test_ss_formula_auto_sum')
     def test_ss_formula_auto_sum(self):
         logging.info('==========test_ss_formula_auto_sum==========')
         ss = SSView(self.driver)
@@ -1308,7 +1307,7 @@ class TestSS(StartEnd):
             ss.drag_coordinate(x + width, y + height, x + width, y + height * 5)
             self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_ss_formula_all')
+    # @unittest.skip('skip test_ss_formula_all')
     def test_ss_formula_for_all(self):  # 其他类型公式
         logging.info('==========test_ss_formula_all==========')
 
@@ -1383,7 +1382,7 @@ class TestSS(StartEnd):
         ss.tap(x + width * 0.5, y + height * 10.5)
         self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_ok').click()
 
-    @unittest.skip('skip test_ss_merge_wrap')
+    # @unittest.skip('skip test_ss_merge_wrap')
     def test_ss_merge_wrap(self):
         logging.info('==========test_ss_merge_wrap==========')
 
@@ -1409,7 +1408,7 @@ class TestSS(StartEnd):
         ss.cell_auto_wrap()
         ss.cell_auto_wrap()
 
-    @unittest.skip('skip test_num_style')
+    # @unittest.skip('skip test_num_style')
     def test_ss_num_format(self):
         logging.info('==========test_num_style==========')
         ss = SSView(self.driver)
@@ -1427,7 +1426,7 @@ class TestSS(StartEnd):
         ss.swipe_options(ele, 'up')
         ss.cell_num_format()
 
-    @unittest.skip('skip test_ss_row_options')
+    # @unittest.skip('skip test_ss_row_options')
     def test_ss_row_options(self):
         logging.info('==========test_ss_row_options==========')
         ss = SSView(self.driver)
@@ -1466,7 +1465,7 @@ class TestSS(StartEnd):
         ss.swipe(x3, y3, x3 - width, y3)
         ss.pop_menu_click('hide_cancel')
 
-    @unittest.skip('skip test_ss_show_file_info')
+    # @unittest.skip('skip test_ss_show_file_info')
     def test_ss_show_file_info(self):
         logging.info('==========test_ss_show_file_info==========')
         ss = SSView(self.driver)
@@ -1478,7 +1477,7 @@ class TestSS(StartEnd):
         ss.file_info()
         self.assertTrue(ss.check_file_info())
 
-    @unittest.skip('skip test_ss_worksheet_hide_show')
+    # @unittest.skip('skip test_ss_worksheet_hide_show')
     def test_ss_worksheet_hide_show(self):
         logging.info('==========test_ss_worksheet_hide_show==========')
         ss = SSView(self.driver)
@@ -1489,7 +1488,7 @@ class TestSS(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ss_sheet_iv_back').click()
         self.assertTrue(self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_quick_option_ss_sheet_tabbar'))
 
-    @unittest.skip('skip test_ss_worksheet_options')
+    # @unittest.skip('skip test_ss_worksheet_options')
     def test_ss_worksheet_options(self):
         logging.info('==========test_ss_worksheet_options==========')
         ss = SSView(self.driver)
@@ -1513,7 +1512,7 @@ class TestSS(StartEnd):
         ele2 = self.driver.find_element(By.XPATH, '//*[@text="工作表3"]')
         ss.drag_element(ele1, ele2)
 
-    @unittest.skip('skip test_ss_table_style')
+    # @unittest.skip('skip test_ss_table_style')
     def test_ss_table_style(self):  # 表格样式
         logging.info('==========test_ss_table_style==========')
         ss = SSView(self.driver)

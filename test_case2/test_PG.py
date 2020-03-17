@@ -28,7 +28,7 @@ ss_file = '../screenshots/'
 @ddt
 class TestPG(StartEnd):
     # =======add 2020_02_25===== 拆分共用功能
-    @unittest.skip('skip test_pg_file_info')
+    # @unittest.skip('skip test_pg_file_info')
     def test_pg_file_info(self, file_type='pg'):
         """
         文档信息
@@ -43,7 +43,7 @@ class TestPG(StartEnd):
         gv.wait_loading()
         gv.file_info()
     
-    @unittest.skip('skip test_pg_share_editFile')
+    # @unittest.skip('skip test_pg_share_editFile')
     @data(*share_list1)
     def test_pg_share_editFile(self, share_info):
         """
@@ -70,7 +70,7 @@ class TestPG(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_pg_close_file')
+    # @unittest.skip('skip test_pg_close_file')
     def test_pg_close_file(self, file_type='pg'):
         """
         关闭功能（X）
@@ -84,7 +84,7 @@ class TestPG(StartEnd):
         hp.close_file()
         self.assertTrue(hp.check_close_file())
 
-    @unittest.skip('skip test_pg_save_newFile')
+    # @unittest.skip('skip test_pg_save_newFile')
     def test_pg_save_newFile(self, type='pg'):  # 新建脚本保存
         logging.info('==========test_pg_save_newFile==========')
         hp = PGView(self.driver)
@@ -93,7 +93,7 @@ class TestPG(StartEnd):
         hp.save_new_file(file_name, 'local', 2)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_pg_save_existFile')
+    # @unittest.skip('skip test_pg_save_existFile')
     def test_pg_save_existFile(self, type='pg'):  # 已有文件改动保存
         logging.info('==========test_pg_save_existFile==========')
         gv = PGView(self.driver)
@@ -111,7 +111,7 @@ class TestPG(StartEnd):
         gv.save_file()
         self.assertTrue(gv.check_save_file())
 
-    @unittest.skip('skip test_pg_save_as_newFile')
+    # @unittest.skip('skip test_pg_save_as_newFile')
     def test_pg_save_as_newFile(self, type='pg'):  # 新建脚本另存为
         logging.info('==========test_pg_save_as_newFile==========')
         hp = PGView(self.driver)
@@ -120,7 +120,7 @@ class TestPG(StartEnd):
         hp.save_as_file(file_name, 'local', 1)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_pg_save_as_existFile')
+    # @unittest.skip('skip test_pg_save_as_existFile')
     def test_pg_save_as_existFile(self, type='pg'):  # 已有文件另存为
         logging.info('==========test_pg_save_as_existFile==========')
         hp = PGView(self.driver)
@@ -135,7 +135,7 @@ class TestPG(StartEnd):
         hp.save_as_file(file_name, 'local', 1)
         self.assertTrue(hp.check_save_file())
 
-    @unittest.skip('skip test_pg_zoom_pinch')
+    # @unittest.skip('skip test_pg_zoom_pinch')
     def test_pg_zoom_pinch(self, type='ss'):
         logging.info('==========test_pg_zoom_pinch==========')
         hp = PGView(self.driver)
@@ -148,7 +148,7 @@ class TestPG(StartEnd):
         hp.zoom_in()
         hp.zoom_out()
 
-    @unittest.skip('skip test_pg_undo_redo')
+    # @unittest.skip('skip test_pg_undo_redo')
     def test_pg_undo_redo(self, type='pg'):  # 撤销、重做
         logging.info('==========test_pg_undo_redo==========')
         gv = PGView(self.driver)
@@ -191,7 +191,7 @@ class TestPG(StartEnd):
         self.assertLess(result1, 100, 'undo fail!')
         self.assertLess(result2, 100, 'redo fail!')
 
-    @unittest.skip('skip test_pg_signature')
+    # @unittest.skip('skip test_pg_signature')
     def test_pg_signature(self, type='pg'):  # 签批
         logging.info('==========test_pg_signature==========')
         gv = PGView(self.driver)
@@ -212,7 +212,7 @@ class TestPG(StartEnd):
         gv.swipe(200, 600, 900, 600, 500)
         time.sleep(3)
 
-    @unittest.skip('skip test_pg_share_file_edit')
+    # @unittest.skip('skip test_pg_share_file_edit')
     @data(*share_list1)
     def test_pg_share_file_edit(self, way):
         logging.info('==========test_pg_share_file_edit==========')
@@ -235,7 +235,7 @@ class TestPG(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_pg_share_file_create')
+    # @unittest.skip('skip test_pg_share_file_create')
     @data(*share_list1)
     def test_pg_share_file_create(self, way):
         logging.info('==========test_pg_share_file_create==========')
@@ -255,7 +255,7 @@ class TestPG(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_pg_share_file')
+    # @unittest.skip('skip test_pg_share_file')
     @data(*share_list1)
     def test_pg_share_file(self, way):  # 分享文件
         logging.info('==========test_pg_share_file==========')
@@ -274,10 +274,11 @@ class TestPG(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    @unittest.skip('skip test_shape_attr')
+    # @unittest.skip('skip test_shape_attr')
     def test_shape_attr(self, type='pg'):
         logging.info('==========test_shape_attr==========')
         gv = PGView(self.driver)
+        gv.create_file('pg')
         gv.group_button_click('插入')
         gv.insert_shape(type, 6, 30)
         gv.shape_insert(type, 6, 31)
@@ -286,9 +287,8 @@ class TestPG(StartEnd):
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
         ele3 = '//*[@text="效果"]'
-        if type == 'pg':
-            ele0 = '//*[@text="插入"]'
-            gv.swipe_ele(ele0, ele1)
+        ele0 = '//*[@text="插入"]'
+        gv.swipe_ele(ele0, ele1)
         gv.swipe_ele(ele2, ele1)
         gv.swipe_ele(ele3, ele1)
         gv.shape_layer('下移一层')
@@ -296,7 +296,7 @@ class TestPG(StartEnd):
         gv.shape_layer('上移一层')
         gv.shape_layer('置于顶层')
 
-    @unittest.skip('skip test_shape_attr2')
+    # @unittest.skip('skip test_shape_attr2')
     def test_shape_attr2(self, file_type='pg'):
         logging.info('==========test_shape_attr2==========')
         gv = PGView(self.driver)
@@ -317,7 +317,7 @@ class TestPG(StartEnd):
         gv.shape_effect_type(file_type, 6, 4, 5)
         time.sleep(1)
 
-    @unittest.skip('skip test_pg_shape_attr1')
+    # @unittest.skip('skip test_pg_shape_attr1')
     def test_pg_shape_attr1(self, file_type='pg'):  # 文本框字符属性
         logging.info('==========test_pg_shape_attr1==========')
         gv = PGView(self.driver)
@@ -348,7 +348,7 @@ class TestPG(StartEnd):
         gv.shape_content_align(file_type)
         gv.shape_content_align(file_type, '水平居中', '垂直居中')
 
-    @unittest.skip('skip test_pg_search_replace')
+    # @unittest.skip('skip test_pg_search_replace')
     def test_pg_search_replace(self):  # 查找替换
         logging.info('==========test_pg_search_replace==========')
         gv = PGView(self.driver)
@@ -363,7 +363,7 @@ class TestPG(StartEnd):
         time.sleep(3)
         gv.replace_content('得', 'all')
 
-    @unittest.skip('skip test_pg_scroll_screen')
+    # @unittest.skip('skip test_pg_scroll_screen')
     def test_pg_scroll_screen(self):  # 滚屏
         logging.info('==========test_pg_scroll_screen==========')
         hp = PGView(self.driver)
@@ -378,7 +378,7 @@ class TestPG(StartEnd):
         hp.swipeRight()
         time.sleep(3)
 
-    @unittest.skip('skip test_pg_rotate')
+    # @unittest.skip('skip test_pg_rotate')
     def test_pg_rotate(self):
         logging.info('==========test_pg_rotate==========')
         hp = PGView(self.driver)
@@ -391,7 +391,7 @@ class TestPG(StartEnd):
         self.assertTrue(hp.check_rotate())
         hp.screen_rotate('portrait')
 
-    @unittest.skip('skip test_pg_read_mode')
+    # @unittest.skip('skip test_pg_read_mode')
     def test_pg_read_mode(self):  # 阅读模式
         logging.info('==========test_pg_read_mode==========')
         pg = PGView(self.driver)
@@ -400,7 +400,7 @@ class TestPG(StartEnd):
         pg.switch_write_read()
         self.assertTrue(pg.check_write_read())
 
-    @unittest.skip('skip test_pg_pop_menu_shape')
+    # @unittest.skip('skip test_pg_pop_menu_shape')
     def test_pg_pop_menu_shape(self):  # pg未好
         logging.info('==========test_pg_pop_menu_shape==========')
         gv = PGView(self.driver)
@@ -437,7 +437,7 @@ class TestPG(StartEnd):
         # gv.pop_menu_click('selectAll')
         gv.pop_menu_click('delete')
 
-    @unittest.skip('skip test_pop_menu_shape1_ws')
+    # @unittest.skip('skip test_pop_menu_shape1_ws')
     def test_pop_menu_shape1(self):
         logging.info('==========test_pop_menu_shape1_ws==========')
         pg = PGView(self.driver)
@@ -472,7 +472,7 @@ class TestPG(StartEnd):
         x, y = pg.find_pic_position('rotate_free')
         pg.drag_coordinate(x, y, x + 50, y + 50)
 
-    @unittest.skip('skip test_pg_insert_shape')
+    # @unittest.skip('skip test_pg_insert_shape')
     def test_pg_insert_shape(self):
         logging.info('==========test_pg_insert_shape==========')
         pg = PGView(self.driver)
@@ -484,7 +484,7 @@ class TestPG(StartEnd):
             pg.shape_insert('pg', 6, random.randint(1, 42))
         time.sleep(3)
 
-    @unittest.skip('skip test_pg_insert_chart')
+    # @unittest.skip('skip test_pg_insert_chart')
     def test_pg_insert_chart(self):  # 插入图表
         logging.info('==========test_pg_insert_chart==========')
         chart_list = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图',
@@ -501,7 +501,7 @@ class TestPG(StartEnd):
             pg.chart_template()
         time.sleep(1)
 
-    @unittest.skip('skip test_pg_insert_chart1')
+    # @unittest.skip('skip test_pg_insert_chart1')
     def test_pg_insert_chart1(self):
         logging.info('==========test_pg_insert_chart1==========')
         pg = PGView(self.driver)
@@ -522,7 +522,7 @@ class TestPG(StartEnd):
         pg.change_row_column()
         time.sleep(3)
 
-    @unittest.skip('skip test_pg_export_pdf')
+    # @unittest.skip('skip test_pg_export_pdf')
     def test_pg_export_pdf(self):  # 导出pdf
         logging.info('==========test_pg_export_pdf==========')
         pg = PGView(self.driver)
@@ -537,21 +537,21 @@ class TestPG(StartEnd):
 
         self.assertTrue(pg.check_export_pdf())
 
-    @unittest.skip('skip test_pg_expand_fold')
+    # @unittest.skip('skip test_pg_expand_fold')
     def test_pg_expand_fold(self):  # 编辑栏收起展开
         logging.info('==========test_pg_expand_fold==========')
         pg = PGView(self.driver)
 
         file_name = '欢迎使用永中Office.pptx'
         search_result = pg.search_file(file_name)
-        self.apgertTrue(search_result, '查找失败')
+        self.assertTrue(search_result, '查找失败')
         open_result = pg.open_file(file_name)
-        self.apgertTrue(open_result, '打开失败')
+        self.assertTrue(open_result, '打开失败')
         pg.switch_write_read()
         pg.fold_expand()
         pg.fold_expand()
 
-    @unittest.skip('skip test_pg_create_file')
+    # @unittest.skip('skip test_pg_create_file')
     def test_pg_create_file(self):  # 新建文档
         logging.info('==========test_pg_create_file==========')
         hp = PGView(self.driver)
@@ -561,7 +561,7 @@ class TestPG(StartEnd):
         self.assertTrue(file_name == create_dict['pg'])
 
     # =======before 2019_12_31=====
-    @unittest.skip('skip test_ppt_add_scroll_comment')
+    # @unittest.skip('skip test_ppt_add_scroll_comment')
     def test_ppt_add_scroll_comment(self):  # ppt缩略图滚屏备注
         logging.info('==========test_ppt_add_scroll_comment==========')
         pg = PGView(self.driver)
@@ -581,7 +581,7 @@ class TestPG(StartEnd):
         pg.delete_comment()
         time.sleep(1)
 
-    @unittest.skip('skip test_ppt_format')
+    # @unittest.skip('skip test_ppt_format')
     def test_ppt_format(self):
         logging.info('==========test_ppt_format==========')
         format = ['标题与副标题', '标题', '标题与文本', '标题与两栏文本', '标题与竖排文本-上下', '标题与竖排文本-左右',
@@ -593,7 +593,7 @@ class TestPG(StartEnd):
             pg.edit_format(i)
         time.sleep(3)
 
-    @unittest.skip('skip test_ppt_slide')
+    # @unittest.skip('skip test_ppt_slide')
     def test_ppt_slide(self):  # 幻灯片复制、剪切、粘贴
         logging.info('==========test_ppt_slide==========')
         hp = HomePageView(self.driver)
@@ -646,7 +646,7 @@ class TestPG(StartEnd):
 
         time.sleep(3)
 
-    @unittest.skip('skip test_ppt_template')
+    # @unittest.skip('skip test_ppt_template')
     def test_ppt_template(self):
         logging.info('==========test_ppt_template==========')
         pg = PGView(self.driver)
@@ -656,7 +656,7 @@ class TestPG(StartEnd):
             pg.edit_template(i)
         time.sleep(3)
 
-    @unittest.skip('skip test_shape_text_attr_pg')
+    # @unittest.skip('skip test_shape_text_attr_pg')
     def test_ppt_shape_text_attr(self):  # 自选图形文本属性，仅WP和PG
         logging.info('==========test_ppt_shape_text_attr==========')
         type = 'pg'
@@ -689,7 +689,7 @@ class TestPG(StartEnd):
 
     logging.info('==========2019-11-05 add==========')
 
-    @unittest.skip('skip test_ppt_insert_new')
+    # @unittest.skip('skip test_ppt_insert_new')
     def test_ppt_insert_new(self):
         logging.info('==========test_ppt_insert_new==========')
         pg = PGView(self.driver)
@@ -737,7 +737,7 @@ class TestPG(StartEnd):
         os.remove(ss_file + 'new_second.png')
         os.remove(ss_file + 'new_third.png')
 
-    @unittest.skip('skip test_ppt_play_to_first')
+    # @unittest.skip('skip test_ppt_play_to_first')
     @data(*['current', 'first'])
     def test_ppt_play_to_first(self, play_type):
         logging.info('==========test_ppt_play_to_first==========')
@@ -771,7 +771,7 @@ class TestPG(StartEnd):
         # else:
         #     self.assertEqual(toast.text, '已是简报首页', '验证弹窗信息为已是简报首页')
 
-    @unittest.skip('skip test_ppt_play_to_last')
+    # @unittest.skip('skip test_ppt_play_to_last')
     @data(*['current', 'first'])
     def test_ppt_play_to_last(self, play_type):
         logging.info('==========test_ppt_play_to_last==========')
@@ -805,7 +805,7 @@ class TestPG(StartEnd):
         else:
             self.assertEqual(toast.text, '已是简报尾页', '验证弹窗信息为已是简报尾页')
 
-    @unittest.skip('skip test_ppt_autoplay_to_last')
+    # @unittest.skip('skip test_ppt_autoplay_to_last')
     def test_ppt_autoplay_to_last(self):
         logging.info('==========test_ppt_autoplay_to_last==========')
         pg = PGView(self.driver)
@@ -837,7 +837,7 @@ class TestPG(StartEnd):
             toast = self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_dialog_pgplay_tiptext_id')
             self.assertEqual(toast.text, '已是简报尾页', '验证弹窗信息为已是简报尾页')
 
-    @unittest.skip('skip test_ppt_play_switch')
+    # @unittest.skip('skip test_ppt_play_switch')
     @data(*switch_list)
     def test_ppt_play_switch(self, switch):  # 幻灯片切换
         logging.info('==========test_ppt_play_switch==========')
