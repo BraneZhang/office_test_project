@@ -1,14 +1,14 @@
 desc: vivoX9 Plus
-port: 4723
-bp: 4724
-ip: 127.0.0.1
+#port: 4723
+#bp: 4724
+#ip: 127.0.0.1
 desired_caps:
-  deviceName: vivoX9 Plus
-  udid: 9613fafd
-  platformVersion: 7.1.2
+  deviceName: yeshen
+#  udid: 9613fafd
+  platformVersion: 5.1.1
   platformName: Android
   automationName: uiautomator2
-  systemPort: 8200
+#  systemPort: 8200
   appPackage: com.yozo.office
 #  appPackage: com.ebensz.office.entry
   noReset:  !!bool True

@@ -5,10 +5,9 @@ import logging
 import logging.config
 import os
 
-from airtest.core.api import auto_setup
 from appium import webdriver
 
-from common.tool import Device_Select
+from test_run.run_batch_open import port, bootstrap, udid, systemPort, ip
 
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
@@ -38,14 +37,14 @@ def get_desired_caps1(devices='vivoX9'):
 def start_server():
     logging.info('start appium')
     data = get_desired_caps()
-    port, bp, udid = data['port'], data['bp'], data['desired_caps']['udid']
+    # port, bp, udid = data['port'], data['bp'], data['desired_caps']['udid']
     cmd = os.popen('netstat -ano | findstr "%s" ' % port)
     msg = cmd.read()
     if "LISTENING" in msg:
         print("appium服务已经启动：%s" % msg)
     else:
         print("appium服务启动：%s" % msg)
-        os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (port, bp, udid))
+        os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (str(port), str(bootstrap), udid))
         time.sleep(5)
 
 
@@ -64,6 +63,7 @@ def appium_desired1():
 def appium_desired():
     data = get_desired_caps()
     desired_caps = data['desired_caps']
+    desired_caps['systemPort'] = systemPort
     # 使用adb shell input 代替Yosemite输入  ?ime_method=ADBIME
     # from airtest.core.api import *
     # text("hello")
@@ -86,7 +86,7 @@ def appium_desired():
     # desired_caps['resetKeyboard']=data['resetKeyboard']
 
     logging.info('start app...')
-    driver = webdriver.Remote('http://%s:%s/wd/hub' % (data['ip'], data['port']), desired_caps)
+    driver = webdriver.Remote('http://%s:%s/wd/hub' % ((ip, str(port))), desired_caps)
     driver.implicitly_wait(3)
 
     return driver
