@@ -15,6 +15,16 @@ from functools import reduce
 from selenium.webdriver.common.by import By
 
 
+class Device():
+
+    dev = None
+
+    def set_dev(self,device):
+        Device.dev = device
+
+    def get_dev(self):
+        return Device.dev
+
 def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件夹
     pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
     for i in path:

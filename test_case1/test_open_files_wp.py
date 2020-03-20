@@ -9,8 +9,8 @@ from businessView.homePageView import HomePageView
 from common.myunit import StartEnd
 from common.tool import get_files_list, copy_file_to_wrong
 
-path = r'E:\MSfiles\MS2003files\DOC'
-path1 = r'E:\MSfiles\MS2007files\docx'
+path = r'D:\MSfiles\MS2003files\DOC'
+path1 = r'D:\MSfiles\MS2007files\docx'
 
 wp03_dirs = ['10000-10999', '11000-11999', '12000-12999', '13000-13999', '14000-14999', '15000-15999', '16000-16999',
              '17000-17999', '18000-18999', '19000-19999', '20000-20999', '21000-21999', '22000-22999', '23000-23999',
@@ -33,8 +33,9 @@ wp07_dirs = ['10000-10999', '11000-11999', '12000-12999', '13000-13999', '14000-
              '59000-59999', '60000-60999', '61000-61999', '62000-62999', '63000-63999', '64000-64999', '65000-65999',
              '66000-66999', '67000-67999', '68000-68999', '69000-69999', '70000-70999', '71000-71999', '72000-72999',
              '73000-73999', '74000-74999', '75000-75999', '76000-76999', '77000-77562']
-wp03_test_dirs = wp03_dirs  # 03文档需要跑的文件夹
-wp07_test_dirs = wp07_dirs  # 07文档需要跑的文件夹
+wp03_test_dirs = ['31000-31999']  # 03文档需要跑的文件夹
+wp07_test_dirs = ['18000-18999', '28000-28999', '69000-69999', '70000-70999', '71000-71999', '72000-72999',
+                  '73000-73999', '74000-74999', '75000-75999', '76000-76999', '77000-77562']  # 07文档需要跑的文件夹
 
 path03_list = []
 file03_list = []
@@ -46,7 +47,7 @@ for i in path03_list:
 path07_list = []
 file07_list = []
 for i in wp07_test_dirs:
-    path07_list.append(os.path.join(path, i))
+    path07_list.append(os.path.join(path1, i))
 for i in path07_list:
     file07_list = file07_list + get_files_list(i)
 
@@ -54,8 +55,8 @@ for i in path07_list:
 @ddt
 class OpenFiles_WP(StartEnd):
 
-    @unittest.skip('skip test_bat_open_files07')
-    # @data(*file07_list)
+    # @unittest.skip('skip test_bat_open_files07')
+    @data(*file07_list)
     def test_bat_open_files07(self, file_name=''):
         logging.info('==========正在打开%s==========' % file_name)
 
@@ -71,13 +72,14 @@ class OpenFiles_WP(StartEnd):
         if not open_result:
             copy_file_to_wrong(*path07_list, file_name=file_name)
         self.assertTrue(open_result, 'open file failed')
+        hp.close_file()
         close_result = hp.check_close_file()
         if not close_result:
             copy_file_to_wrong(*path07_list, file_name=file_name)
         self.assertTrue(close_result, msg='close file failed')
 
-    @unittest.skip('skip test_bat_open_files03')
-    # @data(*file03_list)
+    # @unittest.skip('skip test_bat_open_files03')
+    @data(*file03_list)
     def test_bat_open_files03(self, file_name=''):
         logging.info('==========正在打开%s==========' % file_name)
 
