@@ -6,13 +6,15 @@ from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
 from businessView.homePageView import HomePageView
-from common.desired_caps import  udid
+from common.device import Device
 from common.myunit import StartEnd
-from common.tool import copy_file_to_wrong, Device
+from common.tool import copy_file_to_wrong
 from test_run.run_batch_open import test_dirs, dir_path
 
 path_list = []
 suffix_path = []
+
+udid = Device().get_udid()
 
 for i in test_dirs:
     sub_dir_path = os.path.join(dir_path, i)
@@ -26,12 +28,6 @@ for i in test_dirs:
     for root, dirs, files in os.walk(sub_dir_path):
         for file in files:
             suffix_path.append(i + '/' + file)
-
-
-# for i in path_list:
-#     file_list = file_list + get_files_list(i)
-#     os.system('adb -s %s push %s /mnt/shell/emulated/0' % (udid, i))
-
 
 @ddt
 class openFiles(StartEnd):

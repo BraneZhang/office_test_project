@@ -4,9 +4,10 @@ import unittest
 import time, logging
 import sys
 
+from common.device import Device
+
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
-from common.tool import Device
 
 test_dir = '../test_case1'
 report_dir = '../reports'

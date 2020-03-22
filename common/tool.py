@@ -15,16 +15,6 @@ from functools import reduce
 from selenium.webdriver.common.by import By
 
 
-class Device():
-    dev = None
-
-    def set_dev(self, device):
-        Device.dev = device
-
-    def get_dev(self):
-        return Device.dev
-
-
 def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件夹
     pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
     for i in path:
@@ -83,10 +73,6 @@ def get_online_templates_name(file_type='pg'):  # 获取所有在线模板的名
     # html = requests.get(url).content.decode('gbk')
     # print(html)
     # toc_url_list = get_toc(html, start_url)
-
-
-class Device_Select(object):  # 选择使用的设备
-    pass
 
 
 def ele_screenshots(ele, pic_name):

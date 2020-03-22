@@ -1,9 +1,8 @@
 import unittest
-from common.desired_caps import start_server, appium_desired
+from common.desired_caps import start_server, appium_desired, stop_server
 import logging
 import warnings
 
-from common.start import stop_server
 
 
 class StartEnd(unittest.TestCase):

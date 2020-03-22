@@ -8,14 +8,14 @@ import os
 from appium import webdriver
 
 from appium_sync.check_port import release_port
-from common.tool import Device
+from common.device import Device
 
 device = Device().get_dev()
 
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
 logging = logging.getLogger()
-udid = ''
+
 
 def get_desired_caps(devices='yeshen01'):
     with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
@@ -25,10 +25,6 @@ def get_desired_caps(devices='yeshen01'):
             return i
     logging.error('设备不在配置表中')
     return {}
-
-
-# data = get_desired_caps(device)
-# udid = data['desired_caps']['udid']
 
 
 def stop_server():
@@ -50,7 +46,7 @@ def start_server():
     # if "LISTENING" in msg:
     #     print("appium服务已经启动：%s" % msg)
     # else:
-        # print("appium服务启动：%s" % msg)
+    # print("appium服务启动：%s" % msg)
     os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (port, bootstrap, udid))
     time.sleep(5)
 
