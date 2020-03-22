@@ -16,14 +16,14 @@ from selenium.webdriver.common.by import By
 
 
 class Device():
-
     dev = None
 
-    def set_dev(self,device):
+    def set_dev(self, device):
         Device.dev = device
 
     def get_dev(self):
         return Device.dev
+
 
 def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件夹
     pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
@@ -32,6 +32,7 @@ def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件�
             shutil.copy(os.path.join(i, file_name), pc_path)
         except Exception:
             pass
+
 
 def get_files_list(path):
     file_list = []
@@ -186,33 +187,25 @@ def chart(self, i):
 
 
 if __name__ == '__main__':
-    files1 = 'dfd.xls'
-    files2 = 'ddfd.xlsx'
-    files3 = 'ddfd.xlsm'
-    print( not files1.endswith(('.xls','xlsx')))
-    print(files2.endswith(('.xls','xlsx')))
-    print(files3.endswith(('.xls','xlsx')))
-
-    # path = r'D:\1111\pdf测试文档'
+    dir_path = r'D:\MSfiles\MS2007files\xlsx\44000-44999'
+    print(dir_path)
+    file = r'44000-44999\45633.xlsx'
+    files = file.split('\\')[-1]
+    print(files)
+    # ro = ''
+    # dir = ''
+    # file1= []
+    # i = 'aaaa'
+    # suffix_path = []
+    # for root, dirs, files in os.walk(dir_path):
+    #     print(root)
+    #     print(dirs)
+    #     # print(files)
+    #     file1 = file1 + files
+    #     for file in files:
+    #         suffix_path.append(i + '/' + file)
     #
-    # # sub_list = ['大于10M','公文pdf']
-    # sub_list = ['大于10M']
-    # path_list = []
-    # file_list = []
-    # for i in sub_list:
-    #     path_list.append(os.path.join(path, i))
-    # for i in path_list:
-    #     file_list = file_list + get_files_list(i)
-    # # for i in path_list:
-    #     # time0  = time
-    #     # if os.path.exists(os.path.join(i,'万达电影2011-11.pdf')):
-    # # pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
-    #
-    # copy_file_to_wrong(*path_list, file_name='黑客入门全程图解.pdf')
-    # for i in path_list:
-    #     try:
-    #         shutil.copy(os.path.join(path,i,'2014092914151166830261.pdf'), pc_path)
-    #     except Exception:
-    #          pass
-    # print(file_list)
-    # print(len(file_list))
+    # # print(file1)
+    # print(len(file1))
+    # # print(suffix_path)
+    # print(len(suffix_path))

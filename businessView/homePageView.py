@@ -195,12 +195,14 @@ class HomePageView(Common):
     def open_local_folder(self, folder_type):  # 打开本地文档
         logging.info('==========open_local_folder==========')
         # folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信']
+        if folder_type == '微信':
+            self.swipe_options('//*[@resource-id="com.yozo.office:id/lv_floder_list"]')
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder_type).click()
 
     def check_open_folder(self, folder):
         logging.info('==========check_open_folder==========')
         folder_dict = {'手机': '浏览目录 > 手机', '我的文档': ' > Documents', 'Download': ' > Download',
-                       'QQ': ' > QQfile_recv', '微信': ' > Download'}
+                       'QQ': ' > QQfile_recv', '微信': ' > Download','TIM':' > TIMfile_recv'}
         path = self.driver.find_elements(By.XPATH, '//*[@resource-id="com.yozo.office:id/name_layout"]'
                                                    '/android.widget.TextView')[-1].text
         if path == folder_dict[folder]:
@@ -212,7 +214,7 @@ class HomePageView(Common):
         logging.info('==========search_file==========')
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
         logging.info('input keyword %s' % keyword)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(os.path.splitext(keyword)[0])
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
         logging.info('searching...')
         result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
@@ -225,6 +227,25 @@ class HomePageView(Common):
             self.getScreenShot('no file')
             return False
         else:
+            logging.info('got it!!!')
+            return True
+    def search_file1(self, keyword):
+        logging.info('==========search_file==========')
+        logging.info('input keyword %s' % keyword)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
+        logging.info('searching...')
+        result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
+        if not result:
+            logging.error('searching timeout!')
+            self.getScreenShot('searching timeout')
+            return False
+        if not self.get_element_result('//android.widget.TextView[@text="%s"]' % keyword):
+            logging.error('no file!')
+            self.getScreenShot('no file')
+            return False
+        else:
+            logging.info('got it!!!')
             return True
 
     def jump_to_index(self, file_type='last'):  # 5个主页界面
@@ -345,7 +366,7 @@ class HomePageView(Common):
         upway = random.randint(0, 2)
         if upway == 0:
             self.driver.find_element(By.ID, 'com.yozo.office:id/photo_sec').click()
-            self.driver.find_element(By.XPATH, '//android.support.v7.widget.RecyclerView'
+            self.driver.find_element(By.XPATH, '//androidx.recyclerview.widget.RecyclerView'
                                                '/android.widget.FrameLayout[1]').click()
             self.driver.find_element(By.ID, 'com.yozo.office:id/button_apply').click()
         else:
@@ -522,7 +543,7 @@ class HomePageView(Common):
             self.getScreenShot(file_name + ' open fail')
             return False
         else:
-            logging.info(file_name + 'open success!')
+            logging.info(file_name + ' open success!')
             return True
 
     def open_random_file(self, keywords):

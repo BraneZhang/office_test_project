@@ -7,7 +7,7 @@ import os
 
 from appium import webdriver
 
-# from test_run.run_batch_open import port, bootstrap, udid, ip, systemPort
+from appium_sync.check_port import release_port
 from common.tool import Device
 
 device = Device().get_dev()
@@ -15,44 +15,48 @@ device = Device().get_dev()
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
 logging = logging.getLogger()
+udid = ''
 
-
-def get_desired_caps(devices='vivoX9'):
+def get_desired_caps(devices='yeshen01'):
     with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
         devices_data = yaml.load(file, Loader=yaml.FullLoader)
-    # print(f'devices_data:{devices_data}')
-    device = ''
     for i in devices_data:
-        # priant(i)
-        if devices in i['desc']:
-            device = i
-    if device:
-        return device
-    else:
-        logging.error('设备不在配置表中')
+        if devices == i['desc']:
+            return i
+    logging.error('设备不在配置表中')
+    return {}
 
 
-data = get_desired_caps(device)
+# data = get_desired_caps(device)
+# udid = data['desired_caps']['udid']
+
+
+def stop_server():
+    data = get_desired_caps(device)
+    port = data['port']
+    release_port(port)
 
 
 def start_server():
+    data = get_desired_caps(device)
     port, bootstrap, udid = data['port'], data['bp'], data['desired_caps']['udid']
-    # os.system('adb connect %s' % udid)
-    # logging.info('connect devices>>>>>>>>>>>>>')
+    # 释放端口
+    release_port(port)
 
     logging.info('start appium')
+
     # cmd = os.popen('netstat -ano | findstr "%s" ' % port)
-    cmd = os.popen('netstat -ano | findstr "%s" ' % port)
-    msg = cmd.read()
-    if "LISTENING" in msg:
-        print("appium服务已经启动：%s" % msg)
-    else:
-        print("appium服务启动：%s" % msg)
-        os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (port, bootstrap, udid))
-        time.sleep(5)
+    # msg = cmd.read()
+    # if "LISTENING" in msg:
+    #     print("appium服务已经启动：%s" % msg)
+    # else:
+        # print("appium服务启动：%s" % msg)
+    os.system("start /b appium -a 127.0.0.1 --session-override -p %s -bp %s -U %s" % (port, bootstrap, udid))
+    time.sleep(5)
 
 
 def appium_desired():
+    data = get_desired_caps(device)
     desired_caps = data['desired_caps']
     # desired_caps['systemPort'] = systemPort
     # 使用adb shell input 代替Yosemite输入  ?ime_method=ADBIME
@@ -84,11 +88,18 @@ def appium_desired():
 
 
 if __name__ == '__main__':
-    data = get_desired_caps('yeshen01')
-    print(data)
-    print(type(data))
-    print(data['desired_caps']['udid'])
-    # print(data)
-
-    # ss = ['A','B','C']
-    # print(ss.index('C'))
+    with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
+        devices_data = yaml.load(file, Loader=yaml.FullLoader)
+    # print(f'devices_data:{devices_data}')
+    # print(devices_data)
+    devices = 'yeshen01'
+    device = None
+    for i in devices_data:
+        # priant(i)
+        if devices == i['desc']:
+            device = i
+            break
+    if device:
+        print(device)
+    else:
+        logging.error('设备不在配置表中')

@@ -1,0 +1,10 @@
+ip: 127.0.0.1
+deviceName: yeshen
+platformVersion: 5.1.1
+platformName: Android
+automationName: uiautomator2
+appPackage: com.yozo.office
+noReset:  !!bool True
+appActivity: com.yozo.home.WelcomeActivity #真机需要从最开始的activity进入
+newCommandTimeout: 120
+

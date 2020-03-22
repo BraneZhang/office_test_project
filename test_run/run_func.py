@@ -4,8 +4,6 @@ import unittest
 import time, logging
 import sys
 
-from common.tool import Device_Select
-
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
 
@@ -14,7 +12,7 @@ report_dir = '../reports'
 # test_dir = 'D:/PycharmProjects/office_test_project/test_case'
 # report_dir = 'D:/PycharmProjects/office_test_project/reports'
 
-discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_SS.py')
+discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_*.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
 with open(r'%s' % report_name, 'wb') as f:
