@@ -38,13 +38,15 @@ def start_server():
     device = Device.dev
     data = get_desired_caps(device)
     Device.data = data
-    print(f'data:{data}')
+    # print(f'data:{data}')
     port, bootstrap, udid = data['port'], data['bp'], data['desired_caps']['udid']
     Device.udid = udid
 
     # 连接设备
     logging.info('adb connect device')
     os.system('adb connect %s' % udid)
+    os.system('adb connect %s' % udid)
+    time.sleep(3)
 
     # 释放端口
     release_port(port)
