@@ -4,10 +4,10 @@ import unittest
 import time, logging
 import sys
 
-from common.device import Device
 
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
+from common.device import Device
 
 test_dir = '../test_case1'
 report_dir = '../reports'
@@ -18,9 +18,9 @@ report_dir = '../reports'
 dir_path = r'D:\MSfiles\MS2007files\xlsx'
 test_dirs = ['44000-44999']
 # 选取需要跑的模拟器
-Device().set_dev('yeshen01')
+Device.dev = '127.0.0.1:62025'
 
-discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_open_files_ss.py')
+discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_open_files.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
 with open(r'%s' % report_name, 'wb') as f:
@@ -28,3 +28,5 @@ with open(r'%s' % report_name, 'wb') as f:
                                            description='yozo Android app test report')
     logging.info('start run test case...')
     runner.run(discover)
+
+

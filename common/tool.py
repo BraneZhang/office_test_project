@@ -15,13 +15,12 @@ from functools import reduce
 from selenium.webdriver.common.by import By
 
 
-def copy_file_to_wrong(*path, file_name):  # 拷贝失败文件去错误文件夹
+def copy_file_to_wrong(path, file_name):  # 拷贝失败文件去错误文件夹
     pc_path = os.path.join(os.path.expanduser("~"), 'Desktop', 'wrong')
-    for i in path:
-        try:
-            shutil.copy(os.path.join(i, file_name), pc_path)
-        except Exception:
-            pass
+    try:
+        shutil.copy(os.path.join(path, file_name), pc_path)
+    except Exception:
+        logging.info(file_name + 'copy to desktop failed')
 
 
 def get_files_list(path):

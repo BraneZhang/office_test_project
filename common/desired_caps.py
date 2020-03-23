@@ -10,14 +10,14 @@ from appium import webdriver
 from appium_sync.check_port import release_port
 from common.device import Device
 
-device = Device().get_dev()
-
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
 logging = logging.getLogger()
 
+data = {}
 
-def get_desired_caps(devices='yeshen01'):
+
+def get_desired_caps(devices='127.0.0.1:62001'):
     with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
         devices_data = yaml.load(file, Loader=yaml.FullLoader)
     for i in devices_data:
@@ -28,19 +28,28 @@ def get_desired_caps(devices='yeshen01'):
 
 
 def stop_server():
-    data = get_desired_caps(device)
+    # data = get_desired_caps(device)
     port = data['port']
     release_port(port)
 
 
 def start_server():
+    global data
+    device = Device.dev
     data = get_desired_caps(device)
+    Device.data = data
+    print(f'data:{data}')
     port, bootstrap, udid = data['port'], data['bp'], data['desired_caps']['udid']
+    Device.udid = udid
+
+    # 连接设备
+    logging.info('adb connect device')
+    os.system('adb connect %s' % udid)
+
     # 释放端口
     release_port(port)
 
     logging.info('start appium')
-
     # cmd = os.popen('netstat -ano | findstr "%s" ' % port)
     # msg = cmd.read()
     # if "LISTENING" in msg:
@@ -52,8 +61,8 @@ def start_server():
 
 
 def appium_desired():
-    data = get_desired_caps(device)
-    desired_caps = data['desired_caps']
+    # data = get_desired_caps(device)
+    # desired_caps = data['desired_caps']
     # desired_caps['systemPort'] = systemPort
     # 使用adb shell input 代替Yosemite输入  ?ime_method=ADBIME
     # from airtest.core.api import *
@@ -77,25 +86,7 @@ def appium_desired():
     # desired_caps['resetKeyboard']=data['resetKeyboard']
 
     logging.info('start app...')
-    driver = webdriver.Remote('http://%s:%s/wd/hub' % (data['ip'], data['port']), desired_caps)
+    driver = webdriver.Remote('http://%s:%s/wd/hub' % (data['ip'], data['port']), data['desired_caps'])
     driver.implicitly_wait(3)
 
     return driver
-
-
-if __name__ == '__main__':
-    with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
-        devices_data = yaml.load(file, Loader=yaml.FullLoader)
-    # print(f'devices_data:{devices_data}')
-    # print(devices_data)
-    devices = 'yeshen01'
-    device = None
-    for i in devices_data:
-        # priant(i)
-        if devices == i['desc']:
-            device = i
-            break
-    if device:
-        print(device)
-    else:
-        logging.error('设备不在配置表中')

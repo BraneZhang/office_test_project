@@ -4,6 +4,7 @@
 class Device():
     dev = None
     udid = None
+    data = {}
 
     def set_dev(self, device):
         Device.dev = device
@@ -16,6 +17,7 @@ class Device():
 
     def get_udid(self):
         return Device.udid
+
 
 
 
