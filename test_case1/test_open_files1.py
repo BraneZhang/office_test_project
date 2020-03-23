@@ -30,7 +30,6 @@ for i in test_dirs:
             suffix_path.append(i + '/' + file)
 
 
-
 class openFiles(StartEnd):
 
     # @unittest.skip('skip test_bat_open_files')
@@ -74,7 +73,8 @@ class openFiles(StartEnd):
                     raise
 
                 # 弹出问题信息框
-                if hp.get_element_result('//*[@text="提示"]'):
+                if hp.get_element_result('//*[@text="提示"]') or hp.get_element_result(
+                        '//*[contains(@text,"很抱歉")]'):
                     hp.getScreenShot(file_name + 'down info')
                     logging.error('shutdown app!')
                     os.system('adb -s %s shell rmdir /mnt/shell/emulated/0/.tmp/Yozo_Office' % udid)
@@ -104,7 +104,7 @@ class openFiles(StartEnd):
                 logging.info('close file: %s' % file_name)
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
 
-                #点击不保存若存在
+                # 点击不保存若存在
                 try:
                     self.driver.find_element(By.XPATH, '//*[@text="不保存"]').click()
                 except Exception:
@@ -113,4 +113,4 @@ class openFiles(StartEnd):
                 close_result = hp.check_close_file()
                 self.assertTrue(close_result, msg='close file failed')
             except Exception:
-                copy_file_to_wrong(dir_path, file_name)
+                copy_file_to_wrong(dir_path, file)

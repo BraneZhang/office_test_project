@@ -20,7 +20,7 @@ def copy_file_to_wrong(path, file_name):  # 拷贝失败文件去错误文件夹
     try:
         shutil.copy(os.path.join(path, file_name), pc_path)
     except Exception:
-        logging.info(file_name + 'copy to desktop failed')
+        logging.info(file_name + ' copy to desktop failed')
 
 
 def get_files_list(path):
