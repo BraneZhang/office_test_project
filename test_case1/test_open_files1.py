@@ -74,7 +74,7 @@ class openFiles(StartEnd):
                     raise
 
                 # 弹出问题信息框
-                if hp.get_element_result('//*[@text="提示")]'):
+                if hp.get_element_result('//*[@text="提示"]'):
                     hp.getScreenShot(file_name + 'down info')
                     logging.error('shutdown app!')
                     os.system('adb -s %s shell rmdir /mnt/shell/emulated/0/.tmp/Yozo_Office' % udid)
