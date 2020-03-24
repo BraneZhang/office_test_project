@@ -15,12 +15,12 @@ report_dir = '../reports'
 # report_dir = 'D:/PycharmProjects/office_test_project/reports'
 
 # 需要跑的文件夹路径  e.g  dir_path = r'E:\MSfiles\MS2003files\xls'
-dir_path = r'D:\MSfiles\MS2007files\xlsx'
-test_dirs = ['44000-44999']
+dir_path = r'D:\MSfiles\MS2007files\docx'
+test_dirs = ['test']
 # 选取需要跑的模拟器
-Device.dev = '127.0.0.1:62025'
+Device.dev = '127.0.0.1:62001'
 
-discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_open_files.py')
+discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_open_files1.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
 with open(r'%s' % report_name, 'wb') as f:

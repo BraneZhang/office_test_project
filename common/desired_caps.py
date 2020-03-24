@@ -9,6 +9,7 @@ from appium import webdriver
 
 from appium_sync.check_port import release_port
 from common.device import Device
+from common.tool import get_project_path
 
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
@@ -44,9 +45,9 @@ def start_server():
 
     # 连接设备
     logging.info('adb connect device')
-    os.system('adb connect %s' % udid)
-    os.system('adb connect %s' % udid)
+    os.system('adb devices')
     time.sleep(3)
+    os.system('adb connect %s' % udid)
 
     # 释放端口
     release_port(port)
