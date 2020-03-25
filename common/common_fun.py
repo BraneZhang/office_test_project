@@ -244,7 +244,8 @@ class Common(BaseView):
         h1 = image1.histogram()
         h2 = image2.histogram()
         result = math.sqrt(reduce(operator.add, map(lambda a, b: (a - b) ** 2, h1, h2)) / len(h1))
-        print(result)
+        # print(f'result:{result}')
+        logging.info('result: %s' % result)
         return result
 
     def getScreenShot(self, module):

@@ -31,7 +31,6 @@ for i in test_dirs:
 @ddt
 class openFiles(StartEnd):
 
-
     @unittest.skip('skip test_bat_open_files07')
     # @data(*suffix_path)
     def test_bat_open_files1(self, file='44000.xlsx'):
@@ -49,4 +48,5 @@ class openFiles(StartEnd):
             close_result = hp.check_close_file()
             self.assertTrue(close_result, msg='close file failed')
         except Exception:
+            logging.error('%s execute Failed' % file)
             copy_file_to_wrong(dir_path, file_name)
