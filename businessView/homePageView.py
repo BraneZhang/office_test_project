@@ -527,17 +527,20 @@ class HomePageView(Common):
         if not loading_result:
             logging.error('loading timeout')
             return False
-        if self.get_element_result('//*[contains(@text,"永中Office无响应")]'):
-            logging.error('app down!!!')
-            self.getScreenShot(file_name + 'make app down')
-            self.driver.find_element(By.ID, 'android:id/button1').click()
+            # 弹出问题信息框
+        if self.get_element_result('//*[@text="提示"]') or self.get_element_result(
+                '//*[contains(@text,"很抱歉")]'):
+            self.getScreenShot(file_name + 'down info')
+            logging.error('shutdown app!')
             return False
-        if self.get_element_result('//*[@resource-id="com.yozo.office:id/text_content"]'):
-            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_right').click()
-        show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
-                     '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
-                     '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
-        show_result = self.is_visible_elements(*show_eles)
+
+        # 弹出普通信息框
+        try:
+            self.driver.find_element(By.XPATH, '//*[@text="确定"]').click()
+        except Exception:
+            pass
+
+        show_result = self.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]',20)
         if not show_result:
             logging.error('open failed')
             self.getScreenShot(file_name + ' open fail')

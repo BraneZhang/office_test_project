@@ -69,7 +69,7 @@ class openFiles(StartEnd):
                 else:
                     logging.info('got it!!!')
 
-                #打开指定文档
+                # 打开指定文档
                 logging.info('>>>>>>open file: %s' % file_name)
                 self.driver.find_element(By.XPATH,
                                          '//android.widget.TextView[@text="%s"]' % file_name).click()  # 打开对应文件
@@ -94,10 +94,12 @@ class openFiles(StartEnd):
                     pass
 
                 # 判定是否具备打开成功的条件
-                show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
-                             '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
-                             '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
-                show_result = hp.is_visible_elements(*show_eles)
+                # show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
+                #              '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
+                #              '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
+                # show_result = hp.is_visible_elements(*show_eles)
+                show_result = hp.is_visible(
+                    '//*[@resource-id="com.yozo.office:id/yozo_ui_main_option_title_container"]', 20)
                 if show_result:
                     logging.info('*****' + file_name + ' Open Success first!*****')
                 else:
@@ -123,7 +125,7 @@ class openFiles(StartEnd):
                 ele = self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id')
                 ele.screenshot('../screenshots/capture_first.png')
 
-                #保存
+                # 保存
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_save').click()
                 hp.is_not_visible('//*[contains(@text, "文档保存中...")]')
                 save_result = hp.get_toast_message('保存成功')
@@ -154,11 +156,9 @@ class openFiles(StartEnd):
                     raise
 
                 # 判定是否具备打开成功的条件
-                show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
-                             '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
-                             '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
-                show_result = hp.is_visible_elements(*show_eles)
-                if show_result:
+                show_result1 = hp.is_visible(
+                    '//*[@resource-id="com.yozo.office:id/yozo_ui_main_option_title_container"]', 30)
+                if show_result1:
                     logging.info('*****' + file_name + ' Open Success second!*****')
                 else:
                     logging.info('+++++' + file_name + ' Open Failed second!+++++')
@@ -168,8 +168,8 @@ class openFiles(StartEnd):
                 logging.info('second capture file')
                 ele.screenshot('../screenshots/capture_second.png')
 
-                result1 = hp.compare_pic('capture_first.png','capture_second.png')
-                self.assertEqual(result1, 0.0,'two captures have difference')
+                result1 = hp.compare_pic('capture_first.png', 'capture_second.png')
+                self.assertEqual(result1, 0.0, 'two captures have difference')
 
                 # 关闭功能
                 logging.info('>>>>>>close file: %s' % file_name)
@@ -183,14 +183,15 @@ class openFiles(StartEnd):
                     copy_file_to_wrong(dir_path, file)
                     os.system('adb -s %s shell rmdir /mnt/shell/emulated/0/.tmp/Yozo_Office' % udid)
                     self.driver.close_app()
-                    os.system('adb shell pm clear com.yozo.office')
+                    # os.system('adb shell pm clear com.yozo.office')
                     self.driver.launch_app()
-                    self.driver.find_element(By.ID, 'com.yozo.office:id/btn_privacy_true').click()
-                    self.driver.close_app()
+                    # self.driver.find_element(By.ID, 'com.yozo.office:id/btn_privacy_true').click()
+                    # self.driver.close_app()
                     # os.system('adb shell am force-stop com.yozo.office')
-                    self.driver.launch_app()
+                    # self.driver.launch_app()
                     if hp.is_visible('//*[@resource-id = "com.yozo.office:id/im_title_bar_menu_search"]'):
                         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
-                    else: raise
+                    else:
+                        raise
                 except Exception:
                     pass
