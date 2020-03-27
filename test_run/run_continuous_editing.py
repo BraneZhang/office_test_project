@@ -1,19 +1,19 @@
 import HTMLTestRunner
 import os
 import unittest
-import time, logging
+import time
+import logging
 import sys
 
-from common.tool import Device_Select
+from common.device import Device
 
 path = os.path.dirname(os.getcwd())
 sys.path.append(path)
 
 test_dir = '../test_case1'
 report_dir = '../reports'
-# test_dir = 'D:/PycharmProjects/office_test_project/test_case'
-# report_dir = 'D:/PycharmProjects/office_test_project/reports'
 
+Device.dev = 'GWY0217805003862'
 discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_Continuous_Edit.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
