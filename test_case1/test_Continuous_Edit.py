@@ -5,16 +5,15 @@ import os
 import time
 import unittest
 
-from selenium.webdriver.common.by import By
 
+from selenium.webdriver.common.by import By
 from businessView.homePageView import HomePageView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
 
 
 class TestContinuousEdit(StartEnd):
-
-    # @unittest.skip('skip test_ss_new_edit_save')
+    @unittest.skip('skip test_ss_new_edit_save')
     def test_ss_new_edit_save(self):
         os.system('adb shell rm -rf /storage/emulated/0/ss_new_edit_save.xls')
         logging.info('==========test_ss_new_edit_save==========')
@@ -62,7 +61,7 @@ class TestContinuousEdit(StartEnd):
         start_time = time.time()
         last_time2 = 0
         while last_time2 < 60 * 60:
-            for i in range(10):
+            for i in range(100000):
                 ss.tap(x + width * 0.5, y + height * (i + 0.5))
                 ss.cell_edit()
                 self.driver.keyevent(32)
@@ -101,43 +100,40 @@ class TestContinuousEdit(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/wp_new_edit_save.doc')
         logging.info('==========test_wp_new_edit_save==========')
         hp = HomePageView(self.driver)
-        hp.create_file('wp', 978, 1754)  # 基于夜神模拟器修改
+        hp.create_file('wp')
 
         hp.save_new_file('wp_new_edit_save', 'local')
         self.assertTrue(hp.get_toast_message('保存成功'))
-
         # 编辑
         self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_scale_motion_helper_layout_id').click()  # 进入编辑状态
         start_time = time.time()
-        last_time = 0
 
-        while last_time < 2 * 60 * 60:
-            # while last_time < 1 * 60:
-            for i in range(100):
-                logging.info('>>>>>>>>No.%s' % i)
-                self.driver.keyevent(32)
-            end_time = time.time()
-            last_time = end_time - start_time
+        words_count_path = '//*[@text="字符数（不含空格）"]/../android.widget.LinearLayout/android.widget.TextView'
+        count = 0
+        while count < 86400:
+            logging.info('>>>>>>>>No.%d' % (count + 1))
+            self.driver.keyevent(32)
+            last_time = time.time() - start_time
             logging.info('last_time>>>>>>>>%s' % last_time)
+            count += 1
         else:
-            hp.save_file()
+            hp.group_button_click('查看')
+            hp.swipe_options()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_count').click()
+            words_count_before_save = self.driver.find_element(By.XPATH, words_count_path).text
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_save').click()
             self.assertTrue(hp.get_toast_message('保存成功'))
-        hp.group_button_click('文件')
-        hp.swipe_options()
-        hp.swipe_options()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_file_info').click()
-        size1 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text
-        self.driver.keyevent(4)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+            self.driver.keyevent(4)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
 
         search_result = hp.search_file('wp_new_edit_save.doc')
-        self.assertTrue(search_result == True, '搜索失败')
+        self.assertTrue(search_result is True, '搜索失败')
         open_result = hp.open_file('wp_new_edit_save.doc')
         self.assertEqual(open_result, True, '打开失败')
-        hp.group_button_click('文件')
+        hp.group_button_click('查看')
         hp.swipe_options()
-        hp.swipe_options()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_file_info').click()
-        size2 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text
-        self.assertTrue(size1 == size2, '文件内容丢失')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_count').click()
+        words_count = self.driver.find_element(By.XPATH, words_count_path).text
+        self.assertTrue(int(words_count_before_save) == int(words_count) == count, '文件内容丢失')
+
