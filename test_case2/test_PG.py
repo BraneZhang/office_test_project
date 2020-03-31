@@ -79,8 +79,8 @@ class TestPG(StartEnd):
         """
         logging.info('==========test_pg_close_file==========')
         hp = HomePageView(self.driver)
-        isOpen = hp.open_random_file(search_dict[file_type])
-        self.assertTrue(isOpen, 'open fail')
+        is_open = hp.open_random_file(search_dict[file_type])
+        self.assertTrue(is_open, 'open fail')
         hp.close_file()
         self.assertTrue(hp.check_close_file())
 
