@@ -15,6 +15,7 @@ from common.tool import copy_file_to_wrong
 class openFiles():
 
     def __init__(self, driver):
+        """初始化"""
         self.driver = driver
 
     def test_bat_open_files(self, suffix_path, udid):
