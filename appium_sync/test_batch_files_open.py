@@ -12,7 +12,7 @@ from businessView.homePageView import HomePageView
 from common.tool import copy_file_to_wrong
 
 
-class openFiles(object):
+class openFiles():
 
     def __init__(self, driver):
         self.driver = driver
@@ -20,7 +20,7 @@ class openFiles(object):
     def test_bat_open_files(self, suffix_path, udid):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
         start_time = time.time()
-        for file in suffix_path[:10]:
+        for file in suffix_path:
             logging.info('>>>>>>start test')
             file_name = file.split('/')[-1]
             hp = HomePageView(self.driver)
@@ -69,8 +69,9 @@ class openFiles(object):
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
 
                 close_result = hp.check_close_file()
-                self.assertTrue(close_result, msg='close file failed first')
-
+                if not close_result:
+                    logging.info('file close Failed')
+                    raise
             except Exception:
                 logging.info('+++++' + file_name + ' Execute Failed!+++++')
                 try:
@@ -86,6 +87,6 @@ class openFiles(object):
                     pass
             else:
                 logging.info('+++++' + file_name + ' Execute Success!+++++')
-            end_time = time.time()
-            last_time = end_time - start_time
-            logging.info('>>>>>>>>>>>>>last_time:%s' % last_time)
+        end_time = time.time()
+        last_time = end_time - start_time
+        logging.info('>>>>>>>>>>>>>last_time:%s' % last_time)
