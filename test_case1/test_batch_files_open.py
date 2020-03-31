@@ -3,14 +3,13 @@
 
 import os
 import logging
+import time
+
 import unittest
 
 from selenium.webdriver.common.by import By
 
 from businessView.homePageView import HomePageView
-from businessView.pgView import PGView
-from businessView.ssView import SSView
-from businessView.wpView import WPView
 from common.device import Device
 from common.myunit import StartEnd
 from common.tool import copy_file_to_wrong
@@ -38,13 +37,11 @@ class openFiles(StartEnd):
     # @unittest.skip('skip test_bat_open_files')
     def test_bat_open_files(self):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
-        for file in suffix_path:
+        start_time = time.time()
+        for file in suffix_path[:10]:
             logging.info('>>>>>>start test')
             file_name = file.split('/')[-1]
             hp = HomePageView(self.driver)
-            wp = WPView(self.driver)
-            ss = SSView(self.driver)
-            pg = PGView(self.driver)
             try:
                 os.system(
                     'adb -s %s shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/%s' % (
@@ -59,19 +56,6 @@ class openFiles(StartEnd):
                 self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(file_name)
                 self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
                 logging.info('searching...')
-                result = hp.is_not_visible('//*[@text="文件搜索.."]', 60)
-                if not result:
-                    logging.error('searching timeout!')
-                    hp.getScreenShot('searching timeout')
-                    copy_file_to_wrong(dir_path, file)
-                    continue
-                if not hp.get_element_result('//android.widget.TextView[@text="%s"]' % file_name):
-                    logging.error('no file!')
-                    hp.getScreenShot('no file')
-                    copy_file_to_wrong(dir_path, file)
-                    continue
-                else:
-                    logging.info('got it!!!')
 
                 # 打开指定文档
                 logging.info('>>>>>>open file: %s' % file_name)
@@ -84,24 +68,14 @@ class openFiles(StartEnd):
                     logging.error('loading timeout')
                     raise
 
-                # 弹出问题信息框
-                if hp.get_element_result('//*[@text="提示"]') or hp.get_element_result(
-                        '//*[contains(@text,"很抱歉")]'):
-                    hp.getScreenShot(file_name + 'down info')
-                    logging.error('shutdown app!')
-                    raise
-
                 # 弹出普通信息框
                 try:
                     self.driver.find_element(By.XPATH, '//*[@text="确定"]').click()
                 except Exception:
-                    pass
+                    logging.info('=====no messages at the begin of open file')
+                else:
+                    logging.info('=====some messages at the begi n of open file')
 
-                # 判定是否具备打开成功的条件
-                # show_eles = ['//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]',
-                #              '//*[@resource-id="com.yozo.office:id/yozo_ui_toolbar_button_close"]',
-                #              '//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]']
-                # show_result = hp.is_visible_elements(*show_eles)
                 if hp.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_main_option_title_container"]', 20):
                     logging.info('*****' + file_name + ' Open Success first!*****')
                 else:
@@ -128,3 +102,6 @@ class openFiles(StartEnd):
                         raise
                 except Exception:
                     pass
+            end_time = time.time()
+            last_time = end_time - start_time
+            logging.info('>>>>>>>>>>>>>last_time:%s' % last_time)

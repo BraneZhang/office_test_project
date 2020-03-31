@@ -20,7 +20,7 @@ test_dirs = ['test']
 # 选取需要跑的模拟器
 Device.dev = '127.0.0.1:62001'
 
-discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_batch_files_save.py')
+discover = unittest.defaultTestLoader.discover(test_dir, pattern='test_batch_files_open.py')
 now = time.strftime('%Y-%m-%d %H_%M_%S')
 report_name = report_dir + '/' + now + 'Mobile_Office_Report.html'
 with open(r'%s' % report_name, 'wb') as f:

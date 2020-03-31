@@ -49,4 +49,5 @@ class openFiles(StartEnd):
             self.assertTrue(close_result, msg='close file failed')
         except Exception:
             logging.error('%s execute Failed' % file)
+            os.system('adb -s %s shell rmdir /mnt/shell/emulated/0/.tmp/Yozo_Office' % udid)
             copy_file_to_wrong(dir_path, file_name)
