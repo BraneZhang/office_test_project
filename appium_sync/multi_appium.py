@@ -4,10 +4,11 @@
 import subprocess
 from time import ctime
 
-def appium_start(host,port):
+def appium_start(host,port,udid):
     '''启动appium server'''
     bootstrap_port = str(port + 1)
-    cmd = 'start /b appium -a ' + host + ' -p ' + str(port) + ' -bp ' + str(bootstrap_port)
+    # cmd = 'start /b appium -a ' + host + ' --session-override -p ' + str(port) + ' -bp ' + str(bootstrap_port)
+    cmd = 'start /b appium -a ' + host + ' -p ' + str(port) + ' -bp ' + str(bootstrap_port) + ' -U '+ udid
 
     print('%s at %s' %(cmd,ctime()))
     subprocess.Popen(cmd, shell=True,stdout=open('../logs/'+str(port)+'.log','a'),stderr=subprocess.STDOUT)
