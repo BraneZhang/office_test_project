@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
+import os
+path = os.path.dirname(os.getcwd())
+sys.path.append(path)
+
 from appium_sync.multi_appium import appium_start
 from appium_sync.multi_devices_sync import *
 from appium_sync.check_port import *
 from time import sleep
-import multiprocessing
-
-
-
 
 dir_path = r'E:\MSfiles\MS2007files\docx'
 dirs_list = [
     ['10000-10999'],
     ['30000-30999'],
     ['20000-20999']
-             ]
+]
 devices_list = [
     '127.0.0.1:62025',
     '127.0.0.1:62001',
     '127.0.0.1:62026'
-                ]
+]
 
 
 def start_appium_action(host, port, udid):
