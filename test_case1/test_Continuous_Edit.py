@@ -162,7 +162,7 @@ class TestContinuousEdit(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()  # 进入编辑状态
         start_time = time.time()
         count = 0
-        while count < 86400:
+        while count < 86400:  # 约需要20h
             logging.info('>>>>>>>>No.%d' % (count + 1))
             self.driver.keyevent(32)
             last_time = time.time() - start_time
