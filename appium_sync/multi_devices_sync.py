@@ -10,6 +10,7 @@ import logging.config
 from appium import webdriver
 from time import ctime
 
+from appium_sync.openFilesPDF import openFilesPDF
 
 CON_LOG = '../config/log.conf'
 logging.config.fileConfig(CON_LOG)
@@ -44,7 +45,7 @@ def appium_desired(udid, port, sysPort, files):
     # return driver
 
     # k = testSearch(driver)
-    open = openFiles(driver)
+    open = openFilesPDF(driver)
     # k.test_search()
     open.test_bat_open_files(files, udid)
     return driver

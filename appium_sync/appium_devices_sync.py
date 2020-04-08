@@ -11,16 +11,16 @@ from appium_sync.multi_devices_sync import *
 from appium_sync.check_port import *
 from time import sleep
 
-dir_path = r'E:\MSfiles\MS2007files\docx'
+dir_path = r'D:\MSfiles\MS2007files\pdf'
 dirs_list = [
-    ['10000-10999'],
-    ['30000-30999'],
-    ['20000-20999']
+    ['1111'],
+    # ['30000-30999'],
+    # ['20000-20999']
 ]
 devices_list = [
-    '127.0.0.1:62025',
+    # '127.0.0.1:62025',
     '127.0.0.1:62001',
-    '127.0.0.1:62026'
+    # '127.0.0.1:62026'
 ]
 
 
