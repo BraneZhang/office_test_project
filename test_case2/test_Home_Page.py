@@ -11,6 +11,7 @@ from ddt import ddt, data
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
+from businessView.generalFunctionView import GeneralFunctionView
 from businessView.homePageView import HomePageView
 from common.myunit import StartEnd
 from data import data_info
@@ -24,10 +25,702 @@ wps = data_info.wps
 search_template_dict = data_info.search_template_dict
 templates_dict = data_info.templates_dict
 screenshot_file = '../screenshots/'
+options = ['移动', '复制']
 
 
 @ddt
 class TestHomePage(StartEnd):
+
+    # ======2020_04_09====== #
+
+    # @unittest.skip()
+    def test_hp_my_login(self):
+        logging.info('==========test_hp_my_login==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('请输入账号'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('11111')  # 输入手机号
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('请输入密码'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_pwd').send_keys('sdfsadf')  # 输入密码
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('手机号的格式有误'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('13915575564')  # 输入手机号
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('登录失败：用户名或密码错误'))
+        self.assertTrue(gv.get_element_result('//*[@text="请输入密码"]'))
+        graph_code = True
+        while graph_code:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_pwd').send_keys('sdfsadf')  # 输入密码
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+            if gv.get_element_result('//*[@text="请输入图形验证"]'):
+                graph_code = False
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_figure_code').send_keys('45ds')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()
+        self.assertTrue(gv.get_toast_message('登录失败：次数过多，请转手机号验证码登录'))
+        self.assertTrue(gv.get_element_result('//*[@text="请输入验证码"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_pwd_sms').send_keys('461145')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()
+        self.assertTrue(gv.get_toast_message('登录失败：用户名或密码错误'))
+
+    # @unittest.skip()
+    def test_hp_star_file_info(self):  # 文档信息显示
+        logging.info('==========test_hp_star_file_info==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        self.assertTrue(filename != '-')
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.assertTrue(suffix != '-')
+        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
+        self.assertTrue(size != '-')
+        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
+        self.assertTrue(chang_time != '-')
+        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        self.assertTrue(path != '-')
+        file = gv.mark_star()
+        self.assertFalse(gv.check_mark_satr(file))
+
+    # @unittest.skip()
+    def test_hp_star_share_back(self):  # “标星”中的分享的返回键
+        logging.info('==========test_hp_star_share_back==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('star')
+        if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
+            gv.jump_to_index('alldoc')
+            gv.select_file_type('ss')
+            gv.file_more_info(1)
+            file = gv.mark_star()
+            self.assertTrue(gv.check_mark_satr(file))
+            self.driver.keyevent(4)
+            gv.jump_to_index('star')
+        gv.file_more_info(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
+        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
+        gv.mark_star()
+
+    # @unittest.skip()
+    def test_hp_star_show_no_file(self):
+        logging.info('==========test_hp_star_show_no_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('star')
+        if self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'):
+            length = len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'))
+            for i in range(length):
+                gv.file_more_info(1)
+                gv.mark_star()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_view"]'))
+
+    # @unittest.skip()
+    def test_hp_star_select_all02(self):
+        logging.info('==========test_hp_star_select_all02==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        gv.file_more_info(3)
+        file = gv.mark_star()
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_choose_file_cancel').click()
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_choose_file_ok').click()
+        self.driver.find_element(By.XPATH, '//*[@text="保存"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="取消上传"]').click()
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="确认"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="保存"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="上传成功"]'))
+        self.driver.find_element(By.XPATH, '//*[@text="确定"]').click()
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        gv.file_more_info(2)
+        file = gv.mark_star()
+        gv.file_more_info(3)
+        file = gv.mark_star()
+
+    # @unittest.skip()
+    def test_hp_star_select_all(self):  # “标星”全选操作
+        logging.info('==========test_hp_star_select_all==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
+        gv.file_more_info(1)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="已选择"]')
+        self.driver.find_element(By.XPATH, '//*[@text="0"]')
+        self.driver.find_element(By.XPATH, '//*[@text="个文件"]')
+
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
+        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
+        self.assertTrue(num != 0)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        msg = os.system('adb shell ls %s' % location)
+        self.assertTrue(msg == 1, 'delete fail')
+
+    # @unittest.skip()
+    def test_hp_star_delete_file(self):
+        logging.info('==========test_hp_star_delete_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('wp')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.assertTrue(gv.check_mark_satr(file))
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        name = filename + '.' + suffix
+        gv.delete_file()
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name), 'delete fail')
+        msg = os.system('adb shell ls %s' % location)
+        self.assertTrue(msg == 1, 'delete fail')
+
+    # @unittest.skip()
+    def test_hp_star_rename_file(self):
+        logging.info('==========test_hp_star_rename_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        # self.assertTrue(gv.check_mark_satr(file))
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        gv.file_more_info(1)
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').set_text(newName)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        gv.file_more_info(1)
+        gv.mark_star()
+
+    # @unittest.skip()
+    @data(*options)
+    def test_hp_star_copy_file(self, option='移动'):  # 标星复制文件
+        logging.info('==========test_hp_star_copy_file==========')
+        os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('ss')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+        self.driver.keyevent(4)
+        gv.jump_to_index('star')
+        gv.file_more_info(1)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        fileName = location[location.rindex('/') + 1:]
+        logging.info('=========copy_file==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/framelayout_cover').click()
+        time.sleep(1)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/framelayout_cover').click()
+        time.sleep(1)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_new_file').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys('1111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/framelayout_cover')[1].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        if option == '复制':
+            self.assertTrue(gv.get_toast_message('操作成功'))
+        else:
+            self.assertTrue(gv.get_toast_message('移动操作成功'))
+        msg = os.system('adb shell ls /storage/emulated/0/0000/1111/%s' % fileName)
+        self.assertTrue(msg == 0, 'copy fail')
+        os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
+        gv.file_more_info(1)
+        file = gv.mark_star()
+
+    # @unittest.skip()
+    def test_hp_star_upload_file(self):  # 上传文件
+        logging.info('==========test_hp_star_upload_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('star')
+        if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
+            gv.jump_to_index('alldoc')
+            gv.select_file_type('ss')
+            gv.file_more_info(1)
+            file = gv.mark_star()
+            self.assertTrue(gv.check_mark_satr(file))
+            self.driver.keyevent(4)
+            gv.jump_to_index('star')
+        gv.file_more_info(1)
+        check = gv.upload_file('标星上传')
+        self.assertTrue(check, 'upload fail')
+        gv.file_more_info(1)
+        gv.mark_star()
+        gv.jump_to_index('my')
+        gv.logout_action()
+
+    # @unittest.skip()
+    def test_hp_star_mark_on_off(self):  # 标星/取消标星
+        logging.info('==========test_hp_star_mark_on_off==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        if gv.check_login_status():
+            gv.logout_action()
+        gv.jump_to_index('last')
+        gv.file_more_info(1)
+        file_name = gv.mark_star()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_star"]'))
+        gv.jump_to_index('star')
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file_name))
+        gv.jump_to_index('last')
+        gv.file_more_info(1)
+        file_name = gv.mark_star()
+        self.assertFalse(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_star"]'))
+        gv.jump_to_index('star')
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % file_name))
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file_name = gv.mark_star()
+        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_star"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user').click()
+        gv.jump_to_index('star')
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file_name))
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        file_name = gv.mark_star()
+        self.assertFalse(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_star"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user').click()
+        gv.jump_to_index('star')
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % file_name))
+
+    # @unittest.skip()
+    def test_hp_star_search(self):  # 标星搜索
+        logging.info('==========test_hp_star_search_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        if gv.check_login_status():
+            gv.logout_action()
+        gv.jump_to_index('star')
+
+        search_file = 'abcdef.pptx'
+        result = gv.search_file(search_file)
+        self.assertFalse(result)
+        self.assertTrue((gv.get_element_result('//*[@text="没有找到相关文档"]')))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_content_clear').click()
+        search_file = '欢迎使用永中Office.docx'
+        result = gv.search_file1(search_file)
+        self.assertTrue(result)
+
+    # @unittest.skip()
+    def test_hp_star_sort(self):  # 标星条件排序
+        logging.info('==========test_hp_star_sort==========')
+        gv = HomePageView(self.driver)
+        # gv.login_on_needed()
+        gv.jump_to_index('star')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+        # gv.jump_to_index('my')
+        # gv.logout_action()
+
+    # @unittest.skip()
+    def test_hp_cloud_search(self):
+        logging.info('==========test_hp_cloud_search==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.create_file('wp')
+        hp.save_new_file('localSearch', 'local')
+        hp.close_file()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        hp.create_file('pg')
+        hp.save_new_file('cloudSearch', 'cloud')
+        hp.close_file()
+        time.sleep(0.5)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        hp.jump_to_index('cloud')
+        results = hp.search_file('cloudSearch.ppt')
+        self.assertTrue(results == True)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_back').click()
+        results = hp.search_file('localSearch.doc')
+        self.assertTrue(results == False)
+
+    # ======2020_04_08====== #
+
+    # @unittest.skip('skip test_hp_cloud_select_all_download')
+    def test_hp_cloud_select_all_download(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_download==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========download operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        ele6 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6]
+        ele7 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7]
+        name6 = ele6.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        name7 = ele7.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        ele6.click()
+        ele7.click()
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        is_displayed = WebDriverWait(self.driver, 120).until(
+            lambda driver: self.driver.find_element(By.XPATH, '//*[@text="下载成功"]').is_displayed())
+        # gv.get_element_result('//*[@text="下载成功"]')
+        self.assertTrue(is_displayed)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/%s' % name6)
+        self.assertTrue(msg == 0, '文件不存在')
+        msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/%s' % name7)
+        self.assertTrue(msg == 0, '文件不存在')
+
+    # @unittest.skip('skip test_hp_cloud_select_all_copy')
+    @data(*options)
+    def test_hp_cloud_select_all_options(self, option='复制'):  # 云文档中多选移动复制
+        logging.info('==========test_hp_cloud_select_all_copy==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========copy operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        ele6 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6]
+        ele7 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7]
+        name6 = ele6.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        name7 = ele7.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        ele6.click()
+        ele7.click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        time.sleep(2)
+        option_folder = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
+        folder_name = option_folder.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        option_folder.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_chanel').click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder_name).click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % name6)
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % name7)
+
+    # @unittest.skip('skip test_hp_cloud_select_all_delete')
+    def test_hp_cloud_select_all_delete(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all_delete==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========delete operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        name1 = eles[6].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        name2 = eles[7].find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        names_del = [name1, name2]
+        eles[6].click()
+        eles[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        eles1 = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
+        names = list(map(lambda x: x.text, eles1))
+        a = set(names_del) <= set(names)  # 前一个集合是否是后一个集合的子集
+        self.assertFalse(a)
+
+    # @unittest.skip('skip test_hp_cloud_select_all')
+    def test_hp_cloud_select_all(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_select_all==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========select_all operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        num2 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num2) == 0)
+
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[5].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        num2 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num2) == 3)
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
+        num = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num) != 0)
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
+        num1 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
+        self.assertTrue(int(num1) == 0)
+
+    # @unittest.skip('skip test_hp_cloud_file_options02')
+    @data(*options)
+    def test_hp_cloud_file_options02(self, option='复制'):  # 云文档中复制
+        logging.info('==========test_hp_cloud_file_options02==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        file = filename + '.' + suffix
+
+        logging.info('==========copy action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        copy_folder_ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
+        copy_folder_name = copy_folder_ele.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        copy_folder_ele.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_new_file').click()
+        folder_name = gv.getTime('%Y%m%d%H%M%S')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder_name).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % copy_folder_name).click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder_name).click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file))
+
+    # @unittest.skip('skip test_hp_cloud_file_options')
+    @data(*options)
+    def test_hp_cloud_file_options(self, option='复制'):  # 云文档中复制
+        logging.info('==========test_hp_cloud_file_options==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        file = filename + '.' + suffix
+
+        logging.info('==========copy action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        copy_folder_ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
+        copy_folder_name = copy_folder_ele.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        copy_folder_ele.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % copy_folder_name).click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file))
+
+    # @unittest.skip('skip test_hp_cloud_download_file')
+    def test_hp_cloud_download_file(self):  # 云文档下载操作
+        logging.info('==========test_hp_cloud_download_file==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        index = gv.identify_file_index()
+        gv.file_more_info(index)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        file = filename + '.' + suffix
+        check = gv.download_file()
+        self.assertTrue(check, 'download fail')
+        msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/%s' % file)
+        self.assertTrue(msg == 0, '文件不存在')
+
+    # @unittest.skip('skip test_hp_cloud_file_info')
+    def test_hp_cloud_file_info(self):  # 云文件相关信息
+        logging.info('==========test_hp_cloud_file_info==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        self.assertTrue(filename != '-')
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.assertTrue(suffix != '-')
+        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
+        self.assertTrue(size != '-')
+        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
+        self.assertTrue(chang_time != '-')
+        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
+        self.assertTrue(path == '云文档/')
+
+    # @unittest.skip('skip test_hp_cloud_delete_folder')
+    def test_hp_cloud_delete_folder(self):
+        logging.info('==========test_hp_cloud_delete_folder==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        folder_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), '文件夹新建失败')
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % folder_name), 'delete fail')
+
+    # @unittest.skip('skip test_hp_cloud_rename_folder')
+    def test_hp_cloud_rename_folder(self):
+        logging.info('==========test_hp_cloud_rename_folder==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(3)
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(gv.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('不得大于40个字符'))
+
+        folder_name = '自动上传'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('文件名已存在'))
+
+        gv.file_more_info(3)
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+        folder_name = gv.getTime('%Y%m%d%H%M%S')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), 'folder rename fail')
+
+    # @unittest.skip('skip test_hp_cloud_folder_options')
+    @data(*options)
+    def test_hp_cloud_folder_options(self, option='移动'):  # 云文档文件夹移动、复制（复制空白文件夹有问题）
+        logging.info('==========test_hp_cloud_folder_options==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        folder_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), '文件夹新建失败')
+        gv.file_more_info(2)
+
+        logging.info('==========move action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('目标文件夹与源文件相同。'))
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user').click()
+        move_folder_ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1]
+        move_folder = move_folder_ele.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+        move_folder_ele.click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('操作成功'))
+
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % move_folder).click()
+        result1 = gv.get_element_result('//*[@text="%s"]' % folder_name)
+        self.assertTrue(result1, '操作失败')
+
+    # @unittest.skip('skip test_hp_cloud_sort')
+    def test_hp_cloud_sort(self):  # “打开”文档按条件排序
+        logging.info('==========test_hp_cloud_sort==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        way_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in way_list:
+            for j in order_list:
+                gv.sort_files(i, j)
+        gv.jump_to_index('my')
+        gv.logout_action()
+
+    # @unittest.skip('skip test_hp_cloud_create_folder')
+    def test_hp_cloud_create_folder(self):
+        logging.info('==========test_hp_cloud_create_folder==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('cloud')
+
+        # 新建按钮
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        # 验证弹出框的内容
+        self.driver.find_element(By.ID, 'com.yozo.office:id/title')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(hp.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(hp.get_toast_message('不得大于40个字符'))
+
+        folder_name = '0000'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(hp.get_element_result('//*[@text="%s"]' % folder_name), '文件夹新建失败')
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(hp.get_element_result('//*[@text="%s(1)"]' % folder_name), '文件夹新建失败')
+
+        e1 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1]
+        e1.find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+        hp.delete_file()
+        time.sleep(1)
+        e1 = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1]
+        e1.find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+        hp.delete_file()
 
     # ======add 2020_01_02=====
 
@@ -60,27 +753,6 @@ class TestHomePage(StartEnd):
         self.assertTrue(result2 == True)
         result3 = hp.recycle_files_clear()
         self.assertTrue(result3 == True)
-
-    # @unittest.skip('skip test_hp_cloud_search')
-    def test_hp_cloud_search(self):
-        logging.info('==========test_hp_cloud_search==========')
-        hp = HomePageView(self.driver)
-        hp.login_on_needed()
-        hp.create_file('wp')
-        hp.save_new_file('localSearch', 'local')
-        hp.close_file()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
-        hp.create_file('pg')
-        hp.save_new_file('cloudSearch', 'cloud')
-        hp.close_file()
-        time.sleep(0.5)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
-        hp.jump_to_index('cloud')
-        results = hp.search_file('cloudSearch.ppt')
-        self.assertTrue(results == True)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_back').click()
-        results = hp.search_file('localSearch.doc')
-        self.assertTrue(results == False)
 
     # @unittest.skip('skip test_hp_alldoc_cloud_click_unlogin')
     def test_hp_alldoc_cloud_click_unlogin(self):
@@ -1310,269 +1982,6 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_cloud_create_folder')
-    def test_hp_cloud_11_create_folder(self):  # "云文档"新建文件夹
-        logging.info('==========test_hp_cloud_create_folder==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
-        folder_name = 'NewFolder'
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
-        self.assertTrue(gv.get_element_result('//*[@text="自动上传"]'))
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), '文件夹新建失败')
-
-    # @unittest.skip('skip test_hp_cloud_rename_folder')
-    def test_hp_cloud_12_rename_folder(self):  # "云文档"新建文件夹
-        logging.info('==========test_hp_cloud_rename_folder==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(2)
-        folder_rename = 'RenameFolder'
-        gv.rename_file(folder_rename)
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_rename), '文件夹重命名失败')
-
-    # @unittest.skip('skip test_hp_cloud_13_deletd_folder')
-    def test_hp_cloud_13_deletd_folder(self):  # "云文档"删除文件夹
-        logging.info('==========test_hp_cloud_13_deletd_folder==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(2)
-        gv.delete_file()
-        time.sleep(1)
-        folder_rename = 'RenameFolder'
-        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % folder_rename), '文件夹删除失败')
-
-    # @unittest.skip('skip test_hp_cloud_show_folder')
-    def test_hp_cloud_1_show_folder(self):  # "云文档"中显示“自动上传”文件夹
-        logging.info('==========test_hp_cloud_show_folder==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        ele = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0]
-        name = ele.find_element(By.XPATH, '//*[@text="自动上传"]').text
-        self.assertTrue(name != None)
-
-    # @unittest.skip('skip test_hp_cloud_delete_file')
-    def test_hp_cloud_delete_file(self):
-        logging.info('==========test_hp_cloud_delete_file==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
-        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
-        name = filename + '.' + suffix
-        gv.delete_file()
-        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name), 'delete fail')
-
-    # @unittest.skip('skip test_hp_cloud_download')
-    def test_hp_cloud_download(self):  # "云文档"中下载
-        logging.info('==========test_hp_cloud_download==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        time.sleep(3)
-        index = gv.identify_file_index()
-        gv.file_more_info(index)
-        check = gv.download_file()
-        self.assertTrue(check, 'download fail')
-
-    # @unittest.skip('skip test_hp_cloud_copy')
-    def test_hp_cloud_copy(self):  # 云文档中移动
-        logging.info('==========test_hp_cloud_copy==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========copy action==========')
-        self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
-
-        self.assertTrue(gv.get_toast_message('操作成功'))
-
-    # @unittest.skip('skip test_hp_cloud_select_all')
-    def test_hp_cloud_select_all(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========select_all operation==========')
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
-        num = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
-        self.assertTrue(int(num) != 0)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_all').click()
-        num1 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
-        self.assertTrue(int(num1) == 0)
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[5].click()
-        num2 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
-        self.assertTrue(int(num2) == 1)
-
-    # @unittest.skip('skip test_hp_cloud_select_all_delete')
-    def test_hp_cloud_select_all_delete(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_delete==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========delete operation==========')
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
-        name1 = eles[6].find_element(By.ID, 'com.yozo.office:id/tv_title').text
-        name2 = eles[7].find_element(By.ID, 'com.yozo.office:id/tv_title').text
-        names_del = [name1, name2]
-        eles[6].click()
-        eles[7].click()
-        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
-        eles1 = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')
-        names = list(map(lambda x: x.text, eles1))
-        a = set(names_del) <= set(names)  # 前一个集合是否是后一个集合的子集
-        self.assertFalse(a)
-
-    # @unittest.skip('skip test_hp_cloud_select_all_copy')
-    def test_hp_cloud_select_all_copy(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_copy==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========copy operation==========')
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
-        self.driver.find_element(By.XPATH, '//*[@text="复制"]').click()
-        time.sleep(2)
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
-
-        self.assertTrue(gv.get_toast_message('操作成功'))
-
-    # @unittest.skip('skip test_hp_cloud_select_all_move')
-    def test_hp_cloud_select_all_move(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_move==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========copy operation==========')
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
-        self.driver.find_element(By.XPATH, '//*[@text="移动"]').click()
-        time.sleep(2)
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
-
-        self.assertTrue(gv.get_toast_message('操作成功'))
-
-    # @unittest.skip('skip test_hp_cloud_select_all_download')
-    def test_hp_cloud_select_all_download(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_download==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========copy operation==========')
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
-        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
-        is_displayed = WebDriverWait(self.driver, 120).until(
-            lambda driver: self.driver.find_element(By.XPATH, '//*[@text="下载成功"]').is_displayed())
-        # gv.get_element_result('//*[@text="下载成功"]')
-        self.assertTrue(is_displayed)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
-
-    # @unittest.skip('skip test_hp_cloud_move')
-    def test_hp_cloud_move(self):  # 云文档中复制
-        logging.info('==========test_hp_cloud_move==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-
-        logging.info('==========move action==========')
-        self.driver.find_element(By.XPATH, '//*[@text="移动"]').click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
-
-        self.assertTrue(gv.get_toast_message('操作成功'))
-
-    # @unittest.skip('skip test_hp_cloud_file_info')
-    def test_hp_cloud_file_info(self):  # 云文件相关信息
-        logging.info('==========test_hp_cloud_file_info==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
-        self.assertTrue(filename != '-')
-        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
-        self.assertTrue(suffix != '-')
-        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
-        self.assertTrue(size != '-')
-        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
-        self.assertTrue(chang_time != '-')
-        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
-        self.assertTrue(path == '云文档/')
-
-    # @unittest.skip('skip test_hp_cloud_rename_file')
-    def test_hp_cloud_rename_file(self):
-        logging.info('==========test_hp_cloud_rename_file==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
-        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
-        gv.rename_file(newName)
-        name = newName + '.' + suffix
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % name), 'rename fail')
-
-    # @unittest.skip('skip test_hp_cloud_share')
-    @data(*index_share_list)
-    def test_hp_cloud_share(self, way='more'):
-        logging.info('==========test_hp_cloud_share==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        gv.file_more_info(7)
-        gv.share_file_index(way)
-        os.system('adb shell am force-stop com.tencent.mobileqq')
-        os.system('adb shell am force-stop com.tencent.mm')
-        os.system('adb shell am force-stop com.vivo.email')
-        os.system('adb shell am force-stop com.alibaba.android.rimet')
-
-    # @unittest.skip('skip test_hp_cloud_sort_file')
-    def test_hp_cloud_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_cloud_sort_file==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('cloud')
-        way_list = ['type', 'name', 'size', 'time']
-        order_list = ['up', 'down']
-        for i in way_list:
-            for j in order_list:
-                gv.sort_files(i, j)
-        gv.jump_to_index('my')
-        gv.logout_action()
-
     # @unittest.skip('skip test_head_logo_show')
     def test_hp_head_logo_show(self):  # 头像显示
         logging.info('==========test_head_logo_show==========')
@@ -1918,7 +2327,7 @@ class TestHomePage(StartEnd):
         gv.select_file_type('all')
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
-        self.assertTrue(gv.get_element_result('//*[contains(@text,"当前为非wifi环境")]'),'未捕捉到toast')
+        self.assertTrue(gv.get_element_result('//*[contains(@text,"当前为非wifi环境")]'), '未捕捉到toast')
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip('skip test_hp_my_login_fail')
@@ -1963,220 +2372,3 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('star')
         ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search')
         self.assertTrue(ele != None)
-
-    # @unittest.skip('skip test_hp_star_copy_file')
-    def test_hp_star_copy_file(self):  # “打开”复制文件
-        logging.info('==========test_hp_star_copy_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('ss')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
-        fileName = location[location.rindex('/') + 1:]
-        check = gv.copy_file()
-        os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
-        self.assertTrue(check, 'copy fail')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-
-    # @unittest.skip('skip test_hp_star_delete_file')
-    def test_hp_star_delete_file(self):
-        logging.info('==========test_hp_star_delete_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('wp')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
-        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
-        name = filename + '.' + suffix
-        gv.delete_file()
-        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name), 'delete fail')
-
-    # @unittest.skip('skip test_hp_star_file_info')
-    def test_hp_star_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_star_file_info==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
-        self.assertTrue(filename != '-')
-        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
-        self.assertTrue(suffix != '-')
-        size = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filesize').text.strip()
-        self.assertTrue(size != '-')
-        chang_time = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetime').text.strip()
-        self.assertTrue(chang_time != '-')
-        path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
-        self.assertTrue(path != '-')
-        file = gv.mark_star()
-        self.assertFalse(gv.check_mark_satr(file))
-
-    # @unittest.skip('skip test_hp_star_move_file')
-    def test_hp_star_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_star_move_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        check = gv.move_file()
-        self.assertTrue(check, 'move fail')
-        gv.file_more_info(1)
-        gv.mark_star()
-
-    # @unittest.skip('skip test_hp_star_rename_file')
-    def test_hp_star_rename_file(self):
-        logging.info('==========test_hp_star_rename_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        newName = 'rename' + gv.getTime('%Y%m%d%H%M%S')
-        check = gv.rename_file(newName)
-        self.assertTrue(check, 'rename fail')
-        gv.file_more_info(1)
-        gv.mark_star()
-
-    # @unittest.skip('skip test_hp_star_search_file')
-    def test_hp_star_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_star_search_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('star')
-        search_file = '欢迎使用永中Office.pptx'
-        result = gv.search_file(search_file)
-        self.assertTrue(result)
-
-    # @unittest.skip('skip test_hp_star_select_all')
-    def test_hp_star_select_all(self):  # “标星”全选操作
-        logging.info('==========test_hp_star_select_all==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
-        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
-        self.assertTrue(gv.get_element_result('//*[@text="取消全选"]'))
-        num = int(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text)
-        self.assertTrue(num != 0)
-        self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
-        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
-        gv.file_more_info(1)
-        gv.mark_star()
-
-    # @unittest.skip('skip test_hp_star_select_all1')
-    def test_hp_star_select_all1(self):
-        logging.info('==========test_hp_star_select_all1==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('alldoc')
-        gv.select_file_type('all')
-        gv.file_more_info(1)
-        file = gv.mark_star()
-        self.assertTrue(gv.check_mark_satr(file))
-        self.driver.keyevent(4)
-        gv.jump_to_index('star')
-        gv.file_more_info(1)
-        name_list = gv.select_all('multi', [1])
-        for i in name_list:
-            self.assertFalse(gv.get_element_result(i))
-
-    # @unittest.skip('skip test_hp_star_share')
-    @data(*index_share_list)
-    def test_hp_star_share(self, way='more'):
-        logging.info('==========test_hp_star_share==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('star')
-        if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
-            gv.jump_to_index('alldoc')
-            gv.select_file_type('ss')
-            gv.file_more_info(1)
-            file = gv.mark_star()
-            self.assertTrue(gv.check_mark_satr(file))
-            self.driver.keyevent(4)
-            gv.jump_to_index('star')
-        gv.file_more_info(1)
-        gv.share_file_index(way)
-        os.system('adb shell am force-stop com.tencent.mobileqq')
-        os.system('adb shell am force-stop com.tencent.mm')
-        os.system('adb shell am force-stop com.vivo.email')
-        os.system('adb shell am force-stop com.alibaba.android.rimet')
-
-    # @unittest.skip('skip test_hp_star_share_back')
-    def test_hp_star_share_back(self):  # “标星”中的分享的返回键
-        logging.info('==========test_hp_star_share_back==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('star')
-        if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
-            gv.jump_to_index('alldoc')
-            gv.select_file_type('ss')
-            gv.file_more_info(1)
-            file = gv.mark_star()
-            self.assertTrue(gv.check_mark_satr(file))
-            self.driver.keyevent(4)
-            gv.jump_to_index('star')
-        gv.file_more_info(1)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
-        self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
-        gv.mark_star()
-
-    # @unittest.skip('skip test_hp_star_show_no_file')
-    def test_hp_star_show_no_file(self):
-        logging.info('==========test_hp_star_show_no_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('star')
-        if self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'):
-            length = len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'))
-            for i in range(length):
-                gv.file_more_info(i + 1)
-                gv.mark_star()
-        self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_view"]'))
-
-    # @unittest.skip('skip test_hp_star_upload_file')
-    def test_hp_star_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_star_upload_file==========')
-        gv = HomePageView(self.driver)
-        gv.jump_to_index('star')
-        if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
-            gv.jump_to_index('alldoc')
-            gv.select_file_type('ss')
-            gv.file_more_info(1)
-            file = gv.mark_star()
-            self.assertTrue(gv.check_mark_satr(file))
-            self.driver.keyevent(4)
-            gv.jump_to_index('star')
-        gv.file_more_info(1)
-        check = gv.upload_file('标星上传')
-        self.assertTrue(check, 'upload fail')
-        gv.file_more_info(1)
-        gv.mark_star()
-        gv.jump_to_index('my')
-        gv.logout_action()

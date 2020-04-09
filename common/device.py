@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+
 
 class Device():
-    dev = None
+    dev = '9613fafd'
     udid = None
     data = {}
 
@@ -20,5 +22,7 @@ class Device():
 
 
 
-
+if __name__ == '__main__':
+    msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/asdf.doc')
+    print(f'msg:{msg}')
 

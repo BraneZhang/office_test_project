@@ -44,10 +44,10 @@ def start_server():
     Device.udid = udid
 
     # 连接设备
-    logging.info('adb connect device')
-    os.system('adb devices')
-    time.sleep(3)
-    os.system('adb connect %s' % udid)
+    # logging.info('adb connect device')
+    # os.system('adb devices')
+    # time.sleep(3)
+    # os.system('adb connect %s' % udid)
 
     # 释放端口
     release_port(port)
