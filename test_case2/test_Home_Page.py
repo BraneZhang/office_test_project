@@ -31,6 +31,355 @@ options = ['移动', '复制']
 @ddt
 class TestHomePage(StartEnd):
 
+    # ======2020_04_10====== #
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_multi_select_share(self):
+        logging.info('==========test_hp_cloud_nonet_multi_select_share==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        file_index = gv.identify_file_index()
+        gv.file_more_info(file_index)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="分享"]').click()
+        self.assertTrue(gv.get_toast_message('当前操作不支持文件夹'))
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
+        self.driver.find_element(By.XPATH, '//*[@text="分享"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/ll_shareitem')[0].click()
+        self.assertTrue(gv.get_element_result('//*[contains(@text,分享失败)]'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    @data(*options)
+    def test_hp_cloud_nonet_multi_select_options(self, option='移动'):  # 云文档中多选移动复制
+        logging.info('==========test_hp_cloud_nonet_multi_select_options==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(6)
+
+        logging.info('==========copy operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_multi_select_delete(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_nonet_multi_select_delete==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(7)
+
+        logging.info('==========delete operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[6].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[7].click()
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_file_delete(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_nonet_file_delete==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(7)
+
+        logging.info('==========delete operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        gv.file_more_info(7)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_show_title').text
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_file_delete(self):  # 云文档中全选
+        logging.info('==========test_hp_cloud_file_delete==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        gv.file_more_info(7)
+
+        logging.info('==========delete operation==========')
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        gv.file_more_info(7)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_show_title').text
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertFalse(gv.get_toast_message(name))
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_file_rename(self):
+        logging.info('==========test_hp_cloud_nonet_file_rename==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+
+        gv.file_more_info(7)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('原文件名和新文件名一样，无需重命名'))
+
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.hide_keyboard()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(gv.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('不得大于40个字符'))
+
+        folder_name = '0000'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_file_rename(self):
+        logging.info('==========test_hp_cloud_file_rename==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+
+        gv.file_more_info(7)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('原文件名和新文件名一样，无需重命名'))
+
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.hide_keyboard()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(gv.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('不得大于40个字符'))
+
+        folder_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % (folder_name + '.' + suffix)))
+
+    # @unittest.skip()
+    @data(*options)
+    def test_hp_cloud_nonet_file_options(self, option='移动'):  # 云文档中复制
+        logging.info('==========test_hp_cloud_nonet_file_options==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(7)
+
+        logging.info('==========copy action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_download_file02(self):  # 云文档下载操作
+        logging.info('==========test_hp_cloud_nonet_download_file02==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('关闭')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        index = gv.identify_file_index()
+        gv.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        self.assertTrue(gv.get_toast_message('文件下载失败'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_download_file(self):  # 云文档下载操作
+        logging.info('==========test_hp_cloud_nonet_download_file==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        index = gv.identify_file_index()
+        gv.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        self.assertTrue(gv.get_toast_message('当前为非wifi环境，无法进行文件传输\n如需更改设置请到我的->系统设置中进行更改'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    @data(*index_share_list)
+    def test_hp_cloud_nonet_share(self, way='more'):
+        logging.info('==========test_hp_cloud_nonet_share==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        file_index = gv.identify_file_index()
+        gv.file_more_info(file_index)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_%s_share' % way).click()
+        if way == 'more':
+            self.driver.find_elements(By.ID, 'com.yozo.office:id/ll_shareitem')[0].click()
+        self.assertTrue(gv.get_element_result('//*[contains(@text,分享失败)]'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_delete_folder(self):
+        logging.info('==========test_hp_cloud_nonet_delete_folder==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        time.sleep(2)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_rename_folder(self):
+        logging.info('==========test_hp_cloud_nonet_rename_folder==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        folder_name = '自动上传'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+
+        gv.file_more_info(2)
+        self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('原文件名和新文件名一样，无需重命名'))
+
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.hide_keyboard()
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(gv.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('不得大于40个字符'))
+
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        time.sleep(2)
+
+    # @unittest.skip('skip test_hp_cloud_folder_options')
+    @data(*options)
+    def test_hp_cloud_nonet_folder_options(self, option='复制'):  # 云文档无网文件夹移动、复制
+        logging.info('==========test_hp_cloud_nonet_folder_options==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(2)
+
+        logging.info('==========move action==========')
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % option).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_move_true').click()
+        self.assertTrue(gv.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        time.sleep(2)
+
+    # @unittest.skip()
+    def test_hp_cloud_nonet_create_folder(self):
+        logging.info('==========test_hp_cloud_nonet_create_folder==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        # time.sleep(2)
+        # self.driver.find_element(By.ID,'com.yozo.office:id/ll_head_net')
+        # 新建按钮
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        # 验证弹出框的内容
+        self.driver.find_element(By.ID, 'com.yozo.office:id/title')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        spec_char = ['/', '\\', ':', '?', '<', '>', '|']
+        for i in spec_char:
+            folder_name = i
+            self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+            self.assertTrue(hp.get_toast_message('请不要包含特殊字符'))
+            time.sleep(2)
+        folder_name = '01234567890123456789012345678901234567890'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(hp.get_toast_message('不得大于40个字符'))
+
+        folder_name = '0000'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        results = hp.get_toast_message('新建文件夹失败')
+        self.assertTrue(results)
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        time.sleep(2)
+
+    # @unittest.skip()
+    def test_hp_cloud_unlogin(self):
+        logging.info('==========test_hp_cloud_unlogin==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        if gv.check_login_status():
+            gv.logout_action()
+        gv.jump_to_index('cloud')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_view')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_cloud_title_text')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_logo').click()
+        self.assertTrue(gv.get_element_result('//*[@text="请输入手机号"]'))
+
     # ======2020_04_09====== #
 
     # @unittest.skip()
@@ -386,7 +735,6 @@ class TestHomePage(StartEnd):
         self.assertTrue(results == False)
 
     # ======2020_04_08====== #
-
     # @unittest.skip('skip test_hp_cloud_select_all_download')
     def test_hp_cloud_select_all_download(self):  # 云文档中全选
         logging.info('==========test_hp_cloud_select_all_download==========')
@@ -605,6 +953,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('cloud')
         gv.file_more_info(3)
         self.driver.find_element(By.XPATH, '//*[@text="重命名"]').click()
+
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(gv.get_toast_message('原文件名和新文件名一样，无需重命名'))
 
         spec_char = ['/', '\\', ':', '?', '<', '>', '|']
         for i in spec_char:

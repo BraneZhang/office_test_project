@@ -263,7 +263,7 @@ class HomePageView(Common):
         time.sleep(1)
 
     def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
-        suffix = ('docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf')
+        suffix = ('docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf','txt')
         for i in range(100):
             eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
             last_one = eles[-1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
