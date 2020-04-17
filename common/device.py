@@ -4,7 +4,7 @@ import os
 
 
 class Device():
-    dev = '9613fafd'
+    dev = '5ENDU19830003766'
     udid = None
     data = {}
 
@@ -23,6 +23,12 @@ class Device():
 
 
 if __name__ == '__main__':
-    msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/asdf.doc')
-    print(f'msg:{msg}')
-
+    # msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/asdf.doc')
+    # print(f'msg:{msg}')
+    # cc= 1
+    # while cc<4:
+    #     print('hello')
+    #     cc+=1
+    # else:
+    #     print('hi')
+    pass

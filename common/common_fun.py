@@ -70,7 +70,7 @@ class Common(BaseView):
         y_ele1 = eleA.location['y']
         x_ele1 = eleA.location['x']
         y_ele2 = eleB.location['y']
-        self.driver.swipe(x_ele1, y_ele1, x_ele1, y_ele2, 3000)
+        self.driver.swipe(x_ele1, y_ele1, x_ele1, y_ele2, 4000)
 
     def swipe_ele(self, eleA, eleB):
         ele1 = self.get_element(eleA)

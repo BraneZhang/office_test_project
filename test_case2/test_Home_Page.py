@@ -31,11 +31,130 @@ options = ['移动', '复制']
 @ddt
 class TestHomePage(StartEnd):
 
-    # ======2020_04_10====== #
+    # ======2020_04_17====== #
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_multi_select_share(self):
-        logging.info('==========test_hp_cloud_nonet_multi_select_share==========')
+    def test_my_nonet_login(self):  # 注册和登录_联网_账号登录
+        logging.info('==========test_my_nonet_login==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('my')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.hide_keyboard()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('请输入账号'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('11111')  # 输入手机号
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('请输入密码'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_pwd').send_keys('sdfsadf')  # 输入密码
+        time.sleep(1)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('手机号的格式有误'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('13915575564')  # 输入手机号
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
+        self.assertTrue(gv.get_toast_message('登录失败：网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_star_nonet_upload_file02(self):  # 标星_未联网_上传
+        logging.info('==========test_star_nonet_upload_file02==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('关闭')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        gv.jump_to_index('star')
+        if gv.get_element_result('//*[@text="重要文件，珍藏在这里"]'):
+            gv.jump_to_index('alldoc')
+            gv.select_file_type('all')
+            gv.file_more_info(0)
+            file = gv.mark_star()
+            self.assertTrue(gv.check_mark_satr(file))
+            self.driver.keyevent(4)
+            gv.jump_to_index('star')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        time.sleep(2)
+        gv.file_more_info(0)
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_save_btn').click()
+        self.assertTrue(gv.get_toast_message('上传失败'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        gv.file_more_info(0)
+        gv.mark_star()
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('开启')
+
+    # @unittest.skip()
+    def test_star_nonet_upload_file(self):  # 标星_未联网_上传
+        logging.info('==========test_star_upload_file==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('star')
+        if gv.get_element_result('//*[@text="重要文件，珍藏在这里"]'):
+            gv.jump_to_index('alldoc')
+            gv.select_file_type('all')
+            gv.file_more_info(0)
+            file = gv.mark_star()
+            self.assertTrue(gv.check_mark_satr(file))
+            self.driver.keyevent(4)
+            gv.jump_to_index('star')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        gv.file_more_info(0)
+        self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
+        self.assertTrue(gv.get_toast_message('当前为非wifi环境，无法进行文件传输\n如需更改设置请到我的->系统设置中进行更改'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        gv.file_more_info(0)
+        gv.mark_star()
+
+    # @unittest.skip()
+    def test_cloud_nonet_multi_select_download02(self):  # 云文档_未联网_云文档操作_多选_下载
+        logging.info('==========test_cloud_nonet_multi_select_download02==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('关闭')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        index = gv.identify_file_index()
+        gv.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index].click()
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        self.assertTrue(gv.get_toast_message('文件下载失败'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_chanel').click()
+        gv.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        gv.wifi_trans('开启')
+
+    # @unittest.skip()
+    def test_cloud_nonet_multi_select_download(self):  #云文档_未联网_云文档操作_多选_下载
+        logging.info('==========test_cloud_nonet_multi_select_download==========')
+        gv = HomePageView(self.driver)
+        gv.login_on_needed()
+        gv.jump_to_index('cloud')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        index = gv.identify_file_index()
+        gv.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index].click()
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        self.assertTrue(gv.get_toast_message('当前为非wifi环境，无法进行文件传输\n如需更改设置请到我的->系统设置中进行更改'))
+        time.sleep(3)
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index-1].click()
+        self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
+        self.assertTrue(gv.get_toast_message('当前操作不支持文件夹'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # ======2020_04_10====== #
+    # @unittest.skip()
+    def test_cloud_nonet_multi_select_share(self):#云文档_未联网_云文档操作_多选_分享
+        logging.info('==========test_cloud_nonet_multi_select_share==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -56,8 +175,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip()
     @data(*options)
-    def test_hp_cloud_nonet_multi_select_options(self, option='移动'):  # 云文档中多选移动复制
-        logging.info('==========test_hp_cloud_nonet_multi_select_options==========')
+    def test_cloud_nonet_multi_select_options(self, option='移动'):  # 云文档_未联网_云文档操作_多选_复制/移动
+        logging.info('==========test_cloud_nonet_multi_select_options==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -74,8 +193,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_multi_select_delete(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_nonet_multi_select_delete==========')
+    def test_cloud_nonet_multi_select_delete(self):  # 云文档_未联网_云文档操作_多选_删除
+        logging.info('==========test_cloud_nonet_multi_select_delete==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -92,8 +211,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_file_delete(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_nonet_file_delete==========')
+    def test_cloud_nonet_file_delete(self):  # 云文档_未联网_云文档操作_删除
+        logging.info('==========test_cloud_nonet_file_delete==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -111,8 +230,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_file_delete(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_file_delete==========')
+    def test_cloud_file_delete(self):  # 云文档_联网_云文档操作_删除
+        logging.info('==========test_cloud_file_delete==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -128,8 +247,8 @@ class TestHomePage(StartEnd):
         self.assertFalse(gv.get_toast_message(name))
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_file_rename(self):
-        logging.info('==========test_hp_cloud_nonet_file_rename==========')
+    def test_cloud_nonet_file_rename(self):#云文档_未联网_云文档操作_重命名
+        logging.info('==========test_cloud_nonet_file_rename==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -163,8 +282,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_file_rename(self):
-        logging.info('==========test_hp_cloud_file_rename==========')
+    def test_cloud_file_rename(self):#云文档_联网_云文档操作_重命名
+        logging.info('==========test_cloud_file_rename==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -197,8 +316,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip()
     @data(*options)
-    def test_hp_cloud_nonet_file_options(self, option='移动'):  # 云文档中复制
-        logging.info('==========test_hp_cloud_nonet_file_options==========')
+    def test_cloud_nonet_file_options(self, option='移动'):  # 云文档_未联网_云文档操作_复制
+        logging.info('==========test_cloud_nonet_file_options==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -212,8 +331,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_download_file02(self):  # 云文档下载操作
-        logging.info('==========test_hp_cloud_nonet_download_file02==========')
+    def test_cloud_nonet_download_file02(self):  # 云文档_未联网_云文档操作_下载
+        logging.info('==========test_cloud_nonet_download_file02==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -229,8 +348,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_download_file(self):  # 云文档下载操作
-        logging.info('==========test_hp_cloud_nonet_download_file==========')
+    def test_cloud_nonet_download_file(self):  # 云文档_未联网_云文档操作_下载
+        logging.info('==========test_cloud_nonet_download_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -243,8 +362,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip()
     @data(*index_share_list)
-    def test_hp_cloud_nonet_share(self, way='more'):
-        logging.info('==========test_hp_cloud_nonet_share==========')
+    def test_cloud_nonet_share(self, way='more'):#云文档_未联网_分享到_微信/QQ/邮箱
+        logging.info('==========test_cloud_nonet_share==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -258,8 +377,8 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_delete_folder(self):
-        logging.info('==========test_hp_cloud_nonet_delete_folder==========')
+    def test_cloud_nonet_delete_folder(self):#云文档_未联网_文件夹操作_删除
+        logging.info('==========test_cloud_nonet_delete_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -275,8 +394,8 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_rename_folder(self):
-        logging.info('==========test_hp_cloud_nonet_rename_folder==========')
+    def test_cloud_nonet_rename_folder(self):#云文档_未联网_文件夹操作_重命名
+        logging.info('==========test_cloud_nonet_rename_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -312,10 +431,10 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
         time.sleep(2)
 
-    # @unittest.skip('skip test_hp_cloud_folder_options')
+    # @unittest.skip('skip test_cloud_folder_options')
     @data(*options)
-    def test_hp_cloud_nonet_folder_options(self, option='复制'):  # 云文档无网文件夹移动、复制
-        logging.info('==========test_hp_cloud_nonet_folder_options==========')
+    def test_cloud_nonet_folder_options(self, option='复制'):  # 云文档_未联网_文件夹操作_移动
+        logging.info('==========test_cloud_nonet_folder_options==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -330,8 +449,8 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_hp_cloud_nonet_create_folder(self):
-        logging.info('==========test_hp_cloud_nonet_create_folder==========')
+    def test_cloud_nonet_create_folder(self):#云文档_未联网_新建文件夹
+        logging.info('==========test_cloud_nonet_create_folder==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('cloud')
@@ -368,8 +487,8 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_hp_cloud_unlogin(self):
-        logging.info('==========test_hp_cloud_unlogin==========')
+    def test_cloud_unlogin(self): #云文档_未登录
+        logging.info('==========test_cloud_unlogin==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -381,10 +500,9 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@text="请输入手机号"]'))
 
     # ======2020_04_09====== #
-
     # @unittest.skip()
-    def test_hp_my_login(self):
-        logging.info('==========test_hp_my_login==========')
+    def test_my_login(self): #注册和登录_联网_账号登录
+        logging.info('==========test_my_login==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
@@ -416,8 +534,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_toast_message('登录失败：用户名或密码错误'))
 
     # @unittest.skip()
-    def test_hp_star_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_star_file_info==========')
+    def test_star_file_info(self):  # 文档信息显示
+        logging.info('==========test_star_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -441,8 +559,8 @@ class TestHomePage(StartEnd):
         self.assertFalse(gv.check_mark_satr(file))
 
     # @unittest.skip()
-    def test_hp_star_share_back(self):  # “标星”中的分享的返回键
-        logging.info('==========test_hp_star_share_back==========')
+    def test_star_share_back(self):  # “标星”中的分享的返回键
+        logging.info('==========test_star_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
         if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
@@ -460,8 +578,8 @@ class TestHomePage(StartEnd):
         gv.mark_star()
 
     # @unittest.skip()
-    def test_hp_star_show_no_file(self):
-        logging.info('==========test_hp_star_show_no_file==========')
+    def test_star_show_no_file(self):
+        logging.info('==========test_star_show_no_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
         if self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item'):
@@ -472,8 +590,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_view"]'))
 
     # @unittest.skip()
-    def test_hp_star_select_all02(self):
-        logging.info('==========test_hp_star_select_all02==========')
+    def test_star_multi_select02(self):
+        logging.info('==========test_star_multi_select02==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('alldoc')
@@ -488,8 +606,8 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('star')
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_choose_file_cancel').click()
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
@@ -499,7 +617,7 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
         self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[2].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[0].click()
         self.driver.find_element(By.XPATH, '//*[@text="上传"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="确认"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="保存"]').click()
@@ -509,12 +627,12 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         gv.file_more_info(2)
         file = gv.mark_star()
-        gv.file_more_info(3)
+        gv.file_more_info(0)
         file = gv.mark_star()
 
     # @unittest.skip()
-    def test_hp_star_select_all(self):  # “标星”全选操作
-        logging.info('==========test_hp_star_select_all==========')
+    def test_star_multi_select(self):  # “标星”全选操作
+        logging.info('==========test_star_multi_select==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -543,8 +661,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(msg == 1, 'delete fail')
 
     # @unittest.skip()
-    def test_hp_star_delete_file(self):
-        logging.info('==========test_hp_star_delete_file==========')
+    def test_star_delete_file(self):
+        logging.info('==========test_star_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('wp')
@@ -564,8 +682,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(msg == 1, 'delete fail')
 
     # @unittest.skip()
-    def test_hp_star_rename_file(self):
-        logging.info('==========test_hp_star_rename_file==========')
+    def test_star_rename_file(self):
+        logging.info('==========test_star_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -588,8 +706,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip()
     @data(*options)
-    def test_hp_star_copy_file(self, option='移动'):  # 标星复制文件
-        logging.info('==========test_hp_star_copy_file==========')
+    def test_star_file_options(self, option='移动'):  # 标星复制文件
+        logging.info('==========test_star_file_options==========')
         os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
@@ -625,8 +743,8 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
 
     # @unittest.skip()
-    def test_hp_star_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_star_upload_file==========')
+    def test_star_upload_file(self):  # 标星_联网_上传
+        logging.info('==========test_star_upload_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('star')
         if len(self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')) == 0:
@@ -646,8 +764,8 @@ class TestHomePage(StartEnd):
         gv.logout_action()
 
     # @unittest.skip()
-    def test_hp_star_mark_on_off(self):  # 标星/取消标星
-        logging.info('==========test_hp_star_mark_on_off==========')
+    def test_star_mark_on_off(self):  # 标星_标星/取消标星
+        logging.info('==========test_star_mark_on_off==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -682,8 +800,8 @@ class TestHomePage(StartEnd):
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % file_name))
 
     # @unittest.skip()
-    def test_hp_star_search(self):  # 标星搜索
-        logging.info('==========test_hp_star_search_file==========')
+    def test_star_search(self):  # 标星_搜索
+        logging.info('==========test_star_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -700,8 +818,8 @@ class TestHomePage(StartEnd):
         self.assertTrue(result)
 
     # @unittest.skip()
-    def test_hp_star_sort(self):  # 标星条件排序
-        logging.info('==========test_hp_star_sort==========')
+    def test_star_sort(self):  # 标星条件排序
+        logging.info('==========test_star_sort==========')
         gv = HomePageView(self.driver)
         # gv.login_on_needed()
         gv.jump_to_index('star')
@@ -714,8 +832,8 @@ class TestHomePage(StartEnd):
         # gv.logout_action()
 
     # @unittest.skip()
-    def test_hp_cloud_search(self):
-        logging.info('==========test_hp_cloud_search==========')
+    def test_cloud_search(self):#云文档_联网_搜索
+        logging.info('==========test_cloud_search==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.create_file('wp')
@@ -735,9 +853,9 @@ class TestHomePage(StartEnd):
         self.assertTrue(results == False)
 
     # ======2020_04_08====== #
-    # @unittest.skip('skip test_hp_cloud_select_all_download')
-    def test_hp_cloud_select_all_download(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_download==========')
+    # @unittest.skip('skip test_cloud_select_all_download')
+    def test_cloud_select_all_download(self):  # 云文档_联网_云文档操作_多选_下载
+        logging.info('==========test_cloud_select_all_download==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -762,10 +880,10 @@ class TestHomePage(StartEnd):
         msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/%s' % name7)
         self.assertTrue(msg == 0, '文件不存在')
 
-    # @unittest.skip('skip test_hp_cloud_select_all_copy')
+    # @unittest.skip('skip test_cloud_select_all_copy')
     @data(*options)
-    def test_hp_cloud_select_all_options(self, option='复制'):  # 云文档中多选移动复制
-        logging.info('==========test_hp_cloud_select_all_copy==========')
+    def test_cloud_multi_select_options(self, option='复制'):  # 云文档中多选移动复制
+        logging.info('==========test_cloud_select_all_copy==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -791,9 +909,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % name6)
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % name7)
 
-    # @unittest.skip('skip test_hp_cloud_select_all_delete')
-    def test_hp_cloud_select_all_delete(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all_delete==========')
+    # @unittest.skip('skip test_cloud_select_all_delete')
+    def test_cloud_multi_select_delete(self):  # 云文档_联网_云文档操作_多选_删除
+        logging.info('==========test_cloud_select_all_delete==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -814,9 +932,9 @@ class TestHomePage(StartEnd):
         a = set(names_del) <= set(names)  # 前一个集合是否是后一个集合的子集
         self.assertFalse(a)
 
-    # @unittest.skip('skip test_hp_cloud_select_all')
-    def test_hp_cloud_select_all(self):  # 云文档中全选
-        logging.info('==========test_hp_cloud_select_all==========')
+    # @unittest.skip('skip test_cloud_select_all')
+    def test_cloud_multi_select(self):  #云文档_云文档操作_多选_全选
+        logging.info('==========test_cloud_multi_select==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -841,10 +959,10 @@ class TestHomePage(StartEnd):
         num1 = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text
         self.assertTrue(int(num1) == 0)
 
-    # @unittest.skip('skip test_hp_cloud_file_options02')
+    # @unittest.skip('skip test_cloud_file_options02')
     @data(*options)
-    def test_hp_cloud_file_options02(self, option='复制'):  # 云文档中复制
-        logging.info('==========test_hp_cloud_file_options02==========')
+    def test_cloud_file_options02(self, option='复制'):  # 云文档_联网_云文档操作_复制
+        logging.info('==========test_cloud_file_options02==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -869,10 +987,10 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % folder_name).click()
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file))
 
-    # @unittest.skip('skip test_hp_cloud_file_options')
+    # @unittest.skip('skip test_cloud_file_options')
     @data(*options)
-    def test_hp_cloud_file_options(self, option='复制'):  # 云文档中复制
-        logging.info('==========test_hp_cloud_file_options==========')
+    def test_cloud_file_options(self, option='复制'):  # 云文档_联网_云文档操作_复制
+        logging.info('==========test_cloud_file_options==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -891,9 +1009,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="%s"]' % copy_folder_name).click()
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % file))
 
-    # @unittest.skip('skip test_hp_cloud_download_file')
-    def test_hp_cloud_download_file(self):  # 云文档下载操作
-        logging.info('==========test_hp_cloud_download_file==========')
+    # @unittest.skip('skip test_cloud_download_file')
+    def test_cloud_download_file(self):  # 云文档_联网_云文档操作_下载
+        logging.info('==========test_cloud_download_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -907,9 +1025,9 @@ class TestHomePage(StartEnd):
         msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/%s' % file)
         self.assertTrue(msg == 0, '文件不存在')
 
-    # @unittest.skip('skip test_hp_cloud_file_info')
-    def test_hp_cloud_file_info(self):  # 云文件相关信息
-        logging.info('==========test_hp_cloud_file_info==========')
+    # @unittest.skip('skip test_cloud_file_info')
+    def test_cloud_file_info(self):  # 云文档_文档信息
+        logging.info('==========test_cloud_file_info==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -925,9 +1043,9 @@ class TestHomePage(StartEnd):
         path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
         self.assertTrue(path == '云文档/')
 
-    # @unittest.skip('skip test_hp_cloud_delete_folder')
-    def test_hp_cloud_delete_folder(self):
-        logging.info('==========test_hp_cloud_delete_folder==========')
+    # @unittest.skip('skip test_cloud_delete_folder')
+    def test_cloud_delete_folder(self):#云文档_联网_文件夹操作_删除
+        logging.info('==========test_cloud_delete_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -945,9 +1063,9 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_toast_message('操作成功'))
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % folder_name), 'delete fail')
 
-    # @unittest.skip('skip test_hp_cloud_rename_folder')
-    def test_hp_cloud_rename_folder(self):
-        logging.info('==========test_hp_cloud_rename_folder==========')
+    # @unittest.skip('skip test_cloud_rename_folder')
+    def test_cloud_rename_folder(self):#云文档_联网_文件夹操作_重命名
+        logging.info('==========test_cloud_rename_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -981,10 +1099,10 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % folder_name), 'folder rename fail')
 
-    # @unittest.skip('skip test_hp_cloud_folder_options')
+    # @unittest.skip('skip test_cloud_folder_options')
     @data(*options)
-    def test_hp_cloud_folder_options(self, option='移动'):  # 云文档文件夹移动、复制（复制空白文件夹有问题）
-        logging.info('==========test_hp_cloud_folder_options==========')
+    def test_cloud_folder_options(self, option='移动'):  # 云文档_联网__文件夹操作_移动
+        logging.info('==========test_cloud_folder_options==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -1013,9 +1131,9 @@ class TestHomePage(StartEnd):
         result1 = gv.get_element_result('//*[@text="%s"]' % folder_name)
         self.assertTrue(result1, '操作失败')
 
-    # @unittest.skip('skip test_hp_cloud_sort')
-    def test_hp_cloud_sort(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_cloud_sort==========')
+    # @unittest.skip('skip test_cloud_sort')
+    def test_cloud_sort(self):  # 云文档_排序
+        logging.info('==========test_cloud_sort==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('cloud')
@@ -1027,9 +1145,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_cloud_create_folder')
-    def test_hp_cloud_create_folder(self):
-        logging.info('==========test_hp_cloud_create_folder==========')
+    # @unittest.skip('skip test_cloud_create_folder')
+    def test_cloud_create_folder(self):#云文档_未联网_新建文件夹
+        logging.info('==========test_cloud_create_folder==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('cloud')
@@ -1075,9 +1193,9 @@ class TestHomePage(StartEnd):
 
     # ======add 2020_01_02=====
 
-    # @unittest.skip('skip test_hp_my2_recycle_options')
-    def test_hp_my2_recycle_options(self):
-        logging.info('==========test_hp_my2_recycle_options==========')
+    # @unittest.skip('skip test_my2_recycle_options')
+    def test_my2_recycle_options(self):
+        logging.info('==========test_my2_recycle_options==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('my')
@@ -1092,9 +1210,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消全选"]').click()
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
 
-    # @unittest.skip('skip test_hp_my2_recycle_restore')
-    def test_hp_my2_recycle_restore(self):
-        logging.info('==========test_hp_my2_recycle_restore==========')
+    # @unittest.skip('skip test_my2_recycle_restore')
+    def test_my2_recycle_restore(self):
+        logging.info('==========test_my2_recycle_restore==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('my')
@@ -1105,9 +1223,9 @@ class TestHomePage(StartEnd):
         result3 = hp.recycle_files_clear()
         self.assertTrue(result3 == True)
 
-    # @unittest.skip('skip test_hp_alldoc_cloud_click_unlogin')
-    def test_hp_alldoc_cloud_click_unlogin(self):
-        logging.info('==========test_hp_alldoc_cloud_click_unlogin==========')
+    # @unittest.skip('skip test_alldoc_cloud_click_unlogin')
+    def test_alldoc_cloud_click_unlogin(self):
+        logging.info('==========test_alldoc_cloud_click_unlogin==========')
         hp = HomePageView(self.driver)
         hp.jump_to_index('my')
         if hp.check_login_status():
@@ -1117,9 +1235,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
         self.assertTrue(hp.get_element_result('//*[@text="账号登录"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_cloud_click_login')
-    def test_hp_alldoc_cloud_click_login(self):
-        logging.info('==========test_hp_alldoc_cloud_click_unlogin==========')
+    # @unittest.skip('skip test_alldoc_cloud_click_login')
+    def test_alldoc_cloud_click_login(self):
+        logging.info('==========test_alldoc_cloud_click_unlogin==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('alldoc')
@@ -1128,10 +1246,10 @@ class TestHomePage(StartEnd):
         self.assertTrue(hp.get_element_result('//*[@text="自动上传"]'))
 
     # ======before 2020_01_02========
-    # @unittest.skip('skip test_hp_template_category')
+    # @unittest.skip('skip test_template_category')
     @data(*wps)
-    def test_hp_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
-        logging.info('==========test_hp_template_category==========')
+    def test_my2_template_zoom_apply(self, file_type='ss'):  # 模板类别
+        logging.info('==========test_template_category==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('last')
@@ -1151,10 +1269,10 @@ class TestHomePage(StartEnd):
         self.assertTrue(hp.is_not_visible('//*[contains(@text,"正在打开")]'))
         self.assertTrue(hp.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_title_text_view"]'))
 
-    # @unittest.skip('skip test_hp_template_category')
+    # @unittest.skip('skip test_template_category')
     @data(*wps)
-    def test_hp_my2_template_category(self, file_type='pg'):  # 模板类别
-        logging.info('==========test_hp_template_category==========')
+    def test_my2_template_category(self, file_type='pg'):  # 模板类别
+        logging.info('==========test_template_category==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('last')
@@ -1179,8 +1297,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip('skip test_template_search')
     @data(*wps)
-    def test_hp_my2_template_search(self, file_type='wp'):
-        logging.info('==========test_hp_create_blank_file==========')
+    def test_my2_template_search(self, file_type='wp'):
+        logging.info('==========test_create_blank_file==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         hp.jump_to_index('last')
@@ -1214,18 +1332,18 @@ class TestHomePage(StartEnd):
         print(len(clear_result))
         self.assertTrue(len(clear_result) == 0, '历史记录删除失败')
 
-    # @unittest.skip('skip test_hp_create_blank_file')
+    # @unittest.skip('skip test_create_blank_file')
     @data(*wps)
-    def test_hp_create_blank_file(self, file_type='wp'):
-        logging.info('==========test_hp_create_blank_file==========')
+    def test_create_blank_file(self, file_type='wp'):
+        logging.info('==========test_create_blank_file==========')
         hp = HomePageView(self.driver)
         hp.create_file(file_type)
         self.assertTrue(hp.get_element_result('//*[contains(@text, "新建空白")]'))
 
-    # @unittest.skip('skip test_hp_my2_templates_options')
+    # @unittest.skip('skip test_my2_templates_options')
     @data(*way_list)
-    def test_hp_my2_templates_options(self, way='下载'):
-        logging.info('==========test_hp_my2_templates_options==========')
+    def test_my2_templates_options(self, way='下载'):
+        logging.info('==========test_my2_templates_options==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
         for i in ['ss', 'wp', 'pg']:
@@ -1238,9 +1356,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
         self.assertTrue(hp.get_element_result('//*[@text="我的模板"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_copy_file')
-    def test_hp_alldoc_copy_file(self):  # “打开”复制文件
-        logging.info('==========test_hp_alldoc_copy_file==========')
+    # @unittest.skip('skip test_alldoc_copy_file')
+    def test_alldoc_copy_file(self):  # “打开”复制文件
+        logging.info('==========test_alldoc_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -1251,9 +1369,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_delete_file')
-    def test_hp_alldoc_delete_file(self):
-        logging.info('==========test_hp_alldoc_delete_file==========')
+    # @unittest.skip('skip test_alldoc_delete_file')
+    def test_alldoc_delete_file(self):
+        logging.info('==========test_alldoc_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -1271,9 +1389,9 @@ class TestHomePage(StartEnd):
         # self.driver.keyevent(4)
         # self.assertFalse(gv.search_file(name))
 
-    # @unittest.skip('skip test_hp_alldoc_download_copy_file')
-    def test_hp_alldoc_download_copy_file(self):
-        logging.info('==========test_hp_alldoc_download_copy_file==========')
+    # @unittest.skip('skip test_alldoc_download_copy_file')
+    def test_alldoc_download_copy_file(self):
+        logging.info('==========test_alldoc_download_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1285,9 +1403,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_download_delete_file')
-    def test_hp_alldoc_download_delete_file(self):
-        logging.info('==========test_hp_alldoc_download_delete_file==========')
+    # @unittest.skip('skip test_alldoc_download_delete_file')
+    def test_alldoc_download_delete_file(self):
+        logging.info('==========test_alldoc_download_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1299,9 +1417,9 @@ class TestHomePage(StartEnd):
         gv.delete_file()
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_hp_alldoc_download_file_info')
-    def test_hp_alldoc_download_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_download_file_info==========')
+    # @unittest.skip('skip test_alldoc_download_file_info')
+    def test_alldoc_download_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_download_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1309,9 +1427,9 @@ class TestHomePage(StartEnd):
         gv.file_more_info(2)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_download_mark_star')
-    def test_hp_alldoc_download_mark_star(self):
-        logging.info('==========test_hp_alldoc_download_mark_star==========')
+    # @unittest.skip('skip test_alldoc_download_mark_star')
+    def test_alldoc_download_mark_star(self):
+        logging.info('==========test_alldoc_download_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1323,9 +1441,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_download_move_file')
-    def test_hp_alldoc_download_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_download_move_file==========')
+    # @unittest.skip('skip test_alldoc_download_move_file')
+    def test_alldoc_download_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_download_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1334,9 +1452,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_download_rename_file')
-    def test_hp_alldoc_download_rename_file(self):
-        logging.info('==========test_hp_alldoc_download_rename_file==========')
+    # @unittest.skip('skip test_alldoc_download_rename_file')
+    def test_alldoc_download_rename_file(self):
+        logging.info('==========test_alldoc_download_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1346,9 +1464,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_download_search_file')
-    def test_hp_alldoc_download_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_download_search_file==========')
+    # @unittest.skip('skip test_alldoc_download_search_file')
+    def test_alldoc_download_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_download_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1357,9 +1475,9 @@ class TestHomePage(StartEnd):
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_download_select_all')
-    def test_hp_alldoc_download_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_download_select_all==========')
+    # @unittest.skip('skip test_alldoc_download_select_all')
+    def test_alldoc_download_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_download_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1373,9 +1491,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_download_select_all1')
-    def test_hp_alldoc_download_select_all1(self):
-        logging.info('==========test_hp_alldoc_download_select_all1==========')
+    # @unittest.skip('skip test_alldoc_download_select_all1')
+    def test_alldoc_download_select_all1(self):
+        logging.info('==========test_alldoc_download_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1385,10 +1503,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_download_share')
+    # @unittest.skip('skip test_alldoc_download_share')
     @data(*index_share_list)
-    def test_hp_alldoc_download_share(self, way):
-        logging.info('==========test_hp_alldoc_download_share==========')
+    def test_alldoc_download_share(self, way):
+        logging.info('==========test_alldoc_download_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1400,9 +1518,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_download_share_back')
-    def test_hp_alldoc_download_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_download_share_back==========')
+    # @unittest.skip('skip test_alldoc_download_share_back')
+    def test_alldoc_download_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_download_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1412,9 +1530,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_download_sort_file')
-    def test_hp_alldoc_download_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_download_sort_file==========')
+    # @unittest.skip('skip test_alldoc_download_sort_file')
+    def test_alldoc_download_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_download_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('Download')
@@ -1425,9 +1543,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_download_upload_file')
-    def test_hp_alldoc_download_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_download_upload_file==========')
+    # @unittest.skip('skip test_alldoc_download_upload_file')
+    def test_alldoc_download_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_download_upload_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('alldoc')
@@ -1440,9 +1558,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_alldoc_file_info')
-    def test_hp_alldoc_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_file_info==========')
+    # @unittest.skip('skip test_alldoc_file_info')
+    def test_alldoc_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -1458,18 +1576,18 @@ class TestHomePage(StartEnd):
         path = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text.strip()
         self.assertTrue(path != '-')
 
-    # @unittest.skip('skip test_hp_alldoc_local_folder')
+    # @unittest.skip('skip test_alldoc_local_folder')
     @data(*folder_list)
-    def test_hp_alldoc_local_folder(self, folder='TIM'):  # 测试本地文档打开
-        logging.info('==========test_hp_alldoc_local_folder==========')
+    def test_alldoc_local_folder(self, folder='TIM'):  # 测试本地文档打开
+        logging.info('==========test_alldoc_local_folder==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder(folder)
         self.assertTrue(gv.check_open_folder(folder), 'open fail')
 
-    # @unittest.skip('skip test_hp_alldoc_mark_star')
-    def test_hp_alldoc_mark_star(self):
-        logging.info('==========test_hp_alldoc_mark_star==========')
+    # @unittest.skip('skip test_alldoc_mark_star')
+    def test_alldoc_mark_star(self):
+        logging.info('==========test_alldoc_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -1480,9 +1598,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_copy_file')
-    def test_hp_alldoc_mobile_copy_file(self):
-        logging.info('==========test_hp_alldoc_mobile_copy_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_copy_file')
+    def test_alldoc_mobile_copy_file(self):
+        logging.info('==========test_alldoc_mobile_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1497,9 +1615,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_delete_file')
-    def test_hp_alldoc_mobile_delete_file(self):
-        logging.info('==========test_hp_alldoc_mobile_delete_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_delete_file')
+    def test_alldoc_mobile_delete_file(self):
+        logging.info('==========test_alldoc_mobile_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1513,9 +1631,9 @@ class TestHomePage(StartEnd):
         # self.driver.keyevent(4)
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_file_info')
-    def test_hp_alldoc_mobile_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_mobile_file_info==========')
+    # @unittest.skip('skip test_alldoc_mobile_file_info')
+    def test_alldoc_mobile_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_mobile_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1525,9 +1643,9 @@ class TestHomePage(StartEnd):
         gv.file_more_info(1)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_mark_star')
-    def test_hp_alldoc_mobile_mark_star(self):
-        logging.info('==========test_hp_alldoc_mobile_mark_star==========')
+    # @unittest.skip('skip test_alldoc_mobile_mark_star')
+    def test_alldoc_mobile_mark_star(self):
+        logging.info('==========test_alldoc_mobile_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1542,9 +1660,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_move_file')
-    def test_hp_alldoc_mobile_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_mobile_move_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_move_file')
+    def test_alldoc_mobile_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_mobile_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1556,9 +1674,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_rename_file')
-    def test_hp_alldoc_mobile_rename_file(self):
-        logging.info('==========test_hp_alldoc_mobile_rename_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_rename_file')
+    def test_alldoc_mobile_rename_file(self):
+        logging.info('==========test_alldoc_mobile_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1570,9 +1688,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_search_file')
-    def test_hp_alldoc_mobile_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_mobile_search_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_search_file')
+    def test_alldoc_mobile_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_mobile_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1581,9 +1699,9 @@ class TestHomePage(StartEnd):
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_select_all')
-    def test_hp_alldoc_mobile_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_mobile_select_all==========')
+    # @unittest.skip('skip test_alldoc_mobile_select_all')
+    def test_alldoc_mobile_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_mobile_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1600,9 +1718,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_select_all1')
-    def test_hp_alldoc_mobile_select_all1(self):
-        logging.info('==========test_hp_alldoc_mobile_select_all1==========')
+    # @unittest.skip('skip test_alldoc_mobile_select_all1')
+    def test_alldoc_mobile_select_all1(self):
+        logging.info('==========test_alldoc_mobile_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1615,10 +1733,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_share')
+    # @unittest.skip('skip test_alldoc_mobile_share')
     @data(*index_share_list)
-    def test_hp_alldoc_mobile_share(self, way):
-        logging.info('==========test_hp_alldoc_mobile_share==========')
+    def test_alldoc_mobile_share(self, way):
+        logging.info('==========test_alldoc_mobile_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1633,9 +1751,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_share_back')
-    def test_hp_alldoc_mobile_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_mobile_share_back==========')
+    # @unittest.skip('skip test_alldoc_mobile_share_back')
+    def test_alldoc_mobile_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_mobile_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1648,9 +1766,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_sort_file')
-    def test_hp_alldoc_mobile_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_mobile_sort_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_sort_file')
+    def test_alldoc_mobile_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_mobile_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('手机')
@@ -1661,9 +1779,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_mobile_upload_file')
-    def test_hp_alldoc_mobile_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_mobile_upload_file==========')
+    # @unittest.skip('skip test_alldoc_mobile_upload_file')
+    def test_alldoc_mobile_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_mobile_upload_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('alldoc')
@@ -1679,9 +1797,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_alldoc_move_file')
-    def test_hp_alldoc_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_move_file==========')
+    # @unittest.skip('skip test_alldoc_move_file')
+    def test_alldoc_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -1689,9 +1807,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_copy_file')
-    def test_hp_alldoc_myfile_copy_file(self):
-        logging.info('==========test_hp_alldoc_myfile_copy_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_copy_file')
+    def test_alldoc_myfile_copy_file(self):
+        logging.info('==========test_alldoc_myfile_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1703,9 +1821,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_delete_file')
-    def test_hp_alldoc_myfile_delete_file(self):
-        logging.info('==========test_hp_alldoc_myfile_delete_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_delete_file')
+    def test_alldoc_myfile_delete_file(self):
+        logging.info('==========test_alldoc_myfile_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1718,9 +1836,9 @@ class TestHomePage(StartEnd):
         # self.driver.keyevent(4)
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_file_info')
-    def test_hp_alldoc_myfile_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_myfile_file_info==========')
+    # @unittest.skip('skip test_alldoc_myfile_file_info')
+    def test_alldoc_myfile_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_myfile_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1728,9 +1846,9 @@ class TestHomePage(StartEnd):
         gv.file_more_info(2)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_mark_star')
-    def test_hp_alldoc_myfile_mark_star(self):
-        logging.info('==========test_hp_alldoc_myfile_mark_star==========')
+    # @unittest.skip('skip test_alldoc_myfile_mark_star')
+    def test_alldoc_myfile_mark_star(self):
+        logging.info('==========test_alldoc_myfile_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1742,9 +1860,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_move_file')
-    def test_hp_alldoc_myfile_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_myfile_move_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_move_file')
+    def test_alldoc_myfile_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_myfile_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1753,9 +1871,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_rename_file')
-    def test_hp_alldoc_myfile_rename_file(self):
-        logging.info('==========test_hp_alldoc_myfile_rename_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_rename_file')
+    def test_alldoc_myfile_rename_file(self):
+        logging.info('==========test_alldoc_myfile_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1765,9 +1883,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_search_file')
-    def test_hp_alldoc_myfile_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_myfile_search_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_search_file')
+    def test_alldoc_myfile_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_myfile_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1776,9 +1894,9 @@ class TestHomePage(StartEnd):
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_select_all')
-    def test_hp_alldoc_myfile_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_myfile_select_all==========')
+    # @unittest.skip('skip test_alldoc_myfile_select_all')
+    def test_alldoc_myfile_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_myfile_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1792,9 +1910,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_select_all1')
-    def test_hp_alldoc_myfile_select_all1(self):
-        logging.info('==========test_hp_alldoc_myfile_select_all1==========')
+    # @unittest.skip('skip test_alldoc_myfile_select_all1')
+    def test_alldoc_myfile_select_all1(self):
+        logging.info('==========test_alldoc_myfile_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1804,10 +1922,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_share')
+    # @unittest.skip('skip test_alldoc_myfile_share')
     @data(*index_share_list)
-    def test_hp_alldoc_myfile_share(self, way):
-        logging.info('==========test_hp_alldoc_myfile_share==========')
+    def test_alldoc_myfile_share(self, way):
+        logging.info('==========test_alldoc_myfile_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1819,9 +1937,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_share_back')
-    def test_hp_alldoc_myfile_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_myfile_share_back==========')
+    # @unittest.skip('skip test_alldoc_myfile_share_back')
+    def test_alldoc_myfile_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_myfile_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1831,9 +1949,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_sort_file')
-    def test_hp_alldoc_myfile_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_myfile_sort_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_sort_file')
+    def test_alldoc_myfile_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_myfile_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('我的文档')
@@ -1844,9 +1962,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_myfile_upload_file')
-    def test_hp_alldoc_myfile_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_myfile_upload_file==========')
+    # @unittest.skip('skip test_alldoc_myfile_upload_file')
+    def test_alldoc_myfile_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_myfile_upload_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('alldoc')
@@ -1859,9 +1977,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_alldoc_qq_copy_file')
-    def test_hp_alldoc_qq_copy_file(self):
-        logging.info('==========test_hp_alldoc_qq_copy_file==========')
+    # @unittest.skip('skip test_alldoc_qq_copy_file')
+    def test_alldoc_qq_copy_file(self):
+        logging.info('==========test_alldoc_qq_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1870,9 +1988,9 @@ class TestHomePage(StartEnd):
         check = gv.copy_file()
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_qq_delete_file')
-    def test_hp_alldoc_qq_delete_file(self):
-        logging.info('==========test_hp_alldoc_qq_delete_file==========')
+    # @unittest.skip('skip test_alldoc_qq_delete_file')
+    def test_alldoc_qq_delete_file(self):
+        logging.info('==========test_alldoc_qq_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1884,9 +2002,9 @@ class TestHomePage(StartEnd):
         gv.delete_file()
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_file_info')
-    def test_hp_alldoc_qq_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_qq_file_info==========')
+    # @unittest.skip('skip test_alldoc_qq_file_info')
+    def test_alldoc_qq_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_qq_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1894,9 +2012,9 @@ class TestHomePage(StartEnd):
         gv.file_more_info(2)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_mark_star')
-    def test_hp_alldoc_qq_mark_star(self):
-        logging.info('==========test_hp_alldoc_qq_mark_star==========')
+    # @unittest.skip('skip test_alldoc_qq_mark_star')
+    def test_alldoc_qq_mark_star(self):
+        logging.info('==========test_alldoc_qq_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1908,9 +2026,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_move_file')
-    def test_hp_alldoc_qq_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_qq_move_file==========')
+    # @unittest.skip('skip test_alldoc_qq_move_file')
+    def test_alldoc_qq_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_qq_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1919,9 +2037,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_qq_rename_file')
-    def test_hp_alldoc_qq_rename_file(self):
-        logging.info('==========test_hp_alldoc_qq_rename_file==========')
+    # @unittest.skip('skip test_alldoc_qq_rename_file')
+    def test_alldoc_qq_rename_file(self):
+        logging.info('==========test_alldoc_qq_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1931,9 +2049,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_qq_search_file')
-    def test_hp_alldoc_qq_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_qq_search_file==========')
+    # @unittest.skip('skip test_alldoc_qq_search_file')
+    def test_alldoc_qq_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_qq_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1942,9 +2060,9 @@ class TestHomePage(StartEnd):
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_qq_select_all')
-    def test_hp_alldoc_qq_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_qq_select_all==========')
+    # @unittest.skip('skip test_alldoc_qq_select_all')
+    def test_alldoc_qq_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_qq_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1958,9 +2076,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_select_all1')
-    def test_hp_alldoc_qq_select_all1(self):
-        logging.info('==========test_hp_alldoc_qq_select_all1==========')
+    # @unittest.skip('skip test_alldoc_qq_select_all1')
+    def test_alldoc_qq_select_all1(self):
+        logging.info('==========test_alldoc_qq_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1970,10 +2088,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_share')
+    # @unittest.skip('skip test_alldoc_qq_share')
     @data(*index_share_list)
-    def test_hp_alldoc_qq_share(self, way):
-        logging.info('==========test_hp_alldoc_qq_share==========')
+    def test_alldoc_qq_share(self, way):
+        logging.info('==========test_alldoc_qq_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1985,9 +2103,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_qq_share_back')
-    def test_hp_alldoc_qq_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_qq_share_back==========')
+    # @unittest.skip('skip test_alldoc_qq_share_back')
+    def test_alldoc_qq_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_qq_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -1997,9 +2115,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_qq_sort_file')
-    def test_hp_alldoc_qq_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_qq_sort_file==========')
+    # @unittest.skip('skip test_alldoc_qq_sort_file')
+    def test_alldoc_qq_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_qq_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('QQ')
@@ -2010,9 +2128,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_qq_upload_file')
-    def test_hp_alldoc_qq_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_qq_upload_file==========')
+    # @unittest.skip('skip test_alldoc_qq_upload_file')
+    def test_alldoc_qq_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_qq_upload_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('alldoc')
@@ -2025,9 +2143,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_alldoc_rename_file')
-    def test_hp_alldoc_rename_file(self):
-        logging.info('==========test_hp_alldoc_rename_file==========')
+    # @unittest.skip('skip test_alldoc_rename_file')
+    def test_alldoc_rename_file(self):
+        logging.info('==========test_alldoc_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2036,9 +2154,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_scroll')
-    def test_hp_alldoc_scroll(self):  # 测试“最近”中的滑屏
-        logging.info('==========test_hp_alldoc_scroll==========')
+    # @unittest.skip('skip test_alldoc_scroll')
+    def test_alldoc_scroll(self):  # 测试“最近”中的滑屏
+        logging.info('==========test_alldoc_scroll==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2047,18 +2165,18 @@ class TestHomePage(StartEnd):
         second_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
         self.assertTrue(first_name != second_name)
 
-    # @unittest.skip('skip test_hp_alldoc_search_file')
-    def test_hp_alldoc_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_search_file==========')
+    # @unittest.skip('skip test_alldoc_search_file')
+    def test_alldoc_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         search_file = '欢迎使用永中Office.pptx'
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_select_all')
-    def test_hp_alldoc_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_select_all==========')
+    # @unittest.skip('skip test_alldoc_select_all')
+    def test_alldoc_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2071,9 +2189,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_select_all1')
-    def test_hp_alldoc_select_all1(self):
-        logging.info('==========test_hp_alldoc_select_all1==========')
+    # @unittest.skip('skip test_alldoc_select_all1')
+    def test_alldoc_select_all1(self):
+        logging.info('==========test_alldoc_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2082,10 +2200,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_share')
+    # @unittest.skip('skip test_alldoc_share')
     @data(*index_share_list)
-    def test_hp_alldoc_share(self, way):
-        logging.info('==========test_hp_alldoc_share==========')
+    def test_alldoc_share(self, way):
+        logging.info('==========test_alldoc_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2096,9 +2214,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_share_back')
-    def test_hp_alldoc_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_share_back==========')
+    # @unittest.skip('skip test_alldoc_share_back')
+    def test_alldoc_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2107,9 +2225,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_show_file')
-    def test_hp_alldoc_show_file(self):  # 点击文件类型
-        logging.info('==========test_hp_alldoc_show_file==========')
+    # @unittest.skip('skip test_alldoc_show_file')
+    def test_alldoc_show_file(self):  # 点击文件类型
+        logging.info('==========test_alldoc_show_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
 
@@ -2119,9 +2237,9 @@ class TestHomePage(StartEnd):
             self.assertTrue(gv.check_select_file_type(i), 'filter fail')
             self.driver.keyevent(4)
 
-    # @unittest.skip('skip test_hp_alldoc_sort_file')
-    def test_hp_alldoc_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_sort_file==========')
+    # @unittest.skip('skip test_alldoc_sort_file')
+    def test_alldoc_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2131,9 +2249,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_type_back')
-    def test_hp_alldoc_type_back(self):  # “打开”文档类型中的返回键
-        logging.info('==========test_hp_alldoc_type_back==========')
+    # @unittest.skip('skip test_alldoc_type_back')
+    def test_alldoc_type_back(self):  # “打开”文档类型中的返回键
+        logging.info('==========test_alldoc_type_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('pdf')
@@ -2141,9 +2259,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_user').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/iv_main_title"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_upload_file')
-    def test_hp_alldoc_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_upload_file==========')
+    # @unittest.skip('skip test_alldoc_upload_file')
+    def test_alldoc_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_upload_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.select_file_type('all')
@@ -2159,9 +2277,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_copy_file')
-    def test_hp_alldoc_wechat_copy_file(self):
-        logging.info('==========test_hp_alldoc_wechat_copy_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_copy_file')
+    def test_alldoc_wechat_copy_file(self):
+        logging.info('==========test_alldoc_wechat_copy_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2173,9 +2291,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell rm -rf /storage/emulated/0/0000/%s' % fileName)
         self.assertTrue(check, 'copy fail')
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_delete_file')
-    def test_hp_alldoc_wechat_delete_file(self):
-        logging.info('==========test_hp_alldoc_wechat_delete_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_delete_file')
+    def test_alldoc_wechat_delete_file(self):
+        logging.info('==========test_alldoc_wechat_delete_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2187,9 +2305,9 @@ class TestHomePage(StartEnd):
         gv.delete_file()
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_file_info')
-    def test_hp_alldoc_wechat_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_alldoc_wechat_file_info==========')
+    # @unittest.skip('skip test_alldoc_wechat_file_info')
+    def test_alldoc_wechat_file_info(self):  # 文档信息显示
+        logging.info('==========test_alldoc_wechat_file_info==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2197,9 +2315,9 @@ class TestHomePage(StartEnd):
         gv.file_more_info(2)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_mark_star')
-    def test_hp_alldoc_wechat_mark_star(self):
-        logging.info('==========test_hp_alldoc_wechat_mark_star==========')
+    # @unittest.skip('skip test_alldoc_wechat_mark_star')
+    def test_alldoc_wechat_mark_star(self):
+        logging.info('==========test_alldoc_wechat_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2211,9 +2329,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_move_file')
-    def test_hp_alldoc_wechat_move_file(self):  # “打开”移动文件
-        logging.info('==========test_hp_alldoc_wechat_move_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_move_file')
+    def test_alldoc_wechat_move_file(self):  # “打开”移动文件
+        logging.info('==========test_alldoc_wechat_move_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2222,9 +2340,9 @@ class TestHomePage(StartEnd):
         check = gv.move_file()
         self.assertTrue(check, 'move fail')
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_rename_file')
-    def test_hp_alldoc_wechat_rename_file(self):
-        logging.info('==========test_hp_alldoc_wechat_rename_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_rename_file')
+    def test_alldoc_wechat_rename_file(self):
+        logging.info('==========test_alldoc_wechat_rename_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2234,9 +2352,9 @@ class TestHomePage(StartEnd):
         check = gv.rename_file(newName)
         self.assertTrue(check, 'rename fail')
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_search_file')
-    def test_hp_alldoc_wechat_search_file(self):  # 搜索功能
-        logging.info('==========test_hp_alldoc_wechat_search_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_search_file')
+    def test_alldoc_wechat_search_file(self):  # 搜索功能
+        logging.info('==========test_alldoc_wechat_search_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2245,9 +2363,9 @@ class TestHomePage(StartEnd):
         result = gv.search_file(search_file)
         self.assertTrue(result)
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_select_all')
-    def test_hp_alldoc_wechat_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_alldoc_wechat_select_all==========')
+    # @unittest.skip('skip test_alldoc_wechat_select_all')
+    def test_alldoc_wechat_select_all(self):  # “最近”全选操作
+        logging.info('==========test_alldoc_wechat_select_all==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2261,9 +2379,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_select_all1')
-    def test_hp_alldoc_wechat_select_all1(self):
-        logging.info('==========test_hp_alldoc_wechat_select_all1==========')
+    # @unittest.skip('skip test_alldoc_wechat_select_all1')
+    def test_alldoc_wechat_select_all1(self):
+        logging.info('==========test_alldoc_wechat_select_all1==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2273,10 +2391,10 @@ class TestHomePage(StartEnd):
         for i in name_list:
             self.assertFalse(gv.get_element_result('//*[@text="%s"]' % i))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_share')
+    # @unittest.skip('skip test_alldoc_wechat_share')
     @data(*index_share_list)
-    def test_hp_alldoc_wechat_share(self, way):
-        logging.info('==========test_hp_alldoc_wechat_share==========')
+    def test_alldoc_wechat_share(self, way):
+        logging.info('==========test_alldoc_wechat_share==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2288,9 +2406,9 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_share_back')
-    def test_hp_alldoc_wechat_share_back(self):  # “打开”中的分享的返回键
-        logging.info('==========test_hp_alldoc_wechat_share_back==========')
+    # @unittest.skip('skip test_alldoc_wechat_share_back')
+    def test_alldoc_wechat_share_back(self):  # “打开”中的分享的返回键
+        logging.info('==========test_alldoc_wechat_share_back==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2300,9 +2418,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_sort_file')
-    def test_hp_alldoc_wechat_sort_file(self):  # “打开”文档按条件排序
-        logging.info('==========test_hp_alldoc_wechat_sort_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_sort_file')
+    def test_alldoc_wechat_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_wechat_sort_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2313,9 +2431,9 @@ class TestHomePage(StartEnd):
             for j in order_list:
                 gv.sort_files(i, j)
 
-    # @unittest.skip('skip test_hp_alldoc_wechat_upload_file')
-    def test_hp_alldoc_wechat_upload_file(self):  # 上传文件
-        logging.info('==========test_hp_alldoc_wechat_upload_file==========')
+    # @unittest.skip('skip test_alldoc_wechat_upload_file')
+    def test_alldoc_wechat_upload_file(self):  # 上传文件
+        logging.info('==========test_alldoc_wechat_upload_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('alldoc')
         gv.open_local_folder('微信')
@@ -2334,7 +2452,7 @@ class TestHomePage(StartEnd):
         gv.logout_action()
 
     # @unittest.skip('skip test_head_logo_show')
-    def test_hp_head_logo_show(self):  # 头像显示
+    def test_head_logo_show(self):  # 头像显示
         logging.info('==========test_head_logo_show==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
@@ -2361,23 +2479,23 @@ class TestHomePage(StartEnd):
         self.assertTrue(ele != None)
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_last_delete_file')
-    def test_hp_last_delete_file(self):  # “最近”删除文件
-        logging.info('==========test_hp_last_delete_file==========')
+    # @unittest.skip('skip test_last_delete_file')
+    def test_last_delete_file(self):  # “最近”删除文件
+        logging.info('==========test_last_delete_file==========')
         gv = HomePageView(self.driver)
         gv.file_more_info(1)
         self.assertTrue(gv.delete_last_file())
 
-    # @unittest.skip('skip test_hp_last_file_info')
-    def test_hp_last_file_info(self):  # 文档信息显示
-        logging.info('==========test_hp_last_file_info==========')
+    # @unittest.skip('skip test_last_file_info')
+    def test_last_file_info(self):  # 文档信息显示
+        logging.info('==========test_last_file_info==========')
         gv = HomePageView(self.driver)
         gv.file_more_info(1)
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_last_mark_star')
-    def test_hp_last_mark_star(self):  # 最近中的标星操作
-        logging.info('==========test_hp_last_mark_star==========')
+    # @unittest.skip('skip test_last_mark_star')
+    def test_last_mark_star(self):  # 最近中的标星操作
+        logging.info('==========test_last_mark_star==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2390,9 +2508,9 @@ class TestHomePage(StartEnd):
         file = gv.mark_star()
         self.assertFalse(gv.check_mark_satr(file))
 
-    # @unittest.skip('skip test_hp_last_scroll')
-    def test_hp_last_scroll(self):  # 测试“最近”中的滑屏
-        logging.info('==========test_hp_last_scroll==========')
+    # @unittest.skip('skip test_last_scroll')
+    def test_last_scroll(self):  # 测试“最近”中的滑屏
+        logging.info('==========test_last_scroll==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         first_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
@@ -2401,9 +2519,9 @@ class TestHomePage(StartEnd):
         second_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[0].text
         self.assertTrue(first_name != second_name)
 
-    # @unittest.skip('skip test_hp_last_select_all')
-    def test_hp_last_select_all(self):  # “最近”全选操作
-        logging.info('==========test_hp_last_select_all==========')
+    # @unittest.skip('skip test_last_select_all')
+    def test_last_select_all(self):  # “最近”全选操作
+        logging.info('==========test_last_select_all==========')
         gv = HomePageView(self.driver)
         gv.file_more_info(1)
         self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
@@ -2414,9 +2532,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="取消"]').click()
         self.assertTrue(gv.get_element_result('//*[@resource-id="com.yozo.office:id/lay_more"]'))
 
-    # @unittest.skip('skip test_hp_last_select_all1')
-    def test_hp_last_select_all1(self):  # “最近”全选操作
-        logging.info('==========test_hp_last_select_all1==========')
+    # @unittest.skip('skip test_last_select_all1')
+    def test_last_select_all1(self):  # “最近”全选操作
+        logging.info('==========test_last_select_all1==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.file_more_info(1)
@@ -2435,8 +2553,8 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip('skip test_share_from_index')
     @data(*index_share_list)
-    def test_hp_last_share(self, way):  # “最近”中的分享
-        logging.info('==========test_hp_last_share==========')
+    def test_last_share(self, way):  # “最近”中的分享
+        logging.info('==========test_last_share==========')
         gv = HomePageView(self.driver)
         gv.file_more_info(1)
         gv.share_file_index(way)
@@ -2445,18 +2563,18 @@ class TestHomePage(StartEnd):
         os.system('adb shell am force-stop com.vivo.email')
         os.system('adb shell am force-stop com.alibaba.android.rimet')
 
-    # @unittest.skip('skip test_hp_last_share_back')
-    def test_hp_last_share_back(self):  # “最近”中的分享的返回键
-        logging.info('==========test_hp_last_share_back==========')
+    # @unittest.skip('skip test_last_share_back')
+    def test_last_share_back(self):  # “最近”中的分享的返回键
+        logging.info('==========test_last_share_back==========')
         gv = HomePageView(self.driver)
         gv.file_more_info(1)
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_more_share').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="文档信息"]'))
 
-    # @unittest.skip('skip test_hp_last_show_cloud_file')
-    def test_hp_last_show_cloud_file(self):  # 登录时显示云文件
-        logging.info('==========test_hp_last_show_cloud_file==========')
+    # @unittest.skip('skip test_last_show_cloud_file')
+    def test_last_show_cloud_file(self):  # 登录时显示云文件
+        logging.info('==========test_last_show_cloud_file==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         gv.login_on_needed()
@@ -2465,9 +2583,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_last_show_open_file')
-    def test_hp_last_show_open_file(self):  # “最近”中显示已打开的文件
-        logging.info('==========test_hp_last_show_open_file==========')
+    # @unittest.skip('skip test_last_show_open_file')
+    def test_last_show_open_file(self):  # “最近”中显示已打开的文件
+        logging.info('==========test_last_show_open_file==========')
         hp = HomePageView(self.driver)
         file_name = '欢迎使用永中Office.xlsx'
         search_result = hp.search_file(file_name)
@@ -2479,9 +2597,9 @@ class TestHomePage(StartEnd):
         file_ele = '//*[@text="%s"]' % file_name
         self.assertTrue(hp.get_element_result(file_ele))
 
-    # @unittest.skip('skip test_hp_last_unlogin_show')
-    def test_hp_last_unlogin_show(self):  # 未登录时显示3个内置文件（初次安装）
-        logging.info('==========test_hp_last_unlogin_show==========')
+    # @unittest.skip('skip test_last_unlogin_show')
+    def test_last_unlogin_show(self):  # 未登录时显示3个内置文件（初次安装）
+        logging.info('==========test_last_unlogin_show==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2492,9 +2610,9 @@ class TestHomePage(StartEnd):
             file_ele = '//*[@text="%s"]' % i
             self.assertTrue(gv.get_element_result(file_ele), '文档不存在')
 
-    # @unittest.skip('skip test_hp_last_upload_file')
-    def test_hp_last_upload_file(self):  # “最近”上传文件
-        logging.info('==========test_hp_last_upload_file==========')
+    # @unittest.skip('skip test_last_upload_file')
+    def test_last_upload_file(self):  # “最近”上传文件
+        logging.info('==========test_last_upload_file==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         file_name = '欢迎使用永中Office.xlsx'
@@ -2511,9 +2629,9 @@ class TestHomePage(StartEnd):
         gv.jump_to_index('my')
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_my1_about_yozo')
-    def test_hp_my1_about_yozo(self):
-        logging.info('==========test_hp_my1_about_yozo==========')
+    # @unittest.skip('skip test_my1_about_yozo')
+    def test_my1_about_yozo(self):
+        logging.info('==========test_my1_about_yozo==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         self.driver.find_element(By.XPATH, '//*[@text="关于YOZO"]').click()
@@ -2528,9 +2646,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="关于YOZO"]'))
 
-    # @unittest.skip('skip test_hp_my1_head_unlog')
-    def test_hp_my1_head_unlog(self):
-        logging.info('==========test_hp_my1_head_unlog==========')
+    # @unittest.skip('skip test_my1_head_unlog')
+    def test_my1_head_unlog(self):
+        logging.info('==========test_my1_head_unlog==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2539,9 +2657,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_user_unlogin_icon').click()
         self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
 
-    # @unittest.skip('skip test_hp_my2_account_edit')
-    def test_hp_my2_account_edit(self):  # 登录账号信息展示及修改
-        logging.info('==========test_hp_my2_about_head_login==========')
+    # @unittest.skip('skip test_my2_account_edit')
+    def test_my2_account_edit(self):  # 登录账号信息展示及修改
+        logging.info('==========test_my2_about_head_login==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -2570,9 +2688,9 @@ class TestHomePage(StartEnd):
         gv.tap(loc['x'], loc['y'])
         self.assertFalse(gv.get_element_result('//*[@text="绑定邮箱"]'))
 
-    # @unittest.skip('skip test_hp_my2_about_head_login')
-    def test_hp_my2_head_login(self):  # 已登陆头像功能
-        logging.info('==========test_hp_my2_about_head_login==========')
+    # @unittest.skip('skip test_my2_about_head_login')
+    def test_my2_head_login(self):  # 已登陆头像功能
+        logging.info('==========test_my2_about_head_login==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -2584,9 +2702,9 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@text="取消"]'))
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancle').click()
 
-    # @unittest.skip('skip test_hp_my2_login_way')
-    def test_hp_my2_login_way(self):  # 登录操作
-        logging.info('==========test_hp_my2_login_way==========')
+    # @unittest.skip('skip test_my2_login_way')
+    def test_my2_login_way(self):  # 登录操作
+        logging.info('==========test_my2_login_way==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2608,9 +2726,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_register').click()
         self.assertTrue(gv.get_element_result('//*[@text="短信登录"]'))
 
-    # @unittest.skip('skip test_hp_my2_logout')
-    def test_hp_my2_logout(self):  # 退出登录
-        logging.info('==========test_hp_my2_logout==========')
+    # @unittest.skip('skip test_my2_logout')
+    def test_my2_logout(self):  # 退出登录
+        logging.info('==========test_my2_logout==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -2623,9 +2741,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
 
-    # @unittest.skip('skip test_hp_my2_opinion_feedback')
-    def test_hp_my2_opinion_feedback(self):
-        logging.info('==========test_hp_my2_opinion_feedback==========')
+    # @unittest.skip('skip test_my2_opinion_feedback')
+    def test_my2_opinion_feedback(self):
+        logging.info('==========test_my2_opinion_feedback==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -2637,9 +2755,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
         self.assertTrue(gv.get_element_result('//*[@text="%s"]' % content))
 
-    # @unittest.skip('skip test_hp_my2_sign_up')
-    def test_hp_my2_sign_up(self):  # 注册
-        logging.info('==========test_hp_my2_login_way==========')
+    # @unittest.skip('skip test_my2_sign_up')
+    def test_my2_sign_up(self):  # 注册
+        logging.info('==========test_my2_login_way==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2663,9 +2781,9 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         self.assertTrue(gv.get_element_result('//*[@text="关于YOZO"]'))
 
-    # @unittest.skip('skip test_hp_my2_sys_setting')
-    def test_hp_my2_sys_setting(self):  # 系统设置
-        logging.info('==========test_hp_my2_sys_setting==========')
+    # @unittest.skip('skip test_my2_sys_setting')
+    def test_my2_sys_setting(self):  # 系统设置
+        logging.info('==========test_my2_sys_setting==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
         gv.jump_to_index('my')
@@ -2681,9 +2799,9 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[contains(@text,"当前为非wifi环境")]'), '未捕捉到toast')
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
-    # @unittest.skip('skip test_hp_my_login_fail')
-    def test_hp_my_login_fail(self):
-        logging.info('==========test_hp_my_login_fail==========')
+    # @unittest.skip('skip test_my_login_fail')
+    def test_my_login_fail(self):
+        logging.info('==========test_my_login_fail==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
         if gv.check_login_status():
@@ -2695,7 +2813,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(gv.get_element_result('//*[@text="忘记密码?"]'), msg='login success')
 
     # @unittest.skip('skip test_login_success')
-    def test_hp_my_login_success(self):
+    def test_my_login_success(self):
         logging.info('==========test_login_success==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
@@ -2711,9 +2829,9 @@ class TestHomePage(StartEnd):
 
         gv.logout_action()
 
-    # @unittest.skip('skip test_hp_search_icon_show')
-    def test_hp_search_icon_show(self):  # 搜索键显示
-        logging.info('==========test_hp_search_icon_show==========')
+    # @unittest.skip('skip test_search_icon_show')
+    def test_search_icon_show(self):  # 搜索键显示
+        logging.info('==========test_search_icon_show==========')
         gv = HomePageView(self.driver)
         ele = self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search')
         self.assertTrue(ele != None)

@@ -165,12 +165,12 @@ class HomePageView(Common):
         time.sleep(0.5)
         ele = self.driver.find_element(By.CLASS_NAME, 'androidx.recyclerview.widget.RecyclerView')
         eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
-        if index < 1:
+        if index < 0:
             eles[0].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
         elif index > len(eles):
             eles[-1].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
         else:
-            eles[index - 1].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+            eles[index].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
 
     def check_select_file_type(self, file_type):
         logging.info('==========check_select_file_type==========')
@@ -202,7 +202,7 @@ class HomePageView(Common):
     def check_open_folder(self, folder):
         logging.info('==========check_open_folder==========')
         folder_dict = {'手机': '浏览目录 > 手机', '我的文档': ' > Documents', 'Download': ' > Download',
-                       'QQ': ' > QQfile_recv', '微信': ' > Download','TIM':' > TIMfile_recv'}
+                       'QQ': ' > QQfile_recv', '微信': ' > Download', 'TIM': ' > TIMfile_recv'}
         path = self.driver.find_elements(By.XPATH, '//*[@resource-id="com.yozo.office:id/name_layout"]'
                                                    '/android.widget.TextView')[-1].text
         if path == folder_dict[folder]:
@@ -229,6 +229,7 @@ class HomePageView(Common):
         else:
             logging.info('got it!!!')
             return True
+
     def search_file1(self, keyword):
         logging.info('==========search_file==========')
         logging.info('input keyword %s' % keyword)
@@ -263,14 +264,19 @@ class HomePageView(Common):
         time.sleep(1)
 
     def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
-        suffix = ('docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'pdf','txt')
-        for i in range(100):
-            eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
-            last_one = eles[-1].find_element(By.ID, 'com.yozo.office:id/tv_title').text
-            if last_one.endswith(suffix):
-                return len(eles)
-            else:
-                self.swipe_options(ele='//*[@resource-id="com.yozo.office:id/list_lastfile"]')
+        suffix = (
+            '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', '.pdf', '.txt', '.xlt', '.xltx', '.dot', '.dotx', '.pot',
+            '.potx', '.wps',
+            '.wpt', '.et', '.ett', '.dps', '.dpt')
+        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
+
+        for i, ele in enumerate(eles):
+            ele_name = ele.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+            if ele_name.endswith(suffix):
+                return i
+        else:
+            self.swipe_ele1(eles[-1], eles[0])
+            return self.identify_file_index()
 
     def download_file(self):  # 下载文件
         logging.info('=========download_file==========')
@@ -540,7 +546,7 @@ class HomePageView(Common):
         except Exception:
             pass
 
-        show_result = self.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]',20)
+        show_result = self.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]', 20)
         if not show_result:
             logging.error('open failed')
             self.getScreenShot(file_name + ' open fail')
