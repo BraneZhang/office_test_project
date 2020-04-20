@@ -31,8 +31,378 @@ options = ['移动', '复制']
 @ddt
 class TestHomePage(StartEnd):
 
-    # ======2020_04_17====== #
+    # ======2020_04_20====== #
 
+    def test_my_logout(self):#退出登录
+        logging.info('==========test_my_about==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login')
+
+    # @unittest.skip()
+    def test_my_about(self):  # 关于永中
+        logging.info('==========test_my_about==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_about').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_version')
+        addr = self.driver.find_element(By.ID, 'com.yozo.office:id/_phone_web').text
+        email = self.driver.find_element(By.ID, 'com.yozo.office:id/_phone_email').text
+        phone = self.driver.find_element(By.ID, 'com.yozo.office:id/_phone_phone').text
+        self.assertListEqual([addr, email, phone], ['www.yozosoft.com', 'mobile@yozosoft.com', '400-050-5206'])
+
+    # @unittest.skip()
+    def test_my_nonet_recycle(self):  # 回收站_未联网
+        logging.info('==========test_my_nonet_recycle==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+            hp.jump_to_index('my')
+        self.assertFalse(hp.get_element_result('//*[@text="回收站"]'))
+        hp.login_from_my('13915575564', 'zhang199412')
+        hp.jump_to_index('my')
+        self.assertTrue(hp.get_element_result('//*[@text="回收站"]'))
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        self.assertTrue(hp.get_toast_message('网络异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_my_recycle_restore(self):  # 回收站_联网_还原
+        logging.info('==========test_my_nonet_feedback_history==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('cloud')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        folder_name = '0000'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        time.sleep(1)
+        index = hp.identify_file_index()
+        hp.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        index = hp.identify_file_index()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/lay_check')[index].click()
+        self.assertTrue(self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_num').text == '1')
+        self.driver.find_element(By.XPATH, '//*[@text="全选"]').click()
+        self.driver.find_element(By.XPATH, '//*[@text="取消全选"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_file_checked_tab_chanel').click()
+        file_name = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[index].text
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/lay_check')[index].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_recycle_revert').click()
+        self.assertTrue(hp.get_toast_message('已还原'))
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/lay_check')[index - 1].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_recycle_delete').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        self.assertTrue(hp.get_toast_message('已删除'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_back').click()
+        hp.jump_to_index('cloud')
+        self.assertTrue(hp.get_toast_message('%s' % file_name))
+
+    # @unittest.skip()
+    def test_my_recycle_empty(self):  # 回收站_联网_清空
+        logging.info('==========test_my_nonet_feedback_history==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('cloud')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_newf').click()
+        folder_name = '0000'
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_newfoldername').send_keys(folder_name)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        index = hp.identify_file_index()
+        hp.file_more_info(index)
+        self.driver.find_element(By.XPATH, '//*[@text="多选"]').click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[1].click()
+        self.driver.find_element(By.XPATH, '//*[@text="删除"]').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_mydel').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_clear_all').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        index = hp.identify_file_index()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[index - 1].click()
+        self.assertTrue(hp.get_toast_message('已删除的文件夹无法打开'))
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_title')[index].click()
+        time.sleep(3)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_clear_all').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        self.assertTrue(hp.get_toast_message('已清空'))
+
+    # @unittest.skip()
+    def test_my_nonet_feedback_history(self):  # 意见反馈_联网_历史反馈记录
+        logging.info('==========test_my_nonet_feedback_history==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
+        self.assertTrue(hp.get_toast_message('服务器DNS解析失败,请检查您的网络'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+
+    # @unittest.skip()
+    def test_my_feedback_history(self):  # 意见反馈_联网_历史反馈记录
+        logging.info('==========test_my_feedback_history==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
+        while not hp.get_toast_message('没有更多数据'):
+            hp.swipe_options('//*[@resource-id="com.yozo.office:id/rv"]')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+
+    # @unittest.skip()
+    def test_my_nonet_feedback(self):  # 意见反馈_未联网_反馈分类
+        logging.info('==========test_my_nonet_feedback==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').send_keys('aaaaa')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contactEt').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        self.assertTrue(hp.get_toast_message('当前为非wifi环境，无法进行文件传输\n如需更改设置请到我的->系统设置中进行更改'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        hp.wifi_trans('关闭')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').send_keys('aaaaa')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contactEt').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        self.assertTrue(hp.get_toast_message('服务器DNS解析失败,请检查您的网络'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/back').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_mysys_setting').click()
+        hp.wifi_trans('开启')
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_my_feedback(self):  # 意见反馈_联网_反馈分类
+        logging.info('==========test_my_feedback==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+            hp.jump_to_index('my')
+        self.assertFalse(hp.get_element_result('//*[@text="意见反馈"]'))
+        hp.login_from_my('13915575564', 'zhang199412')
+        hp.jump_to_index('my')
+        self.assertTrue(hp.get_element_result('//*[@text="意见反馈"]'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        self.assertTrue(hp.get_toast_message('请填写反馈内容'))
+        no_input = 0
+        input_str = ''
+        while no_input < 30:
+            input_str += 'AAAAAAAAAA'
+            no_input += 1
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').send_keys(input_str)
+        content = self.driver.find_element(By.ID, 'com.yozo.office:id/contentEt').text
+        self.assertTrue(len(content) == 200, '反馈不等于200个字')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        # self.assertTrue(hp.get_toast_message('请填写联系方式'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contactEt').send_keys('11111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        self.assertTrue(hp.get_toast_message('联系方式不正确'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/contactEt').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/submitTv').click()
+        self.assertTrue(hp.get_toast_message('提交成功'))
+
+    # @unittest.skip()
+    def test_my_sys_setting(self):  # 系统设置,功能验证在云文档下载上传中有体现
+        logging.info('==========test_my_nonet_template_subscribe_download==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+            hp.jump_to_index('my')
+        self.assertFalse(hp.get_element_result('//*[@text="系统设置"]'))
+        hp.login_from_my('13915575564', 'zhang199412')
+        hp.jump_to_index('my')
+        self.assertTrue(hp.get_element_result('//*[@text="系统设置"]'))
+
+    # @unittest.skip()
+    def test_my_nonet_template_subscribe_download(self):  # 我的模板_未联网_收藏/下载
+        logging.info('==========test_my_nonet_template_subscribe_download==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/mouldSec').click()
+        self.assertTrue(hp.get_toast_message('服务器DNS解析失败,请检查您的网络'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_my_template_subscribe_download(self):  # 我的模板_联网_收藏/下载
+        logging.info('==========test_my_template_subscribe_download==========')
+        hp = HomePageView(self.driver)
+        hp.login_on_needed()
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/mouldSec').click()
+        self.driver.find_elements(By.XPATH, '//androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup')[
+            0].click()
+        time.sleep(1)
+        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/title').text
+        self.driver.find_element(By.ID, 'com.yozo.office:id/star').click()
+        self.assertTrue(hp.get_toast_message('已取消收藏'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/applyTv').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+        time.sleep(1)
+        self.assertFalse(hp.get_element_result('//*[@text="%s"]' % file_name))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tvRight').click()
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % file_name).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/star').click()
+        self.assertTrue(hp.get_toast_message('已收藏'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/applyTv').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
+        time.sleep(1)
+        self.driver.find_element(By.XPATH, '//*[@text="%s"]' % file_name).click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/download').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        time.sleep(1)
+        # self.assertFalse(hp.get_element_result('//*[@text="%s"]'%file_name))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tvLeft').click()
+        self.assertTrue(hp.get_element_result('//*[@text="%s"]' % file_name))
+
+    # @unittest.skip()
+    def test_my_template_handle(self):  # 我的模板_批量管理
+        logging.info('==========test_my_template==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+            hp.jump_to_index('my')
+        self.assertFalse(hp.get_element_result('//*[@text="我的模板"]'))
+        hp.login_from_my('13915575564', 'zhang199412')
+        hp.jump_to_index('my')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/mouldSec').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
+        self.assertTrue(hp.get_toast_message('请选择要编辑的模板'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tvRight').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
+        self.assertTrue(hp.get_toast_message('请选择要编辑的模板'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tvLeft').click()
+        self.driver.find_elements(By.XPATH, '//androidx.recyclerview.widget.RecyclerView/android.view.ViewGroup')[
+            0].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_cancel').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btnTv').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+
+    # @unittest.skip()
+    def test_my_nonet_register(self):  # 注册和登录_未联网_注册账号
+        logging.info('==========test_my_nonet_register==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+            hp.jump_to_index('my')
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.hide_keyboard()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_register').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请输入手机号'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('1111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请输入密码'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_password').send_keys('1111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请重新输入密码,必须包含字母和数字,且密码长度为6到12位'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_password').send_keys('1111abcd')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请先仔细阅读并勾选同意永中Office的《隐私政策》和《服务条款》'))
+        self.driver.switch_to_alert().accept()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/checkbox_privacy').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请输入正确的手机号'))
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_register').click()
+        self.assertTrue(hp.get_toast_message('请输入验证码'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('请输入图片验证码'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_figure_code').send_keys('abcd')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_my_nonet_login_SMS(self):  # 注册和登录_未联网_短信密码登录
+        logging.info('==========test_my_nonet_login_SMS==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.hide_keyboard()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_login_register').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_login_verfiy').click()
+        self.assertTrue(hp.get_toast_message('请输入手机号'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('1111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('手机号的格式有误'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # @unittest.skip()
+    def test_my_nonet_forget_pwd(self):  # 注册和登录_未联网_忘记密码
+        logging.info('==========test_my_nonet_forget_pwd==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.driver.set_network_connection(ConnectionType.NO_CONNECTION)
+        self.driver.hide_keyboard()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/tv_findpwd').click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_true').click()
+        self.assertTrue(hp.get_toast_message('请输入手机号'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('1111')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('输入的账号格式有误'))
+        time.sleep(2)
+        self.driver.find_element(By.ID, 'com.yozo.office:id/et_account').send_keys('13915575564')
+        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_verifycode').click()
+        self.assertTrue(hp.get_toast_message('网络连接异常'))
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
+    # ======2020_04_17====== #
     # @unittest.skip()
     def test_my_nonet_login(self):  # 注册和登录_联网_账号登录
         logging.info('==========test_my_nonet_login==========')
@@ -133,7 +503,7 @@ class TestHomePage(StartEnd):
         gv.wifi_trans('开启')
 
     # @unittest.skip()
-    def test_cloud_nonet_multi_select_download(self):  #云文档_未联网_云文档操作_多选_下载
+    def test_cloud_nonet_multi_select_download(self):  # 云文档_未联网_云文档操作_多选_下载
         logging.info('==========test_cloud_nonet_multi_select_download==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -146,14 +516,14 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
         self.assertTrue(gv.get_toast_message('当前为非wifi环境，无法进行文件传输\n如需更改设置请到我的->系统设置中进行更改'))
         time.sleep(3)
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index-1].click()
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')[index - 1].click()
         self.driver.find_element(By.XPATH, '//*[@text="下载"]').click()
         self.assertTrue(gv.get_toast_message('当前操作不支持文件夹'))
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # ======2020_04_10====== #
     # @unittest.skip()
-    def test_cloud_nonet_multi_select_share(self):#云文档_未联网_云文档操作_多选_分享
+    def test_cloud_nonet_multi_select_share(self):  # 云文档_未联网_云文档操作_多选_分享
         logging.info('==========test_cloud_nonet_multi_select_share==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -247,7 +617,7 @@ class TestHomePage(StartEnd):
         self.assertFalse(gv.get_toast_message(name))
 
     # @unittest.skip()
-    def test_cloud_nonet_file_rename(self):#云文档_未联网_云文档操作_重命名
+    def test_cloud_nonet_file_rename(self):  # 云文档_未联网_云文档操作_重命名
         logging.info('==========test_cloud_nonet_file_rename==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -282,7 +652,7 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_cloud_file_rename(self):#云文档_联网_云文档操作_重命名
+    def test_cloud_file_rename(self):  # 云文档_联网_云文档操作_重命名
         logging.info('==========test_cloud_file_rename==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -362,7 +732,7 @@ class TestHomePage(StartEnd):
 
     # @unittest.skip()
     @data(*index_share_list)
-    def test_cloud_nonet_share(self, way='more'):#云文档_未联网_分享到_微信/QQ/邮箱
+    def test_cloud_nonet_share(self, way='more'):  # 云文档_未联网_分享到_微信/QQ/邮箱
         logging.info('==========test_cloud_nonet_share==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -377,7 +747,7 @@ class TestHomePage(StartEnd):
         self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
 
     # @unittest.skip()
-    def test_cloud_nonet_delete_folder(self):#云文档_未联网_文件夹操作_删除
+    def test_cloud_nonet_delete_folder(self):  # 云文档_未联网_文件夹操作_删除
         logging.info('==========test_cloud_nonet_delete_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -394,7 +764,7 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_cloud_nonet_rename_folder(self):#云文档_未联网_文件夹操作_重命名
+    def test_cloud_nonet_rename_folder(self):  # 云文档_未联网_文件夹操作_重命名
         logging.info('==========test_cloud_nonet_rename_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -449,7 +819,7 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_cloud_nonet_create_folder(self):#云文档_未联网_新建文件夹
+    def test_cloud_nonet_create_folder(self):  # 云文档_未联网_新建文件夹
         logging.info('==========test_cloud_nonet_create_folder==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
@@ -487,7 +857,7 @@ class TestHomePage(StartEnd):
         time.sleep(2)
 
     # @unittest.skip()
-    def test_cloud_unlogin(self): #云文档_未登录
+    def test_cloud_unlogin(self):  # 云文档_未登录
         logging.info('==========test_cloud_unlogin==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
@@ -501,7 +871,7 @@ class TestHomePage(StartEnd):
 
     # ======2020_04_09====== #
     # @unittest.skip()
-    def test_my_login(self): #注册和登录_联网_账号登录
+    def test_my_login(self):  # 注册和登录_联网_账号登录
         logging.info('==========test_my_login==========')
         gv = HomePageView(self.driver)
         gv.jump_to_index('my')
@@ -832,7 +1202,7 @@ class TestHomePage(StartEnd):
         # gv.logout_action()
 
     # @unittest.skip()
-    def test_cloud_search(self):#云文档_联网_搜索
+    def test_cloud_search(self):  # 云文档_联网_搜索
         logging.info('==========test_cloud_search==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
@@ -933,7 +1303,7 @@ class TestHomePage(StartEnd):
         self.assertFalse(a)
 
     # @unittest.skip('skip test_cloud_select_all')
-    def test_cloud_multi_select(self):  #云文档_云文档操作_多选_全选
+    def test_cloud_multi_select(self):  # 云文档_云文档操作_多选_全选
         logging.info('==========test_cloud_multi_select==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -1044,7 +1414,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(path == '云文档/')
 
     # @unittest.skip('skip test_cloud_delete_folder')
-    def test_cloud_delete_folder(self):#云文档_联网_文件夹操作_删除
+    def test_cloud_delete_folder(self):  # 云文档_联网_文件夹操作_删除
         logging.info('==========test_cloud_delete_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -1064,7 +1434,7 @@ class TestHomePage(StartEnd):
         self.assertFalse(gv.get_element_result('//*[@text="%s"]' % folder_name), 'delete fail')
 
     # @unittest.skip('skip test_cloud_rename_folder')
-    def test_cloud_rename_folder(self):#云文档_联网_文件夹操作_重命名
+    def test_cloud_rename_folder(self):  # 云文档_联网_文件夹操作_重命名
         logging.info('==========test_cloud_rename_folder==========')
         gv = HomePageView(self.driver)
         gv.login_on_needed()
@@ -1146,7 +1516,7 @@ class TestHomePage(StartEnd):
         gv.logout_action()
 
     # @unittest.skip('skip test_cloud_create_folder')
-    def test_cloud_create_folder(self):#云文档_未联网_新建文件夹
+    def test_cloud_create_folder(self):  # 云文档_未联网_新建文件夹
         logging.info('==========test_cloud_create_folder==========')
         hp = HomePageView(self.driver)
         hp.login_on_needed()
@@ -2740,20 +3110,6 @@ class TestHomePage(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         self.assertTrue(gv.get_element_result('//*[@text="账号登录"]'))
-
-    # @unittest.skip('skip test_my2_opinion_feedback')
-    def test_my2_opinion_feedback(self):
-        logging.info('==========test_my2_opinion_feedback==========')
-        gv = HomePageView(self.driver)
-        gv.login_on_needed()
-        gv.jump_to_index('my')
-        content = gv.getTime("%Y-%m-%d %H:%M:%S")
-        result = gv.opinion_feedback('content', content)
-        self.assertTrue(result)
-        self.driver.keyevent(4)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myfb').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/end').click()
-        self.assertTrue(gv.get_element_result('//*[@text="%s"]' % content))
 
     # @unittest.skip('skip test_my2_sign_up')
     def test_my2_sign_up(self):  # 注册
