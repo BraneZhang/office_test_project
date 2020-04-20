@@ -4,15 +4,39 @@ import logging
 import os
 import time
 import unittest
+import random
+import hashlib
 
 
 from selenium.webdriver.common.by import By
 from businessView.homePageView import HomePageView
 from businessView.ssView import SSView
 from common.myunit import StartEnd
+from common.device import Device
+udid = Device.dev
+path = os.getcwd()
 
 
 class TestContinuousEdit(StartEnd):
+    @staticmethod
+    def hash_file(self, filename):
+        """该函数返回传入文件的SHA-1哈希值"""
+
+        # 创建一个哈希对象
+        h = hashlib.sha1()
+
+        # 以二进制读取模式打开一个文件
+        with open(filename, 'rb') as file:
+            # 循环直到文件结束
+            chunk = 0
+            while chunk != b'':
+                # read only 1024 bytes at a time
+                chunk = file.read(1024)
+                h.update(chunk)
+
+        # 返回摘要的十六进制表示
+        return h.hexdigest()
+
     @unittest.skip('skip test_ss_new_edit_save')
     def test_ss_new_edit_save(self):
         os.system('adb shell rm -rf /storage/emulated/0/ss_new_edit_save.xls')
@@ -137,11 +161,16 @@ class TestContinuousEdit(StartEnd):
         words_count = self.driver.find_element(By.XPATH, words_count_path).text
         self.assertTrue(int(words_count_before_save) == int(words_count) == count, '文件内容丢失')
 
-    # @unittest.skip('skip test_wp_edit_save')
+    @unittest.skip('skip test_wp_edit_save')
     def test_wp_edit_save(self):
         logging.info('==========test_wp_edit_save==========')
         hp = HomePageView(self.driver)
-        hp.open_random_file('.doc')
+        random_num = random.randint(0, 1)
+        if random_num == 0:
+            hp.open_random_file('.doc')
+        else:
+            hp.open_random_file('.docx')
+        time.sleep(3)
 
         # 查看文件名
         hp.group_button_click('文件')
@@ -189,4 +218,54 @@ class TestContinuousEdit(StartEnd):
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_count').click()
         words_count = self.driver.find_element(By.XPATH, words_count_path).text
         self.assertTrue(int(words_count) == count, '文件内容丢失')
+
+    # @unittest.skip('skip test_ss_edit_save')
+    def test_ss_edit_save(self):
+        logging.info('==========test_ss_edit_save==========')
+        hp = HomePageView(self.driver)
+        file_name = '0247201.xls'
+        hp.open_random_file(file_name)
+
+        # 查看文件名
+        hp.group_button_click('文件')
+        hp.swipe_options()
+        hp.swipe_options()
+        self.driver.find_element(By.XPATH, '//*[@text="文档信息"]').click()
+        file_loc = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        self.driver.keyevent(4)
+
+        # 复制手机中文件至本地并获取原文件hash
+        os.system('adb -s %s pull %s %s' % (udid, file_loc, path))
+        file_hash = self.hash_file(self, path+'\\'+file_name)
+        os.rename(path+'\\'+file_name, path+'\\'+'temp')
+
+        # 编辑
+        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode').click()  # 进入编辑状态
+        self.driver.find_element(By.ID, 'com.yozo.office:id/formulabar_edit_container').click()
+        start_time = time.time()
+        count = 0
+        while count < 85000:  # 约需要20h
+            logging.info('>>>>>>>>No.%d' % (count + 1))
+            self.driver.keyevent(32)
+            last_time = time.time() - start_time
+            logging.info('last_time>>>>>>>>%s' % last_time)
+            count += 1
+        else:
+            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_save').click()
+            self.assertTrue(hp.get_toast_message('保存成功'))
+            self.driver.keyevent(4)
+            self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_back').click()
+
+        # 重新复制文件并获取新的hash值
+        os.system('adb -s %s pull %s %s' % (udid, file_loc, path))
+        file_hash_new = self.hash_file(self, path+'\\'+file_name)
+
+        # 验证两次哈希值不同
+        self.assertNotEqual(file_hash, file_hash_new, '两次Hash一直表示文件内容为修改，即保存失败！')
+
+        # 修改文件名
+        os.replace(path + '\\' + 'temp', path + '\\' + file_name)
+        os.system('adb -s %s push %s %s' % (udid, path+'\\'+file_name, file_loc))
+        # 删除本地文件
+        os.remove(path + '\\' + file_name)
 
