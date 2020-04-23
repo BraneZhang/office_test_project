@@ -398,7 +398,7 @@ class HomePageView(Common):
         time.sleep(2)
         self.tap(x, y)  # “+”元素不可捕捉，只能通过坐标来点击，坐标不唯一，随手机改变
         time.sleep(2)
-        type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
+        type_dict = {'wp': 4, 'ss': 2, 'pg': 1,'scan':3}
         self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
         time.sleep(1)
 
