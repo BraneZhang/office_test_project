@@ -5,6 +5,7 @@ import os
 
 class Device():
     dev = '5ENDU19830003766'
+    appPackage =  'com.yozo.office'
     udid = None
     data = {}
 
@@ -23,6 +24,12 @@ class Device():
 
 
 if __name__ == '__main__':
+    print(int(0.5))
+    # a = s.replace('][','];[').split(';')
+    # print(a)
+    # for i in a :
+    #    print(eval(i))
+
     # msg = os.system('adb shell ls /storage/emulated/0/yozoCloud/asdf.doc')
     # print(f'msg:{msg}')
     # cc= 1
