@@ -10,10 +10,12 @@ from appium.webdriver.connectiontype import ConnectionType
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
 
 from businessView.homePageView import HomePageView
 from common.myunit import StartEnd
 from data import data_info
+from common.common_fun import Common
 
 csv_file = data_info.csv_file
 folder_list = data_info.folder_list
@@ -31,6 +33,88 @@ act_index1 = ['last', 'alldoc', 'star']
 
 @ddt
 class TestHomePage(StartEnd):
+    # ======2020_04_30====== #
+    def open_folder(self, folder):
+        """
+        打开中进入[手机、存储卡（若有）、我的文档、Download、QQ、TIM、微信、常用位置]文件夹，不包含子文件夹
+        :return:
+        """
+        common = Common(self.driver)
+        if folder not in ['手机', '存储卡', '云文档']:
+            flag = False
+            while not flag:
+                try:
+                    self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder)
+                except NoSuchElementException:
+                    last_folder = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_folder_item_name')[-1]
+                    last_name = last_folder.text
+                    common_use = self.driver.find_element(By.XPATH, '//*[@text="常用"]')
+                    common.swipe_ele1(last_folder, common_use)
+                    last_folder = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_folder_item_name')[-1]
+                    if last_folder.text == last_name:
+                        self.assertTrue(False, '常用中不存在该文件夹，请检查')
+                else:
+                    flag = True
+                    self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder).click()
+        else:
+            self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder).click()
+
+    # @unittest.skip('skip test_allDoc_sort_file')
+    def test_allDoc_sort_file(self):  # “打开”文档按条件排序
+        logging.info('==========test_alldoc_sort_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
+        sort_list = ['type', 'name', 'size', 'time']
+        order_list = ['up', 'down']
+        for i in type_list:
+            gv.select_file_type(i)
+            for m in sort_list:
+                for n in order_list:
+                    gv.sort_files(m, n)
+
+    # @unittest.skip('skip test_allDoc_copy_file')
+    def test_allDoc_copy_file(self):  # “打开”复制文件
+        logging.info('==========test_alldoc_copy_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.file_more_info(1)
+        check = gv.copy_file()  # 复制到新建文件夹
+        self.assertTrue(check, 'copy fail')
+
+        gv.file_more_info(2)
+        location = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_fileloc').text
+        location = location.replace('/storage/emulated/', '')
+        location = location[:location.rindex('/')]
+        check = gv.copy_file(location, '操作失败')
+        self.assertTrue(check, 'copy fail')
+
+    # @unittest.skip('skip test_alldoc_delete_file')
+    def test_allDoc_delete_file(self):
+        logging.info('==========test_alldoc_delete_file==========')
+        gv = HomePageView(self.driver)
+        gv.jump_to_index('alldoc')
+        gv.select_file_type('all')
+        gv.sort_files('name', 'up')
+        gv.file_more_info(1)
+        suffix = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text.strip()
+        filename = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text.strip()
+        name = filename + '.' + suffix
+        gv.delete_file()
+        self.assertFalse(gv.get_element_result('//*[@text="%s"]' % name), 'delete fail')
+
+    # @unittest.skip('skip test_alldoc_cloud_click_unlogin')
+    def test_allDoc_cloud_click_unlogin(self):
+        logging.info('==========test_alldoc_cloud_click_unlogin==========')
+        hp = HomePageView(self.driver)
+        hp.jump_to_index('my')
+        if hp.check_login_status():
+            hp.logout_action()
+        hp.jump_to_index('alldoc')
+        self.assertTrue(hp.get_element_result('//*[@text="登录送1G空间"]'))
+        self.driver.find_element(By.XPATH, '//*[@text="云文档"]').click()
+        self.assertTrue(hp.get_element_result('//*[@text="账号登录"]'))
 
     # ======2020_04_23====== #
 
