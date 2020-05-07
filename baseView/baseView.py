@@ -13,6 +13,9 @@ class BaseView(object):
         # WebDriverWait(self.driver, 20).until(lambda driver: driver.find_elements(*loc))
         return self.driver.find_elements(*loc)
 
+    def click_element(self,*loc):
+        self.driver.find_element(*loc).click()
+
     def get_window_size(self):
         return self.driver.get_window_size()
 

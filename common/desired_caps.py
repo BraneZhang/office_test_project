@@ -19,7 +19,7 @@ data = {}
 
 
 def get_desired_caps(devices='127.0.0.1:62001'):
-    with open('../config/yozo_office_caps1.yaml', 'r', encoding='utf-8') as file:
+    with open('../config/yozo_office_caps.yaml', 'r', encoding='utf-8') as file:
         devices_data = yaml.load(file, Loader=yaml.FullLoader)
     for i in devices_data:
         if devices == i['desc']:

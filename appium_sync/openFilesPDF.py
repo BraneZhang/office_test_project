@@ -66,6 +66,13 @@ class openFilesPDF():
                 logging.info('+++++' + file_name + ' Execute Failed!+++++')
                 try:
                     copy_file_to_wrong(dir_path, file)
+                    os.system('adb -s %s shell rmdir /mnt/shell/emulated/0/.tmp/Yozo_Office' % udid)
+                    self.driver.close_app()
+                    self.driver.launch_app()
+                    if hp.is_visible('//*[@resource-id = "com.yozo.office:id/im_title_bar_menu_search"]'):
+                        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
+                    else:
+                        raise
                 except Exception:
                     pass
             else:

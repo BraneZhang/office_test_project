@@ -11,10 +11,37 @@ from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 import selenium.webdriver.support.ui as ui
 
+from businessView.elementRepo import *
 from common.common_fun import Common
 
 
 class HomePageView(Common):
+
+    def open_folder(self, folder):
+        """
+        打开中进入[手机、存储卡（若有）、我的文档、Download、QQ、TIM、微信、常用位置]文件夹，不包含子文件夹
+        :return:
+        """
+        common = Common(self.driver)
+        if folder not in ['手机', '存储卡', '云文档']:
+            flag = False
+            while not flag:
+                try:
+                    self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder)
+                except NoSuchElementException:
+                    last_folder = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_folder_item_name')[-1]
+                    last_name = last_folder.text
+                    common_use = self.driver.find_element(By.XPATH, '//*[@text="常用"]')
+                    common.swipe_ele1(last_folder, common_use)
+                    last_folder = self.driver.find_elements(By.ID, 'com.yozo.office:id/tv_folder_item_name')[-1]
+                    if last_folder.text == last_name:
+                        pass
+                        # self.assertTrue(False, '常用中不存在该文件夹，请检查')
+                else:
+                    flag = True
+                    self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder).click()
+        else:
+            self.driver.find_element(By.XPATH, '//*[@text=%s]' % folder).click()
 
     def recycle_files_clear(self):
         logging.info('==========recycle_files_revert==========')
@@ -109,7 +136,7 @@ class HomePageView(Common):
     def templates_preview(self, view_type):
         logging.info('==========templates_preview==========')
         view_dict = {'收藏': 'Left', '下载': 'Right'}
-        self.login_on_needed()
+        self.login_needed()
         self.jump_to_index('my')
         self.driver.find_element(By.ID, 'com.yozo.office:id/mouldSec').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/tv%s' % view_dict[view_type]).click()
@@ -190,7 +217,7 @@ class HomePageView(Common):
         # type_list = ['all', 'wp', 'ss', 'pg', 'pdf']
         logging.info('select %s files', file_type)
         self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filetype_%s' % file_type).click()
-        time.sleep(3)
+        time.sleep(2)
 
     def open_local_folder(self, folder_type):  # 打开本地文档
         logging.info('==========open_local_folder==========')
@@ -252,13 +279,15 @@ class HomePageView(Common):
     def jump_to_index(self, file_type='last'):  # 5个主页界面
         logging.info('===========jump_to_%s==========' % file_type)
         # index = ['last', 'alldoc', 'cloud', 'star', 'my']  # office的五个页面组件尾缀
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_bottommenu_%s' % file_type).click()
+        index = {'last': 0, 'alldoc': 1, 'cloud': 2, 'star': 3, 'my': 4, }
+        self.driver.find_elements(By.ID, 'com.yozo.office:id/ll_tap')[index[file_type]].click()
+        time.sleep(1)
 
     def sort_files(self, way='type', order='down'):  # 排序
         logging.info('=========sort_files==========')
         # way_list = ['type', 'name', 'size', 'time']
         # order_list = ['up', 'down']
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_shot').click()
+        self.click_element(*sort)
         self.driver.find_element(By.ID, 'com.yozo.office:id/rl_sort_%s' % way).click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sort_%s' % order).click()
         time.sleep(1)
@@ -354,9 +383,9 @@ class HomePageView(Common):
 
     def wifi_trans(self, state='开启'):  # 设置wifi传输的开或者关
         logging.info('=========wifi_trans==========')
-        state_set = self.driver.find_element(By.ID, 'com.yozo.office:id/wifiSwitch').text
+        state_set = self.find_element(*wifi_trans).text
         if state != state_set:
-            self.driver.find_element(By.ID, 'com.yozo.office:id/wifiSwitch').click()
+            self.click_element(*wifi_trans)
 
     def opinion_feedback(self, fb='func', content=''):  # 意见反馈
         logging.info('=========suggestion_feedback==========')
@@ -398,7 +427,7 @@ class HomePageView(Common):
         time.sleep(2)
         self.tap(x, y)  # “+”元素不可捕捉，只能通过坐标来点击，坐标不唯一，随手机改变
         time.sleep(2)
-        type_dict = {'wp': 4, 'ss': 2, 'pg': 1,'scan':3}
+        type_dict = {'wp': 3, 'ss': 2, 'pg': 1}
         self.driver.find_element(By.XPATH, '//android.widget.ImageButton[%s]' % type_dict[file_type]).click()
         time.sleep(1)
 
@@ -422,6 +451,7 @@ class HomePageView(Common):
     def save_file(self):  # 点击保存图标或者保存选项，随机
         logging.info('==========save_file==========')
         if random.randint(0, 1) == 0:
+            # self.click_element(*save_confirm)
             self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_save').click()
         else:
             if not self.get_element_result('//*[@text="保存"]'):
@@ -461,17 +491,19 @@ class HomePageView(Common):
 
     def login_from_my(self, username, password):
         logging.info('==========login_from_my==========')
-        self.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_unlogin').click()
+        self.click_element(*unlogin_state)
         self.login_action(username, password)
 
     def login_action(self, username, password):  # 登录操作
         logging.info('==========login_action==========')
         # self.driver.find_element(By.ID,'com.yozo.office:id/ll_myinfo_unlogin').click()
         logging.info('username is:%s' % username)
-        self.find_element(By.ID, 'com.yozo.office:id/et_account').set_text(username)  # 输入手机号
+        self.find_element(*account_input).send_keys(username)
+        # self.find_element(By.ID, 'com.yozo.office:id/et_account').set_text(username)  # 输入手机号
 
         logging.info('password is:%s' % password)
-        self.find_element(By.ID, 'com.yozo.office:id/et_pwd').set_text(password)  # 输入密码
+        self.find_element(*pwd_input).send_keys(password)
+        # self.find_element(By.ID, 'com.yozo.office:id/et_pwd').set_text(password)  # 输入密码
 
         logging.info('click loginBtn')
         self.find_element(By.ID, 'com.yozo.office:id/btn_login').click()  # 点击登录按钮
@@ -481,10 +513,9 @@ class HomePageView(Common):
         logging.info('==========check_login_status==========')
         time.sleep(1)
         try:
-            self.driver.find_element(By.ID, 'com.yozo.office:id/tv_username')
+            self.find_element(*sys_setting)
         except NoSuchElementException:
             logging.error('login off!')
-            self.getScreenShot('login fail')
             return False
         else:
             logging.info('login on!')
@@ -499,8 +530,8 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         time.sleep(1)
 
-    def login_on_needed(self):  # 需要登录
-        logging.info('==========login_on_needed==========')
+    def login_needed(self):  # 需要登录
+        logging.info('==========login_needed==========')
         self.jump_to_index('my')
         if not self.check_login_status():
             self.login_from_my('13915575564', 'zhang199412')

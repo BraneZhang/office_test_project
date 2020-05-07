@@ -1,8 +1,11 @@
 import unittest
+from appium.webdriver.connectiontype import ConnectionType
+
 from common.desired_caps import start_server, appium_desired, stop_server
 import logging
 import warnings
 
+from common.device import Device
 
 
 class StartEnd(unittest.TestCase):
@@ -22,6 +25,8 @@ class StartEnd(unittest.TestCase):
     def setUp(self):
         logging.info('=====setUp====')
         self.driver = appium_desired()
+        self.driver.set_network_connection(ConnectionType.WIFI_ONLY)
+
 
     def tearDown(self):
         logging.info('====tearDown====')

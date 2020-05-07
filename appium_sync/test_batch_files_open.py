@@ -4,6 +4,7 @@
 import os
 import logging
 import time
+import unittest
 
 from selenium.webdriver.common.by import By
 
@@ -12,10 +13,9 @@ from businessView.homePageView import HomePageView
 from common.tool import copy_file_to_wrong
 
 
-class openFiles():
+class openFiles(unittest.TestCase):
 
     def __init__(self, driver):
-        """初始化"""
         self.driver = driver
 
     def test_bat_open_files(self, suffix_path, udid):
@@ -30,7 +30,7 @@ class openFiles():
                     'adb -s %s shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/%s' % (
                         udid, file))
 
-                if not file_name.endswith(('.xls', 'xlsx', '.doc', 'docx', '.ppt', 'pptx')):
+                if not file_name.endswith(('.xls', 'xlsx', '.doc', '.docx', '.ppt', '.pptx','.dotx','.dot','.xltx','.xlt','pot','potx')):
                     logging.error('file format wrong！')
                     copy_file_to_wrong(dir_path, file)
                     continue
@@ -70,9 +70,8 @@ class openFiles():
                 self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close').click()
 
                 close_result = hp.check_close_file()
-                if not close_result:
-                    logging.info('file close Failed')
-                    raise
+                self.assertTrue(close_result, msg='close file failed first')
+
             except Exception:
                 logging.info('+++++' + file_name + ' Execute Failed!+++++')
                 try:

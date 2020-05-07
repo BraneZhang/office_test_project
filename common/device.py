@@ -4,10 +4,11 @@ import os
 
 
 class Device():
-    dev = '5ENDU19830003766'
+    dev = '9613fafd'
     appPackage =  'com.yozo.office'
     udid = None
     data = {}
+    driver = None
 
     def set_dev(self, device):
         Device.dev = device

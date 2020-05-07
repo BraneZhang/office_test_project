@@ -175,6 +175,18 @@ class Common(BaseView):
             logging.info('get element: %s success!' % ele)
             return True
 
+    def get_message(self, ele):
+        logging.info('==========get_toast_message==========')
+        try:
+            # WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element(By.XPATH, message))
+            self.find_element(*ele)
+        except NoSuchElementException:
+            logging.error('get message fail!')
+            return False
+        else:
+            logging.info('get toast message success!')
+            return True
+
     def get_toast_message(self, toast_message):
         logging.info('==========get_toast_message==========')
         message = '//*[@text="' + toast_message + '"]'
