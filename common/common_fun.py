@@ -72,13 +72,14 @@ class Common(BaseView):
         y_ele2 = eleB.location['y']
         self.driver.swipe(x_ele1, y_ele1, x_ele1, y_ele2, 4000)
 
-    def swipe_ele(self, eleA, eleB):
-        ele1 = self.get_element(eleA)
-        ele2 = self.get_element(eleB)
+    def swipe_ele(self, ele_begin, ele_end):
+        ele1 = self.find_element(*ele_begin)
+        ele2 = self.find_element(*ele_end)
         y_ele1 = ele1.location['y']
         x_ele1 = ele1.location['x']
+        x_ele2 = ele2.location['x']
         y_ele2 = ele2.location['y']
-        self.driver.swipe(x_ele1, y_ele1, x_ele1, y_ele2, 3000)
+        self.driver.swipe(x_ele1, y_ele1, x_ele2, y_ele2, 3000)
 
     def drag_element(self, ele1, ele2):  # 拖动
         logging.info('drag')

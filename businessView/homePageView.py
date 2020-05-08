@@ -621,9 +621,10 @@ class HomePageView(Common):
             return True
 
     # 一直等待某元素可见，默认超时10秒
-    def is_visible(self, locator, timeout=60):
+    def is_visible(self, *locator, timeout=60):
         try:
-            ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, locator)))
+            # ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, locator)))
+            ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(*locator))
             return True
         except TimeoutException:
             return False
