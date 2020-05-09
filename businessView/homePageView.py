@@ -180,24 +180,24 @@ class HomePageView(Common):
 
     def mark_star(self):
         logging.info('=========file_more_info==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_filework_pop_star').click()
-        file_name = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filename').text
-        file_type = self.driver.find_element(By.ID, 'com.yozo.office:id/tv_filetype').text
-        file = file_name + '.' + file_type
-        self.driver.keyevent(4)
-        return file
+
+        self.click_element(*star)
 
     def file_more_info(self, index):  # 查看指定文件信息
         logging.info('=========file_more_info==========')
-        time.sleep(0.5)
         ele = self.driver.find_element(By.CLASS_NAME, 'androidx.recyclerview.widget.RecyclerView')
-        eles = ele.find_elements(By.ID, 'com.yozo.office:id/file_item')
+        eles = ele.find_elements(*item)
         if index < 0:
-            eles[0].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+            eles[0].find_element(*more_options).click()
         elif index > len(eles):
-            eles[-1].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+            eles[-1].find_element(*more_options).click()
         else:
-            eles[index].find_element(By.ID, 'com.yozo.office:id/lay_more').click()
+            eles[index].find_element(*more_options).click()
+        file_name1 = self.find_element(*file_name).text
+        file_type1 = self.find_element(*file_type).text
+        file = file_name1 + '.' + file_type1
+        location = self.find_element(*file_location).text
+        return {'file_name': file, 'location': location}
 
     def check_select_file_type(self, file_type):
         logging.info('==========check_select_file_type==========')
@@ -292,15 +292,14 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sort_%s' % order).click()
         time.sleep(1)
 
-    def identify_file_index(self):  # 识别云文档中首个文件，递归有问题
+    def identify_file_index(self):  # 识别云文档中首个文件
         suffix = (
             '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', '.pdf', '.txt', '.xlt', '.xltx', '.dot', '.dotx', '.pot',
-            '.potx', '.wps',
-            '.wpt', '.et', '.ett', '.dps', '.dpt')
-        eles = self.driver.find_elements(By.ID, 'com.yozo.office:id/file_item')
+            '.potx', '.wps','.wpt', '.et', '.ett', '.dps', '.dpt')
+        eles = self.find_elements(*item)
 
         for i, ele in enumerate(eles):
-            ele_name = ele.find_element(By.ID, 'com.yozo.office:id/tv_title').text
+            ele_name = ele.find_element(*item_title).text
             if ele_name.endswith(suffix):
                 return i
         else:
@@ -524,10 +523,13 @@ class HomePageView(Common):
     def logout_action(self):  # 退出登录
         logging.info('==========logout_action==========')
         self.swipe_options('//android.widget.ScrollView')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
-        self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
+        self.click_element(*logout)
+        self.click_element(*pop_confirm)
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/ll_myinfo_logout').click()
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/btn_sure').click()
         logging.info('logout finished!')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
+        self.click_element(*login_cancel)
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/iv_add_back').click()
         time.sleep(1)
 
     def login_needed(self):  # 需要登录

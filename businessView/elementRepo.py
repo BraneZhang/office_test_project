@@ -147,6 +147,9 @@ multi_delete = By.ID, 'com.yozo.office:id/ll_check_bottom_del'
 # 多选-分享
 multi_share = By.ID, 'com.yozo.office:id/ll_check_bottom_share'
 
+# 多选-下载
+multi_download = By.ID, 'com.yozo.office:id/ll_check_bottom_download'
+
 # 全选/取消全选
 select_all = By.ID, 'com.yozo.office:id/tv_file_checked_tab_all'
 cancel_all = By.ID, 'com.yozo.office:id/tv_file_checked_tab_all'
@@ -208,10 +211,10 @@ upload_success = By.XPATH, '//*[@text="上传成功"]'
 # 未登录显示
 unlogin_state = By.ID, 'com.yozo.office:id/loginLayout'
 
-# 上传保存
+# 上传取消
 upload_cancel = By.ID, 'com.yozo.office:id/opt_cancel'
 
-# 上传取消
+# 上传保存
 upload_save = By.ID, 'com.yozo.office:id/opt_ok'
 
 # 上传超过20
@@ -267,12 +270,14 @@ phone = By.XPATH, '//*[@text="手机"]'
 
 # 登录按键
 login_button = By.ID, 'com.yozo.office:id/btn_login'
+login_button_SMS = By.ID, 'com.yozo.office:id/btn_login_verfiy'
 
 # 账号输入
 account_input = By.ID, 'com.yozo.office:id/et_account'
 
 # 密码输入
 pwd_input = By.ID, 'com.yozo.office:id/et_pwd'
+pwd_input1 = By.ID, 'com.yozo.office:id/et_password'
 
 # 忘记密码
 forget_pwd = By.XPATH, '//*[@text="忘记密码"]'
@@ -517,3 +522,109 @@ already_unsubscribe = By.XPATH, '//*[@text="已取消收藏"]'
 
 # 已收藏
 already_subscribe = By.XPATH, '//*[@text="已收藏"]'
+
+# 注册-下一步
+register_next_step = By.ID, 'com.yozo.office:id/btn_register'
+
+# 请输入手机号
+enter_phone_number = By.XPATH, '//*[@text="请输入手机号"]'
+
+# 请输入密码
+enter_pwd = By.XPATH, '//*[@text="请输入密码"]'
+
+# 请重新输入密码,必须包含字母和数字,且密码长度为6到12位
+re_enter_pwd = By.XPATH, '//*[@text="请重新输入密码,必须包含字母和数字,且密码长度为6到12位"]'
+
+# 请先仔细阅读并勾选同意永中Office的《隐私政策》和《服务条款》
+accept_agreement = By.XPATH, '//*[@text="请先仔细阅读并勾选同意永中Office的《隐私政策》和《服务条款》"]'
+
+# 协议勾选框
+checkbox_agreement = By.ID, 'com.yozo.office:id/checkbox_privacy'
+
+# 请输入正确的手机号
+enter_right_phone_number = By.XPATH, '//*[@text="请输入正确的手机号"]'
+
+# 注册取消
+register_cancel = By.ID, 'com.yozo.office:id/iv_add_back'
+
+# 获取验证码
+get_verfycode = By.ID, 'com.yozo.office:id/btn_verifycode'
+
+# 请输入图片验证码
+enter_picture_verfycode = By.XPATH, '//*[@text="请输入图片验证码"]'
+enter_picture_verfycode2 = By.XPATH, '//*[@text="请输入图形验证码"]'
+
+# 图形验证码
+picture_code_input = By.ID, 'com.yozo.office:id/et_figure_code'
+
+# 手机号的格式有误
+phone_format_wrong = By.XPATH, '//*[@text="手机号的格式有误"]'
+
+# 网络连接异常
+net_connect_exception = By.XPATH, '//*[@text="网络连接异常"]'
+
+# 输入的账号格式有误
+account_format_wrong = By.XPATH, '//*[@text="输入的账号格式有误"]'
+
+# 请输入账号
+please_enter_accout = By.XPATH, '//*[@text="请输入账号"]'
+
+# 请输入密码
+please_enter_pwd = By.XPATH, '//*[@text="请输入密码"]'
+
+# 登录失败：网络连接异常
+login_fail_nonet = By.XPATH, '//*[@text="登录失败：网络连接异常"]'
+
+# 重要文件，珍藏在这里
+star_no_file = By.XPATH, '//*[@text="重要文件，珍藏在这里"]'
+
+# 文件下载失败
+download_fail = By.XPATH, '//*[@text="文件下载失败"]'
+
+# 当前操作不支持文件夹
+option_not4folder = By.XPATH, '//*[@text="当前操作不支持文件夹"]'
+
+# 删除文档名
+delete_file = By.ID, 'com.yozo.office:id/tv_show_title'
+
+# 原文件名和新文件名一样，无需重命名
+filename_same = By.XPATH, '//*[@text="原文件名和新文件名一样，无需重命名"]'
+
+# 请不要包含特殊字符
+exist_special_char = By.XPATH, '//*[@text="请不要包含特殊字符"]'
+
+# 不得大于40个字符
+chars_40_more = By.XPATH, '//*[@text="不得大于40个字符"]'
+
+# 新建文件夹失败
+create_folder_fail = By.XPATH, '//*[@text="新建文件夹失败"]'
+
+# 立即使用按键
+cloud_use = By.ID, 'com.yozo.office:id/btn_logo'
+
+# 登录失败：用户名或密码错误
+login_fail_account_wrong = By.XPATH, '//*[@text="登录失败：用户名或密码错误"]'
+
+# 登录失败：次数过多，请转手机号验证码登录
+login_fail_too_much = By.XPATH, '//*[@text="登录失败：次数过多，请转手机号验证码登录"]'
+
+# 请输入短信验证码
+enter_SMS_code = By.XPATH, '//*[@text="请输入短信验证码"]'
+
+# 短信验证码输入
+SMS_code_input = By.ID, 'com.yozo.office:id/etSms'
+
+# 文件名已存在
+name_exist = By.XPATH, '//*[@text="文件名已存在"]'
+
+# 目标文件夹与源文件相同
+same_folder = By.XPATH, '//*[@text="目标文件夹与源文件相同。"]'
+
+#更多操作
+more_options = By.ID,'com.yozo.office:id/lay_more'
+
+#最近/打开/云文档/标星/我的
+index_page = By.ID, 'com.yozo.office:id/ll_tap'
+
+#返回云文档初始页
+cloud_first_page = By.XPATH, '//*[@text="云文档 > "]'

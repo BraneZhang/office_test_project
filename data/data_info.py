@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from businessView.elementRepo import *
 
 device = 'yeshen01'
 
-
 share_list = ['wp_wx', 'wp_qq', 'wp_ding', 'wp_mail', 'ss_wx', 'ss_qq', 'ss_ding',
               'ss_mail', 'pg_wx', 'pg_qq', 'pg_ding', 'pg_mail']
-share_list1= ['wx','qq','ding','mail']
+share_list1 = ['wx', 'qq', 'ding', 'mail']
 wps = ['wp', 'ss', 'pg']
 ps = ['ss', 'pg']
 wp = ['wp', 'pg']
@@ -20,7 +20,7 @@ switch_list = ['无切换', '平滑淡出', '从全黑淡出', '切出', '从全
                '向右插入', '向上插入', '向左下插入', '向左上插入', '向右下插入', '向右上插入', '水平百叶窗',
                '垂直百叶窗', '横向棋盘式', '纵向棋盘式', '水平梳理', '垂直梳理', '水平线条', '垂直线条', '随机']
 csv_file = '../data/account.csv'
-folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信','TIM']
+folder_list = ['手机', '我的文档', 'Download', 'QQ', '微信', 'TIM']
 index_share_list = ['qq', 'wechat', 'email', 'more']
 index_share_list1 = ['qq', 'wechat', 'email', 'ding']
 index_share_list2 = ['qq', 'wechat', 'email', 'dingding']
@@ -40,18 +40,22 @@ templates_dict = {'wp': ['教育教学', '信纸贺卡', '产品宣传', '简历
                   'ss': ['财务统计', '购销发货', '教育教学', '教育教学', '人力资源', '办公常用', '日历日程', '日历日程', '日历日程'],
                   'pg': ['工作汇报', '毕业答辩', '计划总结', '求职简历', '年会颁奖', '节日庆典', '教学课件', '企业介绍', '营销策划']}
 print_ways = ['current_table', 'all_table', 'select_range']
-if __name__ == '__main__':
-    # a = [False,False]
-    # print(False in a)
-    # a = [1, 2, 3.4, 5]
-    # b = [1, 2, 3.4, 6]
-    # print(a == b)
-    # print(list(range(10)))
-    # print(random.randint(1, 12))
-    strs = '[48,337][1080,1810]'
-    print(int(strs))
-    # strs = '[48,337]'
-    ss = strs[1:-1].split('][')
-    cc = list(map(lambda a: eval(a), ss))
-    print(ss)
-    print(cc)
+index_wps = ['last_wp', 'last_ss', 'last_pg',
+             'alldoc_wp', 'alldoc_ss', 'alldoc_pg',
+             'cloud_wp', 'cloud_ss', 'cloud_pg',
+             'star_wp', 'star_ss', 'star_pg',
+             ]
+template_search = ['last_wp', 'last_ss', 'last_pg',
+                   'alldoc_wp', 'alldoc_ss', 'alldoc_pg',
+                   'star_wp', 'star_ss', 'star_pg',
+                   ]
+index_list = ['last', 'alldoc']
+
+# +++++++++++++++++++
+
+file_copy_move = [
+    ['alldoc', 'copy'], ['alldoc', 'move'],
+    ['star', 'copy'], ['star', 'move'],
+    ['cloud', 'copy'], ['cloud', 'move']
+]
+
