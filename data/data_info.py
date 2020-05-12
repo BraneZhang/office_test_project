@@ -59,3 +59,4 @@ file_copy_move = [
     ['cloud', 'copy'], ['cloud', 'move']
 ]
 
+file_delete = ['alldoc', 'star', 'last', 'cloud']

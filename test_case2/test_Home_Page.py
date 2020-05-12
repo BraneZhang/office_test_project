@@ -31,6 +31,112 @@ y_create = 1669
 @ddt
 class TestHomePage(StartEnd):
 
+    # ======2020_05_11====== #
+
+    @unittest.skip('test_file_delete')
+    @data(*file_delete)
+    def test_file_delete(self, index_type='star'):  # 文档删除
+        hp = HomePageView(self.driver)
+        index = 0
+        if index_type == 'alldoc':
+            hp.jump_to_index(index_type)
+            hp.select_file_type('all')
+        elif index_type == 'last':
+            hp.jump_to_index('alldoc')
+            hp.select_file_type('all')
+            hp.find_elements(*item)[0].click()
+            time.sleep(2)
+            hp.click_element(*close)
+            hp.click_element(*return2)
+            hp.jump_to_index(index_type)
+        elif index_type == 'star':
+            hp.jump_to_index(index_type)
+            if hp.get_message(star_no_file):
+                hp.jump_to_index('alldoc')
+                hp.select_file_type('all')
+                hp.file_more_info(0)
+                hp.click_element(*star)
+                hp.click_element(*return2)
+                hp.jump_to_index(index_type)
+        else:
+            hp.login_needed()
+            hp.jump_to_index(index_type)
+            index = hp.identify_file_index()
+
+        location = hp.file_more_info(index)['location']
+
+        if index_type != 'last':
+            hp.click_element(*delete)
+            hp.click_element(*pop_cancel)
+            hp.file_more_info(index)
+        hp.click_element(*delete)
+        hp.click_element(*pop_confirm2)
+        if index_type == 'last':
+            self.assertTrue(hp.get_message(delete_from_last))
+        else:
+            self.assertTrue(hp.get_message(option_success))
+            if index_type != 'cloud':
+                msg = os.system('adb shell ls %s' % location)
+                self.assertTrue(msg == 1, 'delete fail')
+
+
+    @unittest.skip('test_file_copy_move')
+    @data(*file_copy_move)
+    @unpack
+    def test_file_copy_move(self, index_type='alldoc', option='copy'):
+        """
+        打开，标星，云文档 移动/复制操作
+        """
+        os.system('adb shell mkdir /storage/emulated/0/0000')
+        os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
+        hp = HomePageView(self.driver)
+
+        index = 0
+        if index_type == 'alldoc':
+            hp.jump_to_index(index_type)
+            hp.select_file_type('all')
+        elif index_type == 'star':
+            hp.jump_to_index(index_type)
+            if hp.get_message(star_no_file):
+                hp.jump_to_index('alldoc')
+                hp.select_file_type('all')
+                hp.file_more_info(0)
+                hp.click_element(*star)
+                hp.click_element(*return2)
+                hp.jump_to_index(index_type)
+        else:
+            hp.login_needed()
+            hp.jump_to_index(index_type)
+            index = hp.identify_file_index()
+
+        fileName = hp.file_more_info(index)['file_name']
+        fileName1 = fileName.replace('(', '\(').replace(')', '\)')
+        hp.click_element(*eval(option))
+        hp.find_elements(*item)[0].click()
+
+        if index_type != 'cloud':
+            hp.click_element(*new_folder)
+            hp.find_element(*folder_name).send_keys('1111')
+            hp.click_element(*pop_confirm2)
+            hp.find_elements(*item)[0].click()
+        hp.click_element(*paste)
+        self.assertTrue(hp.get_message(option_success))
+
+        if index_type == 'star':
+            hp.file_more_info(0)
+            hp.click_element(*star)
+
+        if index_type != 'cloud':
+            msg = os.system('adb shell ls /storage/emulated/0/0000/1111/%s' % fileName1)
+            self.assertTrue(msg == 0, 'option fail')
+            os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
+        else:
+            # hp.click_element(*cloud_first_page)
+            hp.find_elements(*item)[0].click()
+            file_name = hp.file_more_info(0)['file_name']
+            self.assertEqual(fileName, file_name)
+            hp.click_element(*delete)
+
     # ======2020_05_07====== #
 
     @unittest.skip('test_nonet_upload')
@@ -185,34 +291,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(int(num3) == 0)
         hp.click_element(*multi_cancel)
 
-    @unittest.skip('test_file_delete')
-    # @data(*index_list)
-    def test_file_delete(self, index_type='alldoc'):  # 文档删除
-        hp = HomePageView(self.driver)
 
-        if index_type == 'alldoc':
-            hp.jump_to_index(index_type)
-            hp.select_file_type('all')
-        elif index_type == 'last':
-            hp.jump_to_index('alldoc')
-            hp.select_file_type('all')
-            hp.file_more_info(0)
-            hp.find_elements(*item)[0].click()
-            time.sleep(2)
-            hp.click_element(*close)
-            hp.click_element(*return2)
-            hp.jump_to_index(index_type)
-
-        hp.file_more_info(0)
-        hp.click_element(*delete)
-        hp.click_element(*pop_cancel)
-        hp.file_more_info(0)
-        hp.click_element(*delete)
-        hp.click_element(*pop_confirm2)
-        if index_type == 'last':
-            self.assertTrue(hp.get_message(delete_from_last))
-        else:
-            self.assertTrue(hp.get_message(option_success))
 
     # ======2020_05_06====== #
 
@@ -242,61 +321,7 @@ class TestHomePage(StartEnd):
         self.assertTrue(msg == 0, 'move fail')
         os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
 
-    @unittest.skip('test_file_copy_move')
-    @data(*file_copy_move)
-    @unpack
-    def test_file_copy_move(self, index_type='cloud', option='copy'):
-        """
-        打开，标星，云文档 移动/复制操作
-        """
-        os.system('adb shell mkdir /storage/emulated/0/0000')
-        os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
-        hp = HomePageView(self.driver)
 
-        index = 0
-        if index_type == 'alldoc':
-            hp.jump_to_index(index_type)
-            hp.select_file_type('all')
-        elif index_type == 'star':
-            if hp.get_message(star_no_file):
-                hp.jump_to_index('alldoc')
-                hp.select_file_type('all')
-                hp.file_more_info(0)
-                hp.click_element(*star)
-                hp.click_element(*return2)
-                hp.jump_to_index(index_type)
-        else:
-            hp.login_needed()
-            hp.jump_to_index(index_type)
-            index = hp.identify_file_index()
-
-        fileName = hp.file_more_info(index)['file_name']
-        fileName1 = fileName.replace('(', '\(').replace(')', '\)')
-        hp.click_element(*eval(option))
-        hp.find_elements(*item)[0].click()
-
-        if index_type != 'cloud':
-            hp.click_element(*new_folder)
-            hp.find_element(*folder_name).send_keys('1111')
-            hp.click_element(*pop_confirm2)
-            hp.find_elements(*item)[0].click()
-        hp.click_element(*paste)
-        self.assertTrue(hp.get_message(option_success))
-
-        if index_type == 'star':
-            hp.file_more_info(0)
-            hp.click_element(*star)
-
-        if index_type != 'cloud':
-            msg = os.system('adb shell ls /storage/emulated/0/0000/1111/%s' % fileName1)
-            self.assertTrue(msg == 0, 'copy fail')
-            os.system('adb shell rm -rf /storage/emulated/0/0000/1111')
-        else:
-            # hp.click_element(*cloud_first_page)
-            hp.find_elements(*item)[0].click()
-            file_name = hp.file_more_info(0)['file_name']
-            self.assertEqual(fileName, file_name)
-            hp.click_element(*delete)
 
     @unittest.skip('test_file_rename')
     @data(*index_list)
