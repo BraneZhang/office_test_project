@@ -15,6 +15,7 @@ from selenium.webdriver.common.by import By
 import time, os
 import csv
 
+from businessView.elementRepo import *
 from common.tool import get_project_path
 
 width_cell = 263
@@ -30,20 +31,20 @@ class Common(BaseView):
     def find_image_cv(self, obj_path, src_path):
         source = cv.imread(src_path)
         template = cv.imread(obj_path)
-        print('source')
-        print(source.shape)
-        print('template')
-        print(template.shape)
+        # print('source')
+        # print(source.shape)
+        # print('template')
+        # print(template.shape)
         result = cv.matchTemplate(source, template, cv.TM_CCOEFF_NORMED)
-        print('result')
-        print(result)
-        print(len(result))
+        # print('result')
+        # print(result)
+        # print(len(result))
         pos_start = cv.minMaxLoc(result)[3]
         test = cv.minMaxLoc(result)
-        print('pos_start')
-        print(pos_start)
-        print('test')
-        print(test)
+        # print('pos_start')
+        # print(pos_start)
+        # print('test')
+        # print(test)
         x = int(pos_start[0]) + int(template.shape[1] / 2)
         y = int(pos_start[1]) + int(template.shape[0] / 2)
         similarity = cv.minMaxLoc(result)[1]
@@ -102,6 +103,12 @@ class Common(BaseView):
         action.long_press(x=x, y=y).wait(1000).release()
         action.perform()
 
+    def double_click(self, x, y):  # 长按
+        logging.info('double_click')
+        action = TouchAction(self.driver)
+
+        action.press(x=x, y=y).release().perform().wait(100).press(x=x, y=y).release().perform()
+
     def tap(self, x, y, count=1):  # 点击
         time.sleep(1)
         logging.info('Tap')
@@ -141,10 +148,10 @@ class Common(BaseView):
 
     def group_button_click(self, option):
         logging.info('==========group_button_click_%s==========' % option)
-        if self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_button').text == option:
-            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button').click()
+        if self.find_element(*option_group).text == option:
+            self.click_element(*expand)
         else:
-            self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_group_button').click()
+            self.click_element(*option_group)
             self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % option).click()
 
     def get_elements_attribute(self, elements, attr):
@@ -353,7 +360,7 @@ class Common(BaseView):
 
     def get_swipe_xy(self, ele):
         logging.info('=====get_swipe_xy======')
-        loc_str = self.find_element(By.XPATH, ele).get_attribute('bounds')
+        loc_str = self.find_element(*ele).get_attribute('bounds')
         loc_list = loc_str.replace('[', '').replace(']', ',').split(',')
         x1 = int(loc_list[0])
         y1 = int(loc_list[1])
@@ -364,7 +371,7 @@ class Common(BaseView):
         list_xy = [x1 + 1, x3, x2 - 1, y1 + 1, y3, y2 - 1]
         return list_xy
 
-    def swipe_options(self, ele='//*[@resource-id="com.yozo.office:id/yozo_ui_option_content_container"]', option='up'):
+    def swipe_options(self, ele=option_content, option='up'):
         logging.info('=====swipe_options======')
         list_xy = self.get_swipe_xy(ele)
         x1 = list_xy[0]

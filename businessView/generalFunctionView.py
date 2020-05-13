@@ -8,6 +8,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
+from businessView.elementRepo import expand
 from businessView.homePageView import HomePageView
 from common.common_fun import Common
 import selenium.webdriver.support.expected_conditions as ec
@@ -637,7 +638,7 @@ class GeneralFunctionView(Common):
 
     def fold_expand(self):
         logging.info('==========fold_expand==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button').click()
+        self.click_element(*expand)
 
     def search_content(self, type, content):  # 查找内容
         logging.info('==========search_content==========')
@@ -668,12 +669,11 @@ class GeneralFunctionView(Common):
 
     def share_file(self, type, way):  # 分享way=['wx','qq','ding','mail']
         logging.info('==========share_file==========')
-        self.group_button_click('文件')
+
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_%s_option_id_share_by_%s' % (type, way)).click()
 
     def export_pdf(self, file_name, save_path):  # 导出pdf
         logging.info('==========export_pdf==========')
-        self.group_button_click('文件')
         self.driver.find_element(By.XPATH, '//*[@text="输出为PDF"]').click()
         self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_select_save_folder').click()
         logging.info('choose save path %s' % save_path)

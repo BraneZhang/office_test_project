@@ -239,12 +239,12 @@ class HomePageView(Common):
 
     def search_file(self, keyword):
         logging.info('==========search_file==========')
-        self.driver.find_element(By.ID, 'com.yozo.office:id/im_title_bar_menu_search').click()
+        self.find_element(*search).click()
         logging.info('input keyword %s' % keyword)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
+        self.find_element(*search_input).send_keys(keyword)
+        self.find_element(*search_start).click()
         logging.info('searching...')
-        result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
+        result = self.is_not_visible(searching)
         if not result:
             logging.error('searching timeout!')
             self.getScreenShot('searching timeout')
@@ -263,7 +263,7 @@ class HomePageView(Common):
         self.driver.find_element(By.ID, 'com.yozo.office:id/et_search').send_keys(keyword)
         self.driver.find_element(By.ID, 'com.yozo.office:id/iv_search_search').click()
         logging.info('searching...')
-        result = self.is_not_visible('//*[@text="文件搜索.."]', 60)
+        result = self.is_not_visible(searching)
         if not result:
             logging.error('searching timeout!')
             self.getScreenShot('searching timeout')
@@ -280,7 +280,8 @@ class HomePageView(Common):
         logging.info('===========jump_to_%s==========' % file_type)
         # index = ['last', 'alldoc', 'cloud', 'star', 'my']  # office的五个页面组件尾缀
         index = {'last': 0, 'alldoc': 1, 'cloud': 2, 'star': 3, 'my': 4, }
-        self.driver.find_elements(By.ID, 'com.yozo.office:id/ll_tap')[index[file_type]].click()
+        # self.driver.find_elements(By.ID, 'com.yozo.office:id/ll_tap')[index[file_type]].click()
+        self.driver.find_element(By.ID, 'com.yozo.office:id/ll_bottommenu_%s' % file_type).click()
         time.sleep(1)
 
     def sort_files(self, way='type', order='down'):  # 排序
@@ -295,7 +296,7 @@ class HomePageView(Common):
     def identify_file_index(self):  # 识别云文档中首个文件
         suffix = (
             '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', '.pdf', '.txt', '.xlt', '.xltx', '.dot', '.dotx', '.pot',
-            '.potx', '.wps','.wpt', '.et', '.ett', '.dps', '.dpt')
+            '.potx', '.wps', '.wpt', '.et', '.ett', '.dps', '.dpt')
         eles = self.find_elements(*item)
 
         for i, ele in enumerate(eles):
@@ -562,27 +563,11 @@ class HomePageView(Common):
     def open_file(self, file_name):
         logging.info('======open_file_%s=====' % file_name)
         self.driver.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % file_name).click()  # 打开对应文件
-        loading_result = self.is_not_visible('//*[contains(@text, "正在打开")]')
-        if not loading_result:
-            logging.error('loading timeout')
-            return False
-            # 弹出问题信息框
-        if self.get_element_result('//*[@text="提示"]') or self.get_element_result(
-                '//*[contains(@text,"很抱歉")]'):
-            self.getScreenShot(file_name + 'down info')
-            logging.error('shutdown app!')
-            return False
 
-        # 弹出普通信息框
-        try:
-            self.driver.find_element(By.XPATH, '//*[@text="确定"]').click()
-        except Exception:
-            pass
-
-        show_result = self.is_visible('//*[@resource-id="com.yozo.office:id/yozo_ui_option_title_container"]', 20)
+        show_result = self.is_visible(option_title,20)
         if not show_result:
             logging.error('open failed')
-            self.getScreenShot(file_name + ' open fail')
+            # self.getScreenShot(file_name + ' open fail')
             return False
         else:
             logging.info(file_name + ' open success!')
@@ -623,24 +608,25 @@ class HomePageView(Common):
             return True
 
     # 一直等待某元素可见，默认超时10秒
-    def is_visible(self, *locator, timeout=60):
+    def is_visible(self, locator, timeout=60):
         try:
             # ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, locator)))
-            ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(*locator))
+            ui.WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
             return True
         except TimeoutException:
             return False
 
     # 一直等待某个元素消失，默认超时10秒
-    def is_not_visible(self, locator, timeout=60):
+    def is_not_visible(self, locator,timeout=60 ):
         try:
-            ui.WebDriverWait(self.driver, timeout).until_not(EC.presence_of_element_located((By.XPATH, locator)))
+            # ui.WebDriverWait(self.driver, timeout).until_not(EC.visibility_of_element_located((By.XPATH, locator)))
+            ui.WebDriverWait(self.driver, timeout).until_not(EC.visibility_of_element_located(locator))
             return True
         except TimeoutException:
             return False
 
     def is_visible_elements(self, *eles):
-        results = list(map(lambda e: self.is_visible(e, 3), eles))
+        results = list(map(lambda e: self.is_visible(3,e), eles))
         if False in results:
             logging.error('element loading timeout')
             return False

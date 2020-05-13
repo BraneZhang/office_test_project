@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import csv
 import logging
 import random
 
@@ -8,8 +8,11 @@ import unittest
 from ddt import ddt, data
 from selenium.webdriver.common.by import By
 
+from businessView.elementRepo import *
 from businessView.homePageView import HomePageView
 from businessView.wpView import WPView
+from common.FPSCount import calc_FPS
+from common.device import Device
 from common.myunit import StartEnd
 from airtest.core.api import *
 
@@ -18,10 +21,336 @@ from data.data_info import share_list1
 
 chart_type = ['柱形图', '条形图', '折线图', '饼图', '散点图', '面积图', '圆环图', '雷达图', '气泡图', '圆柱图', '圆锥图', '棱锥图']
 search_dict = data_info.search_dict
+x_create = 926
+y_create = 1669
+suffix = [1, 2]
 
 
 @ddt
 class TestWP(StartEnd):
+
+    # ======2020_05_12====== #
+
+    # @unittest.skip('skip test_wp_print_long_pic')# WP_00028
+    def test_wp_print_long_pic(self):
+        logging.info('==========%s==========' % self.__str__().split(' ')[0])
+        wp = WPView(self.driver)
+        file_name = '欢迎使用永中Office.docx'
+        search_result = wp.search_file(file_name)
+        self.assertTrue(search_result, '查找失败')
+        open_result = wp.open_file(file_name)
+        self.assertTrue(open_result, '打开失败')
+        wp.group_button_click('文件')
+        wp.swipe_options()
+        wp.click_element(*export_long_pic)
+        wp.click_element(*save2album)
+        self.assertTrue(wp.get_message(saved))
+        wp.click_element(*image_share)
+        wp.find_element(By.ID,'com.yozo.office:id/yozo_ui_export_longpic_share_buttons')
+
+    # @unittest.skip('skip test_wp_export_pdf')
+    def test_export_pdf(self):   # WP_00028
+
+        wp = WPView(self.driver)
+        wp.jump_to_index('alldoc')
+        wp.select_file_type('wp')
+        wp.find_elements(*item)[0].click()
+        file_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        self.group_button_click('文件')
+        wp.export_pdf(file_name, 'local')
+        wp.get_message(export_success)
+        wp.click_element(*close)
+        wp_file = file_name + '.pdf'
+        wp.search_file(wp_file)
+        wp.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % wp_file).click()
+        file_open = wp.find_element(*pdf_file_title).text
+        self.assertEqual(wp_file, file_open)
+
+    # @unittest.skip('skip test_save_as_existFile')
+    def test_save_as_existFile(self, file_type='wp'):  # WP_00027
+        wp = WPView(self.driver)
+        wp.jump_to_index('alldoc')
+        wp.select_file_type('wp')
+        wp.find_elements(*item)[0].click()
+        wp.click_element(*mode_switch)
+        wp.group_button_click('签批')
+        wp.pen_type(file_type, '荧光笔')
+        self.driver.swipe(300, 400, 800, 500)
+        file_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        suffix_dict = {1: '.doc', 2: '.docx'}
+        suffix_type = random.randint(1, 2)
+        wp.save_as_file(file_name, 'local', suffix_type)
+        wp_file = file_name + suffix_dict[suffix_type]
+
+        wp.get_message(save_success)
+        wp.click_element(*close)
+        wp.search_file(wp_file)
+        wp.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % wp_file).click()
+        file_open = wp.find_element(*file_title).text
+        self.assertEqual(wp_file, file_open)
+
+    # @unittest.skip('skip test_save_as_newFile')
+    def test_save_as_newFile(self, file_type='wp'):  # WP_00027
+
+        wp = WPView(self.driver)
+        wp.create_file(file_type, x_create, y_create)
+        wp.enter_lines_script(10)
+        file_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        suffix_dict = {1: '.doc', 2: '.docx'}
+        suffix_type = random.randint(1, 2)
+        wp.save_as_file(file_name, 'local', suffix_type)
+        wp.click_element(*close)
+        wp.click_element(*return1)
+        wp_file = file_name + suffix_dict[suffix_type]
+
+        wp.search_file(wp_file)
+        wp.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % wp_file).click()
+        file_open = wp.find_element(*file_title).text
+        self.assertEqual(file_name, file_open)
+
+    # @unittest.skip('skip test_save_existFile')
+    def test_save_existFile(self, file_type='wp'):  # WP_00026
+        wp = WPView(self.driver)
+        wp.jump_to_index('alldoc')
+        wp.select_file_type('wp')
+        wp.find_elements(*item)[0].click()
+        file_name = wp.find_element(*file_title).text
+        wp.click_element(*mode_switch)
+        wp.group_button_click('签批')
+        wp.pen_type(file_type, '荧光笔')
+        self.driver.swipe(300, 400, 800, 500)
+        wp.save_file()
+        wp.get_message(save_success)
+        wp.click_element(*close)
+        wp.search_file(file_name)
+        wp.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % file_name).click()
+        file_open = wp.find_element(*file_title).text
+        self.assertEqual(file_name, file_open)
+
+    # @unittest.skip('skip test_pop_menu_text')
+    def test_pop_menu_text(self, file_type='wp'):
+        # WP_00018/WP_00019/WP_00020/WP_00021/WP_00022/WP_00023/WP_00024/WP_00025
+        wp = WPView(self.driver)
+        wp.create_file(file_type, x_create, y_create)
+
+        wp.enter_lines_script(10)
+        wp.click_element(*expand)
+        wp.click_element(*expand)
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('keyboard')
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('selectAll')
+        wp.pop_menu_click('cut')
+        wp.click_element(*wp_edit)
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('paste')
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('selectAll')
+        wp.pop_menu_click('copy')
+        wp.click_element(*wp_edit)
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('paste')
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('selectAll')
+        wp.pop_menu_click('delete')
+        wp.click_element(*undo)
+        wp.click_element(*wp_edit)
+        wp.pop_menu_click('point')
+        wp.pop_menu_click('selectAll')
+        wp.pop_menu_click('highlight')
+        self.assertTrue(wp.save_and_reopen())
+
+    # @unittest.skip('skip test_text_select_tap_drag')
+    def test_text_select_tap_drag(self, file_type='wp'):  # WP_00014/WP_00015/WP_00016
+        wp = WPView(self.driver)
+        wp.create_file(file_type, x_create, y_create)
+        wp.enter_lines_script(10)
+        x, y = wp.find_pic_position('point')
+        wp.double_click(x - 100, y)
+        wp.click_element(*wp_edit)
+        wp.drag_coordinate(x - 50, y, x - 100, y)
+        wp.click_element(*wp_edit)
+        wp.pop_menu_click('选取')
+
+    # @unittest.skip('skip test_screen_zoom_scroll')
+    def test_screen_zoom_scroll(self, file_type='wp'):  # WP_00012/WP_00013
+        wp = WPView(self.driver)
+        wp.create_file(file_type, x_create, y_create)
+        wp.group_button_click('编辑')
+        wp.font_size(40)
+        wp.enter_lines_script(500)
+        self.driver.hide_keyboard()
+        wp.click_element(*expand)
+        wp.zoom_out()
+        wp.zoom_in()
+        width = wp.get_window_size()['width']
+        height = wp.get_window_size()['height']
+        self.driver.swipe(0.5 * width, 0.75 * height, 0.5 * width, 0.25 * height, 10000)
+        avg_fps = calc_FPS(Device.dev, Device.appPackage)
+
+        with open('../data/FPS_record.csv', 'a', encoding='utf-8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([file_type, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), str(avg_fps)])
+        self.assertTrue(wp.save_and_reopen())
+
+    # @unittest.skip('skip test_undo_redo')
+    def test_undo_redo(self, file_type='wp'):  # WP_00010/WP_00011
+
+        wp = WPView(self.driver)
+        wp.create_file(file_type, x_create, y_create)
+
+        ele = wp.find_element(*wp_edit)
+        wp.click_element(*mode_switch)
+        ele.screenshot('../screenshots/redo01.png')
+
+        wp.click_element(*mode_switch)
+        wp.group_button_click('插入')
+        wp.insert_shape(file_type, 1)
+        wp.click_element(*mode_switch)
+        wp.fold_expand()
+        ele.screenshot('../screenshots/undo01.png')
+
+        wp.click_element(*mode_switch)
+        wp.click_element(*undo)
+        wp.click_element(*mode_switch)
+        ele.screenshot('../screenshots/redo02.png')
+
+        wp.click_element(*mode_switch)
+        wp.click_element(*redo)
+        wp.click_element(*mode_switch)
+        ele.screenshot('../screenshots/undo02.png')
+
+        result1 = wp.compare_pic('redo01.png', 'redo02.png')
+        result2 = wp.compare_pic('undo01.png', 'undo02.png')
+        self.assertEqual(result1, 0.0, 'redo success')
+        self.assertEqual(result2, 0.0, 'undo success')
+        self.assertTrue(wp.save_and_reopen())
+
+    # ======2020_05_11====== #
+    # @unittest.skip('test_read_mode_bookmark_screen_light')
+    def test_read_mode_bookmark_screen_light(self):  # WP_00007/WP_00008/WP_00009
+        wp = WPView(self.driver)
+        wp.jump_to_index('last')
+        file_type = 'wp'
+        wp.create_file(file_type, x_create, y_create)
+        # 输入文字
+        wp.enter_lines_script()
+        wp.switch_write_read()
+        wp.group_button_click('查看')
+        wp.click_element(*bookmark_insert)
+        wp.find_element(*bookmark_edit).send_keys('aaaa')
+        wp.click_element(*pop_confirm4)
+        self.assertTrue(wp.get_message(bookmark_insert_succes))
+
+        wp.click_element(*expand)
+        wp.click_element(*bookmark_insert)
+        wp.find_element(*bookmark_edit).send_keys('书签1')
+        wp.click_element(*pop_confirm4)
+        self.assertTrue(wp.get_message(bookmark_insert_succes))
+
+        wp.click_element(*expand)
+        wp.click_element(*bookmark_insert)
+        wp.find_element(*bookmark_edit).send_keys('书签1')
+        self.assertTrue(wp.get_message(bookmark_exist))
+        wp.find_element(*bookmark_edit).send_keys('123456')
+        wp.click_element(*pop_confirm4)
+        self.assertTrue(wp.get_message(bookmark_insert_succes))
+
+        wp.click_element(*expand)
+        wp.click_element(*bookmark_list)
+        wp.find_element(By.XPATH, '//*[@text="aaaa"]')
+        wp.find_element(By.XPATH, '//*[@text="书签1"]')
+        wp.find_element(By.XPATH, '//*[@text="123456"]')
+
+        wp.click_element(*bookmark_return)
+        wp.swipe_options()
+        wp.screen_light('on')
+        self.assertTrue(wp.get_message(screen_light_on))
+        time.sleep(2)
+        wp.screen_light('off')
+        self.assertTrue(wp.get_message(screen_light_off))
+        self.assertTrue(wp.save_and_reopen())
+
+    # @unittest.skip('test_read_mode_search')
+    def test_read_mode_search_full_screen(self):  # WP_00003\WP_00004\WP_00005
+        wp = WPView(self.driver)
+        wp.jump_to_index('last')
+        file_type = 'wp'
+        wp.create_file(file_type, x_create, y_create)
+        # 输入文字
+        wp.enter_lines_script()
+        wp.switch_write_read()
+        wp.group_button_click('查看')
+
+        wp.click_element(*find_replace)
+        wp.find_element(*find_input).send_keys('fff')
+        wp.click_element(*find_start)
+        self.assertTrue(wp.get_message(find_nothing))
+        wp.click_element(*pop_confirm3)
+        wp.find_element(*find_input).send_keys('aa')
+        wp.click_element(*find_start)
+        wp.click_element(*find_next)
+        wp.click_element(*find_previous)
+        wp.click_element(*find_return)
+        wp.click_element(*full_screen)
+        wp.click_element(*wp_edit)
+        wp.click_element(*exit_full_screen)
+        wp.get_message(file_title)
+        self.assertTrue(wp.save_and_reopen())
+
+    # @unittest.skip('test_screen_rotate')
+    def test_screen_rotate(self):  # WP_00002
+        wp = WPView(self.driver)
+        wp.jump_to_index('last')
+        file_type = 'wp'
+        wp.create_file(file_type, x_create, y_create)
+        # 输入文字
+        wp.click_element(*wp_edit)
+        wp.fold_expand()
+        wp.fold_expand()
+        wp.enter_lines_script()
+        wp.screen_rotate('LANDSCAPE')
+        wp.screen_rotate('PORTRAIT')
+        self.assertTrue(wp.save_and_reopen())
+
+    # @unittest.skip('test_create_blank_file')
+    def test_create_blank_file(self):  # WP_00001/WP_00012
+        wp = WPView(self.driver)
+        wp.jump_to_index('last')
+        file_type = 'wp'
+        wp.create_file(file_type, x_create, y_create)
+
+        # 输入文字
+        wp.group_button_click('编辑')
+        wp.font_size(20)
+        wp.click_element(*wp_edit)
+        # self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_main_view_container').click()
+        wp.fold_expand()
+        wp.fold_expand()
+        time.sleep(2)
+
+        input_times = 0
+        while input_times < 1000:
+            self.driver.keyevent(30)
+            input_times += 1
+        wp.swipeDown()
+        wp.zoom_in()
+        wp.zoom_out()
+        self.assertTrue(wp.save_and_reopen())
+
+        # name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        # suffix_dict = {1: '.doc', 2: '.docx'}
+        # suffix_type = random.randint(1, 2)
+        # wp.save_new_file(name, 'local', suffix_type)
+        # wp.click_element(*close)
+        # wp.click_element(*return1)
+        # wp_file = name + suffix_dict[suffix_type]
+        #
+        # wp.search_file(wp_file)
+        # wp.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % wp_file).click()
+        # file_open = wp.find_element(*file_title).text
+        # self.assertEqual(wp_file, file_open)
+
     # =======add 2020_02_25===== 拆分共用功能
     # @unittest.skip('skip test_wp_file_info')
     def test_wp_file_info(self, file_type='wp'):
@@ -31,12 +360,12 @@ class TestWP(StartEnd):
         :return: None
         """
         logging.info('==========test_wp_file_info==========')
-        gv = WPView(self.driver)
-        gv.open_random_file(search_dict[file_type])
+        wp = WPView(self.driver)
+        wp.open_random_file(search_dict[file_type])
 
         logging.info('==========show file info==========')
-        gv.wait_loading()
-        gv.file_info()
+        wp.wait_loading()
+        wp.file_info()
 
     # @unittest.skip('skip test_wp_share_editFile')
     @data(*share_list1)
@@ -105,132 +434,25 @@ class TestWP(StartEnd):
         hp.close_file()
         self.assertTrue(hp.check_close_file())
 
-    # @unittest.skip('skip test_wp_save_newFile')
-    def test_wp_save_newFile(self, type='wp'):  # 新建脚本保存
-        logging.info('==========test_wp_save_newFile==========')
-        hp = WPView(self.driver)
-        hp.create_file(type)
-        file_name = 'save_new ' + hp.getTime('%Y-%m-%d %H-%M-%S')
-        hp.save_new_file(file_name, 'local', 2)
-        self.assertTrue(hp.check_save_file())
-
-    # @unittest.skip('skip test_wp_save_existFile')
-    def test_wp_save_existFile(self, type='wp'):  # 已有文件改动保存
-        logging.info('==========test_wp_save_existFile==========')
-        gv = WPView(self.driver)
-
-        suffix = search_dict[type]
-        file_name = '欢迎使用永中Office.%s' % suffix
-        search_result = gv.search_file(file_name)
-        self.assertTrue(search_result, '查找失败')
-        open_result = gv.open_file(file_name)
-        self.assertTrue(open_result, '打开失败')
-        gv.switch_write_read()
-        gv.group_button_click('签批')
-        gv.pen_type(type, '荧光笔')
-        self.driver.swipe(300, 400, 800, 500)
-        gv.save_file()
-        self.assertTrue(gv.check_save_file())
-
-    # @unittest.skip('skip test_wp_save_as_newFile')
-    def test_wp_save_as_newFile(self, type='wp'):  # 新建脚本另存为
-        logging.info('==========test_wp_save_as_newFile==========')
-        hp = WPView(self.driver)
-        hp.create_file(type)
-        file_name = 'save_as_new ' + hp.getTime('%H_%M_%S')
-        hp.save_as_file(file_name, 'local', 1)
-        self.assertTrue(hp.check_save_file())
-
-    # @unittest.skip('skip test_wp_save_as_existFile')
-    def test_wp_save_as_existFile(self, type='wp'):  # 已有文件另存为
-        logging.info('==========test_wp_save_as_existFile==========')
-        hp = WPView(self.driver)
-
-        suffix = search_dict[type]
-        file_name = '欢迎使用永中Office.%s' % suffix
-        search_result = hp.search_file(file_name)
-        self.assertTrue(search_result, '查找失败')
-        open_result = hp.open_file(file_name)
-        self.assertTrue(open_result, '打开失败')
-        file_name = '已有文档另存'
-        hp.save_as_file(file_name, 'local', 1)
-        self.assertTrue(hp.check_save_file())
-
-    # @unittest.skip('skip test_wp_zoom_pinch')
-    def test_wp_zoom_pinch(self, type='wp'):
-        logging.info('==========test_wp_zoom_pinch==========')
-        hp = WPView(self.driver)
-        suffix = search_dict[type]
-        file_name = '欢迎使用永中Office.%s' % suffix
-        search_result = hp.search_file(file_name)
-        self.assertTrue(search_result, '查找失败')
-        open_result = hp.open_file(file_name)
-        self.assertTrue(open_result, '打开失败')
-        hp.zoom_in()
-        hp.zoom_out()
-
-    # @unittest.skip('skip test_wp_undo_redo')
-    def test_wp_undo_redo(self, type='wp'):  # 撤销、重做
-        logging.info('==========test_wp_undo_redo==========')
-        gv = WPView(self.driver)
-        gv.create_file(type)
-        self.driver.find_element(By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo')  # 判断页面是否已切过来
-
-        gv.group_button_click('插入')
-        gv.insert_shape(type, 1)
-        gv.fold_expand()
-
-        gv.undo_option()
-        time.sleep(1)
-        gv.redo_option()
-        time.sleep(1)
-        gv.undo_option()
-        time.sleep(1)
-
-        logging.info('capture before undo')
-        gv.getScreenShot4Compare('before_undo')
-
-        gv.redo_option()
-        time.sleep(1)
-
-        logging.info('capture before redo')
-        gv.getScreenShot4Compare('before_redo')
-
-        gv.undo_option()
-        time.sleep(1)
-        logging.info('capture after undo')
-        gv.getScreenShot4Compare('after_undo')
-
-        gv.redo_option()
-        time.sleep(1)
-        logging.info('capture after redo')
-        gv.getScreenShot4Compare('after_redo')
-
-        result1 = gv.compare_pic('before_undo.png', 'after_undo.png')
-        result2 = gv.compare_pic('before_redo.png', 'after_redo.png')
-
-        self.assertLess(result1, 100, 'undo fail!')
-        self.assertLess(result2, 100, 'redo fail!')
-
     # @unittest.skip('skip test_wp_signature')
     def test_wp_signature(self, type='wp'):  # 签批
         logging.info('==========test_wp_signature==========')
-        gv = WPView(self.driver)
-        gv.create_file(type)
-        gv.group_button_click('签批')
-        gv.use_finger(type)
-        gv.use_finger(type)
-        gv.pen_type(type, '钢笔')
-        gv.pen_color(type, 15)
-        gv.pen_size(type, 3)
-        gv.swipe(300, 400, 800, 400, 500)
-        gv.pen_type(type, '荧光笔')
-        gv.pen_color(type, 30)
-        gv.pen_size(type, 6)
-        gv.swipe(300, 600, 800, 600, 500)
-        gv.pen_type(type, '擦除')
-        gv.swipe(200, 400, 900, 400, 500)
-        gv.swipe(200, 600, 900, 600, 500)
+        wp = WPView(self.driver)
+        wp.create_file(type)
+        wp.group_button_click('签批')
+        wp.use_finger(type)
+        wp.use_finger(type)
+        wp.pen_type(type, '钢笔')
+        wp.pen_color(type, 15)
+        wp.pen_size(type, 3)
+        wp.swipe(300, 400, 800, 400, 500)
+        wp.pen_type(type, '荧光笔')
+        wp.pen_color(type, 30)
+        wp.pen_size(type, 6)
+        wp.swipe(300, 600, 800, 600, 500)
+        wp.pen_type(type, '擦除')
+        wp.swipe(200, 400, 900, 400, 500)
+        wp.swipe(200, 600, 900, 600, 500)
         time.sleep(3)
 
     # @unittest.skip('skip test_wp_share_file_edit')
@@ -298,84 +520,84 @@ class TestWP(StartEnd):
     # @unittest.skip('skip test_wp_shape_attr')
     def test_wp_shape_attr(self, type='wp'):
         logging.info('==========test_wp_shape_attr==========')
-        gv = WPView(self.driver)
-        gv.create_file(type)
-        gv.group_button_click('插入')
-        gv.insert_shape(type, 6, 30)
-        gv.shape_insert(type, 6, 31)
-        gv.shape_insert(type, 6, 32)
-        gv.shape_insert(type, 6, 33)
+        wp = WPView(self.driver)
+        wp.create_file(type)
+        wp.group_button_click('插入')
+        wp.insert_shape(type, 6, 30)
+        wp.shape_insert(type, 6, 31)
+        wp.shape_insert(type, 6, 32)
+        wp.shape_insert(type, 6, 33)
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
         ele3 = '//*[@text="效果"]'
-        gv.swipe_ele(ele2, ele1)
-        gv.swipe_ele(ele3, ele1)
-        gv.shape_layer('下移一层')
-        gv.shape_layer('置于底层')
-        gv.shape_layer('上移一层')
-        gv.shape_layer('置于顶层')
+        wp.swipe_ele(ele2, ele1)
+        wp.swipe_ele(ele3, ele1)
+        wp.shape_layer('下移一层')
+        wp.shape_layer('置于底层')
+        wp.shape_layer('上移一层')
+        wp.shape_layer('置于顶层')
 
     # @unittest.skip('skip test_wp_shape_attr2')
     def test_wp_shape_attr2(self, file_type='wp'):
         logging.info('==========test_wp_shape_attr2==========')
-        gv = WPView(self.driver)
-        gv.create_file(file_type)
-        gv.group_button_click('插入')
-        gv.insert_shape(file_type, 6, 10)
-        gv.shape_option(file_type, 2)
-        gv.shape_fill_color(file_type, 6, 24)
-        gv.shape_fill_color_transparency(5)
+        wp = WPView(self.driver)
+        wp.create_file(file_type)
+        wp.group_button_click('插入')
+        wp.insert_shape(file_type, 6, 10)
+        wp.shape_option(file_type, 2)
+        wp.shape_fill_color(file_type, 6, 24)
+        wp.shape_fill_color_transparency(5)
         ele1 = '//*[@text="形状"]'
         ele2 = '//*[@text="轮廓"]'
-        gv.swipe_ele(ele2, ele1)
-        gv.shape_border_color(file_type, 6, 5)
-        gv.shape_border_type(file_type, 6, 3)
-        gv.shape_border_width(file_type, 6, 5)
-        gv.shape_effect_type(file_type, 6, 4, 5)
+        wp.swipe_ele(ele2, ele1)
+        wp.shape_border_color(file_type, 6, 5)
+        wp.shape_border_type(file_type, 6, 3)
+        wp.shape_border_width(file_type, 6, 5)
+        wp.shape_effect_type(file_type, 6, 4, 5)
         time.sleep(1)
 
     # @unittest.skip('skip test_wp_shape_attr1')
     def test_wp_shape_attr1(self):  # 文本框字符属性
         logging.info('==========test_wp_shape_attr1==========')
-        gv = WPView(self.driver)
-        gv.create_file('wp')
+        wp = WPView(self.driver)
+        wp.create_file('wp')
 
-        gv.group_button_click('插入')
-        gv.insert_shape('wp')
+        wp.group_button_click('插入')
+        wp.insert_shape('wp')
         time.sleep(1)
-        x, y = gv.find_pic_position('drag_all')
-        gv.tap(x, y)  # 进入编辑
-        gv.pop_menu_click('editText')
+        x, y = wp.find_pic_position('drag_all')
+        wp.tap(x, y)  # 进入编辑
+        wp.pop_menu_click('editText')
 
-        gv.tap(250, 450)
-        gv.fold_expand()
-        gv.tap(x, y)
+        wp.tap(250, 450)
+        wp.fold_expand()
+        wp.tap(x, y)
 
-        gv.shape_option('wp', 5, width=5, height=5)
-        gv.shape_option('wp', 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
-        gv.swipe_options()
-        gv.swipe_options()
-        gv.swipe_options()
-        gv.swipe_options()
-        gv.shape_content_align('wp', '右对齐', '下对齐')
-        gv.shape_content_align('wp')
-        gv.shape_content_align('wp', '水平居中', '垂直居中')
+        wp.shape_option('wp', 5, width=5, height=5)
+        wp.shape_option('wp', 6, top=0.5, bottom=0.5, left=0.5, right=0.5)
+        wp.swipe_options()
+        wp.swipe_options()
+        wp.swipe_options()
+        wp.swipe_options()
+        wp.shape_content_align('wp', '右对齐', '下对齐')
+        wp.shape_content_align('wp')
+        wp.shape_content_align('wp', '水平居中', '垂直居中')
 
     # @unittest.skip('skip test_wp_search_replace')
     def test_wp_search_replace(self):  # 查找替换
         logging.info('==========test_wp_search_replace==========')
-        gv = WPView(self.driver)
+        wp = WPView(self.driver)
         file_name = '欢迎使用永中Office.docx'
-        search_result = gv.search_file(file_name)
+        search_result = wp.search_file(file_name)
         self.assertTrue(search_result, '查找失败')
-        open_result = gv.open_file(file_name)
+        open_result = wp.open_file(file_name)
         self.assertTrue(open_result, '打开失败')
-        gv.switch_write_read()
-        gv.group_button_click('查看')
-        gv.search_content('wp', '的')
-        gv.replace_content('得')
+        wp.switch_write_read()
+        wp.group_button_click('查看')
+        wp.search_content('wp', '的')
+        wp.replace_content('得')
         time.sleep(3)
-        gv.replace_content('得', 'all')
+        wp.replace_content('得', 'all')
 
     # @unittest.skip('skip test_wp_scroll_screen')
     def test_wp_scroll_screen(self):  # 滚屏
@@ -401,7 +623,7 @@ class TestWP(StartEnd):
         self.assertTrue(search_result, '查找失败')
         open_result = hp.open_file(file_name)
         self.assertTrue(open_result, '打开失败')
-        # gv.screen_rotate('landscape')
+        # wp.screen_rotate('landscape')
         self.assertTrue(hp.check_rotate())
         hp.screen_rotate('portrait')
 
@@ -417,37 +639,37 @@ class TestWP(StartEnd):
     # @unittest.skip('skip test_wp_pop_menu_shape')
     def test_wp_pop_menu_shape(self):  # pg未好
         logging.info('==========test_wp_pop_menu_shape==========')
-        gv = WPView(self.driver)
+        wp = WPView(self.driver)
 
-        gv.create_file('wp')
-        gv.group_button_click('插入')
-        gv.insert_shape('wp')
+        wp.create_file('wp')
+        wp.group_button_click('插入')
+        wp.insert_shape('wp')
         time.sleep(1)
-        gv.tap(700, 700)
-        gv.pop_menu_click('editText')
+        wp.tap(700, 700)
+        wp.pop_menu_click('editText')
 
         for i in range(20):
             self.driver.press_keycode(random.randint(29, 54))
 
-        gv.long_press(700, 700)
-        gv.pop_menu_click('selectAll')
-        # gv.drag_coordinate(700, 700, 550, 550)
-        gv.pop_menu_click('copy')
-        gv.tap(700, 700)
-        gv.long_press(700, 700)
-        gv.pop_menu_click('paste')
-        gv.long_press(700, 700)
-        gv.pop_menu_click('selectAll')
-        # gv.drag_coordinate(700, 700, 550, 550)
-        gv.pop_menu_click('cut')
-        # gv.tap(700, 700)
+        wp.long_press(700, 700)
+        wp.pop_menu_click('selectAll')
+        # wp.drag_coordinate(700, 700, 550, 550)
+        wp.pop_menu_click('copy')
+        wp.tap(700, 700)
+        wp.long_press(700, 700)
+        wp.pop_menu_click('paste')
+        wp.long_press(700, 700)
+        wp.pop_menu_click('selectAll')
+        # wp.drag_coordinate(700, 700, 550, 550)
+        wp.pop_menu_click('cut')
+        # wp.tap(700, 700)
         # time.sleep(1)
-        gv.long_press(700, 700)
-        gv.pop_menu_click('paste')
-        # gv.drag_coordinate(700, 700, 550, 550)
-        gv.long_press(700, 700)
-        gv.pop_menu_click('selectAll')
-        gv.pop_menu_click('delete')
+        wp.long_press(700, 700)
+        wp.pop_menu_click('paste')
+        # wp.drag_coordinate(700, 700, 550, 550)
+        wp.long_press(700, 700)
+        wp.pop_menu_click('selectAll')
+        wp.pop_menu_click('delete')
 
     # @unittest.skip('skip test_wp_pop_menu_shape1')
     def test_wp_pop_menu_shape1(self):
@@ -511,20 +733,7 @@ class TestWP(StartEnd):
             wp.tap(60, 250, 2)
         time.sleep(1)
 
-    # @unittest.skip('skip test_wp_export_pdf')
-    def test_wp_export_pdf(self):  # 导出pdf
-        logging.info('==========test_wp_export_pdf==========')
-        wp = WPView(self.driver)
-        file_name = '欢迎使用永中Office.docx'
-        search_result = wp.search_file(file_name)
-        self.assertTrue(search_result, '查找失败')
-        open_result = wp.open_file(file_name)
-        self.assertTrue(open_result, '打开失败')
 
-        file_name = '导出PDF '
-        wp.export_pdf(file_name, 'local')
-
-        self.assertTrue(wp.check_export_pdf())
 
     # @unittest.skip('skip test_wp_expand_fold')
     def test_wp_expand_fold(self):  # 编辑栏收起展开
@@ -550,31 +759,6 @@ class TestWP(StartEnd):
         self.assertTrue(file_name == create_dict['wp'])
 
     # =======before 2019_12_31=====
-    # @unittest.skip('skip test_pop_menu_text_wp')
-    def test_wp_pop_menu_text(self):
-        logging.info('==========%s==========' % self.__str__().split(' ')[0])
-        wp = WPView(self.driver)
-        type = 'wp'
-        wp.create_file(type)
-
-        time.sleep(1)
-        wp.tap(700, 700)
-        for i in range(100):
-            self.driver.press_keycode(random.randint(29, 54))
-        wp.drag_coordinate(300, 540, 300, 200)
-        wp.pop_menu_click('copy')
-        wp.tap(700, 700)
-        time.sleep(1)
-        wp.long_press(700, 700)
-        wp.pop_menu_click('paste')
-        wp.drag_coordinate(300, 540, 300, 200)
-        wp.pop_menu_click('cut')
-        wp.tap(700, 700)
-        time.sleep(1)
-        wp.long_press(700, 700)
-        wp.pop_menu_click('paste')
-
-        time.sleep(3)
 
     # @unittest.skip('skip test_shape_text_attr_wp')
     def test_wp_shape_text_attr(self):  # 自选图形文本属性，仅WP和PG
@@ -1469,19 +1653,7 @@ class TestWP(StartEnd):
         wp = WPView(self.driver)
         wp.chart_change_color()
 
-    # @unittest.skip('skip test_wp_print_long_pic')
-    def test_wp_print_long_pic(self):
-        logging.info('==========%s==========' % self.__str__().split(' ')[0])
-        wp = WPView(self.driver)
-        file_name = '欢迎使用永中Office.docx'
-        search_result = wp.search_file(file_name)
-        self.assertTrue(search_result, '查找失败')
-        open_result = wp.open_file(file_name)
-        self.assertTrue(open_result, '打开失败')
-        wp.group_button_click('文件')
-        wp.print_long_pic()
-        self.assertTrue(wp.exist('//*[@resource-id="com.yozo.office:id/yozo_ui_export_longpic_share_buttons"]'),
-                        msg='未弹出分享栏')
+
 
     # @unittest.skip('skip test_wp_swipe_up_down')
     def test_wp_swipe_up_down(self):

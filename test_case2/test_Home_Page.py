@@ -751,7 +751,7 @@ class TestHomePage(StartEnd):
         temp_name = hp.find_element(*temp_title).text
         hp.click_element(*apply)
 
-        if not hp.is_visible(*mode_switch, 60):
+        if not hp.is_visible(*mode_switch):
             raise
         ele = self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_main_view_container')
         hp.click_element(*mode_switch)
@@ -779,7 +779,7 @@ class TestHomePage(StartEnd):
         hp.click_element(*close)
         hp.click_element(*first_temp)
         hp.click_element(*apply)
-        if not hp.is_visible(*mode_switch, 60):
+        if not hp.is_visible(*mode_switch):
             raise
         hp.click_element(*mode_switch)
         time.sleep(1)
@@ -801,7 +801,7 @@ class TestHomePage(StartEnd):
         time.sleep(1)
         temp_name = hp.find_element(*temp_title).text
         hp.click_element(*apply)
-        if not hp.is_visible(*mode_switch, 60):
+        if not hp.is_visible(*mode_switch):
             raise
         ele = self.driver.find_element(By.ID, 'com.yozo.office:id/a0000_main_view_container')
         hp.click_element(*mode_switch)
@@ -829,7 +829,7 @@ class TestHomePage(StartEnd):
         hp.click_element(*close)
         hp.click_element(*first_temp)
         hp.click_element(*apply)
-        if not hp.is_visible(*mode_switch, 60):
+        if not hp.is_visible(*mode_switch):
             raise
         hp.click_element(*mode_switch)
         time.sleep(1)

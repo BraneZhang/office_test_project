@@ -60,3 +60,8 @@ file_copy_move = [
 ]
 
 file_delete = ['alldoc', 'star', 'last', 'cloud']
+
+code_dict = {'a': 29, 'b': 30, 'c': 31, 'd': 32, 'e': 33, 'f': 34, 'g': 35, 'h': 36,
+             'i': 37, 'j': 38, 'k': 39, 'l': 40, 'm': 41, 'n': 42, 'o': 43, 'p': 44, 'q': 45,
+             'r': 46,
+             }

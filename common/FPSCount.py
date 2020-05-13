@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import csv
 import os
 
 
@@ -72,4 +72,5 @@ def calc_FPS(device, apppackage):
 
 
 if __name__ == '__main__':
-    calc_FPS('5ENDU19830003766', 'com.yozo.office')
+    calc_FPS('9613fafd', 'com.yozo.office')
+

@@ -2,13 +2,49 @@ import logging
 import random
 import time
 
+from businessView.elementRepo import *
 from businessView.generalFunctionView import GeneralFunctionView
 from selenium.webdriver.common.by import By
 from airtest.core.api import *
 from businessView.homePageView import HomePageView
+from data.data_info import code_dict
 
 
 class WPView(HomePageView, GeneralFunctionView):
+
+    def screen_light(self, state='on'):  # 屏幕常亮
+        state_value = self.find_element(*screen_light).get_attribute('checked')
+        state_dict = {'on': 'true', 'off': 'false'}
+        if state_value != state_dict[state]:
+            self.find_element(*screen_light).click()
+
+    def save_and_reopen(self):  # 保存后再进行打开验证
+        file_name = time.strftime('%Y%m%d%H%M%S', time.localtime())
+        suffix_dict = {1: '.doc', 2: '.docx'}
+        suffix_type = random.randint(1, 2)
+        self.save_new_file(file_name, 'local', suffix_type)
+        self.click_element(*close)
+        self.click_element(*return1)
+        wp_file = file_name + suffix_dict[suffix_type]
+
+        self.search_file(wp_file)
+        self.find_element(By.XPATH, '//android.widget.TextView[@text="%s"]' % wp_file).click()
+        file_open = self.find_element(*file_title).text
+        if wp_file == file_open:
+            return True
+        else:
+            return False
+
+    def enter_lines_script(self,times=10, code='a'):  # 插入几行文字
+        # self.group_button_click('编辑')
+        # self.font_size(35)
+        self.click_element(*wp_edit)
+        input_times = 0
+        while input_times < times:
+            self.driver.keyevent(code_dict[code])
+            input_times += 1
+        # self.click_element(*expand)
+
     self_adaption_icon = (By.ID, 'com.yozo.office:id/yozo_ui_quick_option_wp_read_full_screen')
     toolbar_button = (By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_mode')  # 编辑签批切换
     option_group_button = (By.ID, 'com.yozo.office:id/yozo_ui_option_group_button')  # 菜单项
@@ -102,7 +138,8 @@ class WPView(HomePageView, GeneralFunctionView):
     def move_frame(self):
         # 移动视图，调整插入对象的位置
         pinch(in_or_out="out")
-        ele4 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]', x_y=4)
+        ele4 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
+                                   x_y=4)
         ele6 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',
                                    x_y=6)
         ele2 = self.get_element_xy('//*[@resource-id="com.yozo.office:id/yozo_ui_app_frame_office_view_container"]',

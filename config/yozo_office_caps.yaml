@@ -12,5 +12,6 @@
     appPackage: com.yozo.office
     autoGrantPermissions: !!bool True
     noReset:  !!bool True
-    appActivity: com.yozo.office.MainAppActivity
+#    appActivity: com.yozo.office.MainAppActivity
+    appActivity: com.yozo.home.WelcomeActivity
     newCommandTimeout: 120

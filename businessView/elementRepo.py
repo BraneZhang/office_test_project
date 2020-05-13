@@ -41,6 +41,8 @@ my_subscribe = By.ID, 'com.yozo.office:id/tvLeft'
 # 弹出框-确认
 pop_confirm = By.ID, 'com.yozo.office:id/btn_sure'
 pop_confirm2 = By.ID, 'com.yozo.office:id/btn_true'
+pop_confirm3 = By.ID, 'com.yozo.office:id/btn_right'
+pop_confirm4 = By.ID, 'com.yozo.office:id/sure_btn'
 
 # 弹出框-取消
 pop_cancel = By.ID, 'com.yozo.office:id/btn_cancel'
@@ -75,10 +77,10 @@ save_cancel = By.ID, 'com.yozo.office:id/yozo_ui_select_save_path_cancle_btn'
 # 关闭
 close = By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_close'
 
-# 回退
+# 撤销
 undo = By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_undo'
 
-# 前进
+# 重做
 redo = By.ID, 'com.yozo.office:id/yozo_ui_toolbar_button_redo'
 
 # 标星
@@ -620,11 +622,122 @@ name_exist = By.XPATH, '//*[@text="文件名已存在"]'
 # 目标文件夹与源文件相同
 same_folder = By.XPATH, '//*[@text="目标文件夹与源文件相同。"]'
 
-#更多操作
-more_options = By.ID,'com.yozo.office:id/lay_more'
+# 更多操作
+more_options = By.ID, 'com.yozo.office:id/lay_more'
 
-#最近/打开/云文档/标星/我的
+# 最近/打开/云文档/标星/我的
 index_page = By.ID, 'com.yozo.office:id/ll_tap'
 
-#返回云文档初始页
+# 返回云文档初始页
 cloud_first_page = By.XPATH, '//*[@text="云文档 > "]'
+
+# wp编辑区域
+wp_edit = By.ID, 'com.yozo.office:id/a0000_main_view_container'
+
+# 打开收起编辑选项
+expand = By.ID, 'com.yozo.office:id/yozo_ui_option_expand_button'
+
+# 文件-保存
+save2 = By.XPATH, '//*[@text="保存"]'
+
+# 文件-另存为
+save_as = By.XPATH, '//*[@text="另存为"]'
+
+# 文件输出为PDF
+export_pdf = By.XPATH, '//*[@text="输出为PDF"]'
+
+# 输出为长图
+export_long_pic = By.XPATH, '//*[@text="输出为长图"]'
+
+# 逐页输出图片
+export_images = By.XPATH, '//*[@text="逐页输出图片"]'
+
+# 保存到相册
+save2album = By.ID, 'com.yozo.office:id/rll_export_long_picture_save_layout'
+
+# 已保存到相册
+saved = By.XPATH, '//*[contains(@text,"已保存到")]'
+
+# 分享
+image_share = By.ID, 'com.yozo.office:id/rll_export_long_picture_share_layout'
+
+# 当前操坐选项
+option_group = By.ID, 'com.yozo.office:id/yozo_ui_option_group_button'
+
+# 文件搜索中
+searching = By.XPATH, '//*[@text="文件搜索.."]'
+
+# 正在打开
+opening = By.XPATH, '//*[contains(@text, "正在打开")]'
+
+# 文档名
+file_title = By.ID, 'com.yozo.office:id/yozo_ui_title_text_view'
+
+# 查找
+find_replace = By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_find_replace'
+
+# 查找输入
+find_input = By.ID, 'com.yozo.office:id/yozo_ui_et_find_content'
+
+# 查找开始
+find_start = By.ID, 'com.yozo.office:id/yozo_ui_iv_icon_search'
+
+# 未找到匹配的数据
+find_nothing = By.XPATH, '//*[@text="未找到匹配的数据。"]'
+
+# 查找前一个
+find_previous = By.ID, 'com.yozo.office:id/yozo_ui_iv_find_previous'
+
+# 查找后一个
+find_next = By.ID, 'com.yozo.office:id/yozo_ui_iv_find_next'
+
+# 查找返回
+find_return = By.ID, 'com.yozo.office:id/yozo_ui_iv_back'
+
+# 适应屏幕显示
+full_screen = By.ID, 'com.yozo.office:id/yozo_ui_quick_option_wp_read_full_screen'
+
+# 退出适应屏幕显示
+exit_full_screen = By.XPATH, '//android.widget.ImageView'
+
+# 插入书签
+bookmark_insert = By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_bookmark_insert'
+
+# 书签名输入框
+bookmark_edit = By.ID, 'com.yozo.office:id/bookmark_name_edit'
+
+# 添加书签成功
+bookmark_insert_succes = By.XPATH, '//*[@text="添加书签成功"]'
+
+# 书签列表
+bookmark_list = By.ID, 'com.yozo.office:id/yozo_ui_wp_option_id_bookmark_catalog'
+
+# 书签列表返回
+bookmark_return = By.ID, 'com.yozo.office:id/yozo_ui_option_back_button'
+
+# 操作内容区域
+option_content = By.ID, 'com.yozo.office:id/yozo_ui_option_content_container'
+
+# 操作标题区域
+option_title = By.ID, 'com.yozo.office:id/yozo_ui_main_option_title_container'
+
+# 屏幕常亮按钮
+screen_light = By.ID, 'com.yozo.office:id/yozo_ui_option_group_light_switch'
+
+# 已开启阅读模式下屏幕常亮
+screen_light_on = By.XPATH, '//*[@text="已开启阅读模式下屏幕常亮"]'
+
+# 已关闭阅读模式下屏幕常亮
+screen_light_off = By.XPATH, '//*[@text="已关闭阅读模式下屏幕常亮"]'
+
+# 书签名称已存在，请重新输入
+bookmark_exist = By.XPATH, '//*[@text="书签名称已存在，请重新输入"]'
+
+# 保存成功
+save_success = By.XPATH, '//*[@text="保存成功"]'
+
+# 导出成功
+export_success = By.XPATH, '//*[@text="导出成功"]'
+
+# pdf文档标题
+pdf_file_title = By.ID, 'com.yozo.office:id/tv_pdf_title_name'

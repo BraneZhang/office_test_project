@@ -29,7 +29,7 @@ class TestOpenAllTemplates(StartEnd):
     def test_wp_all_templates(self, temp_file='灰色扁平化简约个人简历模板'):  # 对所有在线模板进行开档
         logging.info('==========test_wp_all_templates==========')
         hp = HomePageView(self.driver)
-        # hp.login_on_needed()
+        # hp.login_needed()
         hp.create_file_preoption('wp')
 
         logging.info('=======search option======')
@@ -56,7 +56,7 @@ class TestOpenAllTemplates(StartEnd):
     def test_ss_all_templates(self, temp_file):  # 对所有在线模板进行开档
         logging.info('==========test_ss_all_templates==========')
         hp = HomePageView(self.driver)
-        # hp.login_on_needed()
+        # hp.login_needed()
         hp.create_file_preoption('ss')
 
         logging.info('=======search option======')
@@ -83,7 +83,7 @@ class TestOpenAllTemplates(StartEnd):
     def test_pg_all_templates(self, temp_file='小型商业广告传单'):  # 对所有在线模板进行开档
         logging.info('==========test_pg_all_templates==========')
         hp = HomePageView(self.driver)
-        # hp.login_on_needed()
+        # hp.login_needed()
         hp.create_file_preoption('pg')
 
         logging.info('=======search option======')
